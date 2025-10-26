@@ -135,9 +135,11 @@
         /* Starry backgrounds remain the same */
         .bg-starry-gradient { background-image: linear-gradient(to right, #2c3e50, #000000); }
         .bg-starry-night { background-image: url('https://images.unsplash.com/photo-1502134249126-9f3755a50d78?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8fHx8fA%3D%3D'); background-size: cover; background-position: center; }
+        /* New background for active nav tabs */
+        .bg-active-nav-sky { background-image: url('https://images.unsplash.com/photo-1532178910-7815d6919875?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8fHx8fA%3D%3D'); background-size: cover; background-position: center; }
 
         /* Nav links */
-        .nav-link.active { @apply bg-starry-night text-white rounded-lg shadow-md; background-size: cover; background-position: center; text-shadow: 0 0 6px rgba(255, 255, 255, 0.7); }
+        .nav-link.active { @apply bg-active-nav-sky text-white rounded-lg shadow-md; background-size: cover; background-position: center; text-shadow: 0 0 6px rgba(0, 0, 0, 0.3); }
         .nav-link.inactive { color: var(--text-muted); }
         .nav-link.inactive:hover { background-color: var(--bg-tertiary); color: var(--text-primary); }
 
@@ -218,6 +220,16 @@
         }
         input:checked + .slider ion-icon.moon {
             opacity: 1;
+        }
+
+        /* Checkbox theming */
+        input[type="checkbox"] { 
+            border-color: var(--border-color); 
+            background-color: var(--bg-secondary); 
+        }
+        input[type="checkbox"]:checked { 
+            background-color: var(--accent); 
+            border-color: var(--accent); 
         }
 
     </style>
@@ -830,7 +842,12 @@
             </div>
         </header>
         <!-- Page Content (unchanged) -->
-        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8"> <div class="px-4 py-6 sm:px-0"> <h1 class="text-3xl font-bold text-gray-900 mb-2">Start a New Assessment</h1> <p class="text-lg text-gray-600 mb-8">Select a skill area to begin a short assessment for Akash.</p> <div class="grid grid-cols-1 md:grid-cols-2 gap-6"> <div class="bg-white p-6 rounded-xl shadow-md flex flex-col justify-between"> <div> <div class="p-3 rounded-full bg-blue-100 text-blue-600 w-12 h-12 flex items-center justify-center mb-3"><ion-icon name="mic-outline" class="text-3xl"></ion-icon></div> <h3 class="text-lg font-semibold text-gray-900 mb-1">Reading Fluency</h3> <p class="text-gray-600 text-sm mb-4">Assesses reading speed and accuracy by recording Akash reading aloud. (Approx. 5 mins)</p> </div> <button onclick="navigateTo('page-assessment-reading')" class="w-full bg-accent text-white font-semibold px-5 py-3 rounded-lg shadow-md hover:bg-accent-dark transition duration-200 flex items-center justify-center gap-2"> Start Assessment </button> </div> <div class="bg-white p-6 rounded-xl shadow-md flex flex-col justify-between"> <div> <div class="p-3 rounded-full bg-violet-100 text-violet-600 w-12 h-12 flex items-center justify-center mb-3"><ion-icon name="document-text-outline" class="text-3xl"></ion-icon></div> <h3 class="text-lg font-semibold text-gray-900 mb-1">Comprehension Skills</h3> <p class="text-gray-600 text-sm mb-4">Checks understanding of a provided text passage. Requires file upload. (Approx. 10 mins)</p> </div> <button onclick="navigateTo('page-assessment-comprehension')" class="w-full bg-accent text-white font-semibold px-5 py-3 rounded-lg shadow-md hover:bg-accent-dark transition duration-200 flex items-center justify-center gap-2"> Start Assessment </button> </div> <div class="bg-gray-100 p-6 rounded-xl border border-dashed border-gray-300 flex flex-col justify-center items-center text-center md:col-span-2"> <div class="p-3 rounded-full bg-gray-200 text-gray-500 w-12 h-12 flex items-center justify-center mb-3"><ion-icon name="add-outline" class="text-3xl"></ion-icon></div> <h3 class="text-lg font-semibold text-gray-600 mb-1">More Soon</h3> <p class="text-gray-500 text-sm">Additional assessment types will be available here.</p> </div> </div> </div> </main>
+        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8"> <div class="px-4 py-6 sm:px-0"> <h1 class="text-3xl font-bold text-gray-900 mb-2">Start a New Assessment</h1> <p class="text-lg text-gray-600 mb-8">Select a skill area to begin a short assessment for Akash.</p> <div class="grid grid-cols-1 md:grid-cols-2 gap-6"> <div class="bg-white p-6 rounded-xl shadow-md flex flex-col justify-between"> <div> <div class="p-3 rounded-full bg-blue-100 text-blue-600 w-12 h-12 flex items-center justify-center mb-3"><ion-icon name="mic-outline" class="text-3xl"></ion-icon></div> <h3 class="text-lg font-semibold text-gray-900 mb-1">Reading Fluency</h3> <p class="text-gray-600 text-sm mb-4">Assesses reading speed and accuracy by recording Akash reading aloud. (Approx. 5 mins)</p> </div> <button onclick="navigateTo('page-assessment-reading')" class="w-full bg-accent text-white font-semibold px-5 py-3 rounded-lg shadow-md hover:bg-accent-dark transition duration-200 flex items-center justify-center gap-2"> Start Assessment </button> </div> 
+            
+            <div class="bg-white p-6 rounded-xl shadow-md flex flex-col justify-between"> <div> <div class="p-3 rounded-full bg-violet-100 text-violet-600 w-12 h-12 flex items-center justify-center mb-3"><ion-icon name="image-outline" class="text-3xl"></ion-icon></div> <h3 class="text-lg font-semibold text-gray-900 mb-1">Comprehension & Handwriting</h3> <p class="text-gray-600 text-sm mb-4">Analyze a written response (typed or image) for comprehension. Optionally, analyze handwriting for dyslexic traits.</p> </div> <button onclick="navigateTo('page-assessment-comprehension')" class="w-full bg-accent text-white font-semibold px-5 py-3 rounded-lg shadow-md hover:bg-accent-dark transition duration-200 flex items-center justify-center gap-2"> Start Assessment </button> </div> 
+
+            <div class="bg-gray-100 p-6 rounded-xl border border-dashed border-gray-300 flex flex-col justify-center items-center text-center md:col-span-2"> <div class="p-3 rounded-full bg-gray-200 text-gray-500 w-12 h-12 flex items-center justify-center mb-3"><ion-icon name="add-outline" class="text-3xl"></ion-icon></div> <h3 class="text-lg font-semibold text-gray-600 mb-1">More Soon</h3> <p class="text-gray-500 text-sm">Additional assessment types will be available here.</p> </div> 
+        </div> </div> </main>
     </div>
 
     <!-- PAGE 7: READING ASSESSMENT PAGE -->
@@ -932,8 +949,8 @@
         <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
             <div class="px-4 py-6 sm:px-0">
                 <button onclick="navigateTo('page-assessment')" class="text-sm text-gray-600 hover:text-accent mb-4 inline-flex items-center gap-1"> <ion-icon name="arrow-back-outline"></ion-icon> Back to Assessments </button>
-                <h1 class="text-3xl font-bold text-gray-900 mb-2">Comprehension Skills Assessment</h1>
-                <p class="text-lg text-gray-600 mb-8">Provide a text passage for Akash to read, then start the assessment.</p>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Comprehension & Handwriting</h1>
+                <p class="text-lg text-gray-600 mb-8">Submit a response to the passage by typing or uploading an image.</p>
                 
                 <div class="bg-white p-6 rounded-xl shadow-md max-w-2xl mx-auto space-y-6">
                     
@@ -949,7 +966,7 @@
                     <!-- 2. STUDENT INPUT MODE TOGGLE -->
                     <div class="flex justify-center space-x-3 p-1 rounded-lg bg-gray-100">
                         <button id="mode-upload-btn" onclick="setComprehensionMode('upload')" class="toggle-button active flex-1 px-4 py-2 rounded-md text-sm font-medium transition duration-150 flex items-center justify-center gap-2">
-                             <ion-icon name="cloud-upload-outline"></ion-icon> Upload File (Response)
+                             <ion-icon name="cloud-upload-outline"></ion-icon> Upload Image (Response)
                         </button>
                         <button id="mode-write-btn" onclick="setComprehensionMode('write')" class="toggle-button inactive flex-1 px-4 py-2 rounded-md text-sm font-medium transition duration-150 flex items-center justify-center gap-2">
                             <ion-icon name="pencil-outline"></ion-icon> Write Response
@@ -961,9 +978,21 @@
                         <!-- Initial Content (Upload) is set here by setupComprehensionAssessmentPage() -->
                     </div>
 
+                    <div id="dyslexia-check-container" class="hidden">
+                        <label for="dyslexia-check" class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                            <input id="dyslexia-check" type="checkbox" class="h-5 w-5 rounded text-accent focus:ring-accent">
+                            <div class="flex-1">
+                                <p class="font-medium text-gray-900">Analyze Handwriting</p>
+                                <p class="text-xs text-gray-600">Also check the handwriting in the image for dyslexic traits. (Uses additional analysis)</p>
+                            </div>
+                        </label>
+                    </div>
+
                     <button id="start-comprehension-btn" onclick="startComprehensionAssessment()" disabled class="w-full bg-gray-400 text-white font-semibold px-5 py-3 rounded-lg shadow-md cursor-not-allowed flex items-center justify-center gap-2 transition duration-200"> <ion-icon name="play-circle-outline" class="text-xl"></ion-icon> Submit Response for Assessment </button>
                     
-                    <div id="comprehension-assessment-results" class="mt-4 p-4 bg-gray-100 rounded-lg text-sm text-gray-600 hidden"> <p class="font-medium text-gray-800 mb-1">Assessment Results:</p> <p>Placeholder...</p> </div>
+                    <div id="comprehension-assessment-results" class="mt-4 p-4 bg-gray-100 rounded-lg text-sm text-gray-600 hidden"> 
+                        <!-- Combined report will be injected here -->
+                    </div>
                     
                     <!-- Previous Results Section -->
                     <div>
@@ -1078,7 +1107,6 @@
     <div id="toast-notification" class="toast-notification"> <p id="toast-message">Default Toast Message</p> </div>
 
     <script>
-        // --- GLOBAL VARIABLES ---
         let currentUserName = "Abhishek";
         let subjectChart = null;
         let mediaRecorder;
@@ -1086,9 +1114,10 @@
         let audioBlob = null;
         let selectedComprehensionFile = null;
         let currentComprehensionMode = 'upload'; // 'upload' or 'write'
-        let chatHistory = []; // Moved chatHistory outside DOMContentLoaded
-        
+
         const MIN_COMPREHENSION_WORDS = 50;
+
+        const HUGGINGFACE_API_URL = "https://sawanade-dyslexia-api.hf.space/run/predict"; // NOTE: This URL appears to be inactive (404 Not Found). Please replace it with a valid endpoint.
 
         // Sentences for Reading Fluency Assessment (Page 7)
         const readingPassages = [ 
@@ -1124,259 +1153,225 @@
             <p>Suggest he draw a quick sketch or picture in his mind of what he is reading. This helps turn abstract words into concrete images, strengthening memory and overall understanding.</p>
 
             <h4 class="font-bold text-gray-900">4. Contextual Clues:</h4>
-            <p>If he encounters a hard word, remind him to look at the words around it to guess the meaning before asking for help. This builds independence and vocabulary skills.</p>
+            <p>If he encounters a hard word, remind him to look at the words around it to guess the meaning. This is a crucial skill for independent reading.</p>
         `;
 
+        // --- Prompts for Analysis APIs ---
+        const READING_ANALYSIS_PROMPT = (passageText) => `You are an expert reading coach for a parent. The user has provided an audio file of a child reading a passage and the text of the passage.
+Analyze the audio and provide a brief, encouraging report in Markdown format.
+Identify:
+1.  An estimated Reading Speed (Words Per Minute).
+2.  An estimated Accuracy (percentage).
+3.  Note any specific words the child hesitated on or mispronounced (e.g., "Hesitation on 'horizon'").
+4.  Provide one simple, positive tip for improvement.
+Keep the tone supportive and positive.
 
-        // --- GEMINI API Config (unchanged) ---
-        const CHAT_SYSTEM_PROMPT = `You are Boo, a friendly and encouraging AI assistant for the SoundSlate platform, designed to help parents understand their child's reading and comprehension progress.
-- Your goal is to provide clear, actionable insights in a supportive and conversational tone.
-- Keep responses concise (2-4 sentences).
-- Always address the parent by their name (e.g., "Hi Abhishek!"). The parent's name is ${currentUserName}.
-- When asked about data, refer to the "dashboard" or "progress page."
-- If asked for recommendations, provide one simple, actionable tip (e.g., "It looks like Akash is doing great with speed! Maybe try asking him to summarize the story afterwards to boost comprehension?").
-- Do not make up specific data points not provided in the context. Speak generally about progress.
-- Be positive and highlight strengths before suggesting areas for improvement.
-- The child's name is Akash.`;
+**Passage Text:**
+"${passageText}"
 
-        const REPORT_PROMPT = `Please act as a supportive AI learning assistant for a parent named ${currentUserName}.
-The child's name is Akash.
-You are generating a progress report from the "SoundSlate" platform.
-The user will provide a report type (e.g., "Weekly Progress") and a date range.
-Based on the following (simulated) data:
-- **Fluency:** 85 WPM (Words Per Minute), which is a +10 WPM improvement this week.
-- **Accuracy:** 95% (Excellent).
-- **Comprehension:** 80% (Good, +5% improvement).
-- **Vocabulary:** 90% (Excellent, 15 new words learned).
-- **Time Spent:** 2.5h on Reading, 1.15h on Vocabulary, 1h on Comprehension.
-- **Key Insight:** Akash performs best between 4-6 PM.
-- **Struggle Area:** Slight hesitation on complex, multi-syllable words (e.g., "establishment," "curiosity").
+**Analysis Report:**`;
 
-Generate a concise, encouraging, and easy-to-read report in Markdown format.
-- Start with a clear title (e.g., "### Akash's Weekly Progress Report").
-- Use bullet points.
-- Highlight strengths first.
-- Provide one or two actionable recommendations based on the struggle area.
-- Keep it positive and supportive.`;
+        const COMPREHENSION_ANALYSIS_PROMPT = (givenPassage, studentResponse) => `You are an expert reading comprehension coach for a parent. The user has provided a source passage and a student's written response.
+Analyze the student's response based *only* on the given passage.
+Provide a brief, encouraging report in Markdown format.
+Identify:
+1.  A comprehension score (e.g., 8/10).
+2.  What the student understood well (e.g., "Correctly identified the main idea").
+3.  What they might have missed.
+4.  Keep it supportive and address the parent ("Akash did well...").
 
-        const PASSAGE_PROMPT = `Generate a creative, short story passage, approximately 200 words long, suitable for a 4th-grade student working on reading fluency and comprehension. The passage should focus on describing a vivid scene and naturally incorporate at least five complex, multi-syllable words (e.g., 'imagination', 'enthusiastically', 'consequence', 'establishment', 'determination'). Format the output as plain text suitable for direct reading.`;
+**Source Passage:**
+"${givenPassage}"
+
+**Student's Response:**
+"${studentResponse}"
+
+**Analysis Report:**`;
+
+        const COMPREHENSION_IMAGE_ANALYSIS_PROMPT = (givenPassage) => `You are an expert reading comprehension coach for a parent. The user has provided a source passage and an *image* of a student's handwritten response.
+Analyze the handwritten response in the image based *only* on the given source passage.
+Provide a brief, encouraging report in Markdown format.
+Identify:
+1.  A comprehension score (e.g., 8/10).
+2.  What the student understood well (e.g., "Correctly identified the main idea").
+3.  What they might have missed.
+4.  Keep it supportive and address the parent ("Akash did well...").
+
+**Source Passage:**
+"${givenPassage}"
+
+**Analysis Report (based on the image):**`;
+
+
+        // --- Helper functions for file/blob reading ---
+        function blobToBase64(blob) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    const base64Data = reader.result.split(',')[1];
+                    resolve(base64Data);
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        }
+
+        function fileToDataURL(file) {
+            return new Promise((resolve, reject) => {
+                if (!file.type.startsWith('image/')) {
+                    reject(new Error("File is not an image."));
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    resolve(e.target.result);
+                };
+                reader.onerror = (e) => {
+                    reject(new Error("Failed to read file."));
+                };
+                reader.readAsDataURL(file);
+            });
+        }
         
-        // NEW PROMPT FOR CONTENT GENERATOR PAGE
-        const CONTENT_GENERATOR_PROMPT = `You are a helpful and creative educational content generator for the SoundSlate platform. The user will provide a prompt and a content type (e.g., 'Study Guide', 'Creative Story Prompt'). Your task is to generate the requested content based on the user's input and the selected type, suitable for a 4th-grade student.
+        function fileToMimeAndData(file) {
+            return new Promise((resolve, reject) => {
+                if (!file.type.startsWith('image/')) {
+                    reject(new Error("File is not an image. Please upload a PNG or JPEG."));
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const dataUrl = e.target.result;
+                    const parts = dataUrl.split(',');
+                    const mimeType = parts[0].split(':')[1].split(';')[0];
+                    const base64Data = parts[1];
+                    resolve({ mimeType, data: base64Data });
+                };
+                reader.onerror = (e) => {
+                    reject(new Error("Failed to read file."));
+                };
+                reader.readAsDataURL(file);
+            });
+        }
 
-- If the type is 'Study Guide': Generate a short guide (max 150 words) with 3-4 key facts and 2 simple comprehension questions based on the user's topic. Format as Markdown lists and headers.
-- If the type is 'Creative Story Prompt': Generate a vivid, exciting, and short (max 100 words) story starter to inspire a child to write. Focus on tone, setting, and an interesting conflict.
-- If the type is 'Vocabulary Challenge': Provide 5 challenging words related to the topic, along with their simple definitions and one example sentence for each. Use Markdown for clarity.
 
-Format the output cleanly using Markdown.`;
-
-
-        // --- SKILL DATA ARRAY ---
-        const skillData = [
-            { name: "Accuracy", percentage: 95, color: "bg-green-500", detail: "Target: 98%", status: "Excellent", statusColor: "text-green-700" },
-            { name: "Vocabulary", percentage: 90, color: "bg-violet-500", detail: "Grade Level: 4 / Learned 15 new words", status: "Excellent", statusColor: "text-violet-700" },
-            { name: "Reading Speed", percentage: 75, color: "bg-blue-500", detail: "Target: 100 WPM / Current: 85 WPM (+10 WPM this week)", status: "Improving", statusColor: "text-blue-700" },
-            { name: "Comprehension", percentage: 80, color: "bg-amber-500", detail: "Target: 85% / Current: 80% (+5% this week)", status: "Good", statusColor: "text-amber-700" }
-        ];
-
-        // --- GLOBAL HELPER FUNCTIONS ---
-        // Functions are defined globally to fix ReferenceErrors on initial load.
-
+        // --- Navigation ---
         function navigateTo(pageId) {
-            // Close all modals (including notification modal) on navigation
-            document.getElementById('notification-modal').classList.add('hidden');
-            document.getElementById('chat-widget').classList.add('hidden');
-            document.getElementById('report-modal').classList.add('hidden'); // Close report/passage modal
-            document.getElementById('recommended-tips-modal').classList.add('hidden'); // Close tips modal
-            
             document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
             const targetPage = document.getElementById(pageId);
-            if (targetPage) targetPage.classList.add('active');
-            else { console.error("Target page not found:", pageId); return; }
-
-            const fabContainer = document.getElementById('fab-container');
-            if (pageId === 'page-progress') {
-                fabContainer.classList.remove('hidden');
-                fabContainer.classList.add('flex', 'flex-col');
-                // Only render chart if it's visible (prevents errors if page loaded hidden)
-                if (targetPage.offsetParent !== null) {
-                    renderSubjectChart();
-                    renderSkillProgress(); // Render the skill progress bars
-                }
-            } else {
-                fabContainer.classList.add('hidden');
-                fabContainer.classList.remove('flex', 'flex-col');
-            }
-
-            // Update nav links
-            document.querySelectorAll('header .nav-link').forEach(link => {
-                const linkPage = link.getAttribute('data-page');
-                link.classList.remove('active', 'bg-starry-night', 'text-white', 'shadow-md');
-                link.classList.add('inactive'); // Simplified default state
-                if ((pageId === 'page-assessment-reading' || pageId === 'page-assessment-comprehension') && linkPage === 'page-assessment') {
+            
+            // Update nav link styles
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if (link.getAttribute('data-page') === pageId) {
                     link.classList.remove('inactive');
-                    link.classList.add('active', 'bg-starry-night', 'text-white', 'shadow-md');
-                } else if (linkPage === pageId) {
-                    link.classList.remove('inactive');
-                    link.classList.add('active', 'bg-starry-night', 'text-white', 'shadow-md');
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                    link.classList.add('inactive');
                 }
             });
 
-            if (pageId === 'page-settings') { // Special case for settings
-                document.querySelectorAll('header .nav-link').forEach(link => {
-                    link.classList.remove('active', 'bg-starry-night', 'text-white', 'shadow-md');
-                    link.classList.add('inactive');
-                });
+            if (targetPage) {
+                targetPage.classList.add('active');
+            } else { 
+                console.error("Target page not found:", pageId);
+                document.getElementById('page-home').classList.add('active'); // Default to home
             }
-
-            // Update user name/avatar in the *active* page's header
-            try {
-                const activeHeader = targetPage.querySelector('header');
-                if (activeHeader) {
-                    activeHeader.querySelector('[id^="user-name-"]').textContent = `Hi, ${currentUserName}!`;
-                    activeHeader.querySelector('[id^="user-avatar-"]').textContent = currentUserName.charAt(0).toUpperCase();
-                }
-            } catch (e) { console.warn("Could not set user name for active page", e); }
 
             // Setup assessment pages if navigating to them
             if (pageId === 'page-assessment-reading') setupReadingAssessmentPage();
             else if (pageId === 'page-assessment-comprehension') setupComprehensionAssessmentPage();
-            else if (pageId === 'page-generator') {
-                // Ensure generator input is always active on page load
-                document.getElementById('generated-content-results')?.classList.add('hidden');
-                document.getElementById('initial-message')?.classList.remove('hidden');
-            }
         }
 
-        /**
-         * Renders and sorts the skill progress bars based on percentage.
-         */
+        // --- Chart/Progress functions ---
         function renderSkillProgress() {
             const container = document.getElementById('skill-progress-bars');
             if (!container) return;
 
-            // 1. Sort the data array by percentage (descending)
-            const sortedData = [...skillData].sort((a, b) => b.percentage - a.percentage);
+            const skills = [
+                { name: 'Reading Fluency', progress: 85, color: 'blue-500' },
+                { name: 'Comprehension', progress: 80, color: 'violet-500' },
+                { name: 'Vocabulary', progress: 90, color: 'amber-500' },
+                { name: 'Pronunciation', progress: 92, color: 'green-500' }
+            ];
 
-            // 2. Generate the HTML based on sorted data
-            let html = sortedData.map(skill => {
-                let detailLeft = skill.detail.includes('/') ? skill.detail.split('/')[0].trim() : skill.detail;
-                let detailRight = skill.detail.includes('/') ? skill.detail.split('/')[1].trim() : `Current: ${skill.percentage}%`;
-                
-                // Overriding text for Comprehension and Reading Speed to match the screenshot better
-                if (skill.name === "Comprehension") {
-                    detailRight = `Current: 80% (+5% this week)`;
-                    detailLeft = `Target: 85%`;
-                } else if (skill.name === "Reading Speed") {
-                    detailRight = `Current: 85 WPM (+10 WPM this week)`;
-                    detailLeft = `Target: 100 WPM`;
-                } else if (skill.name === "Accuracy") {
-                    detailRight = `Current: 95%`;
-                    detailLeft = `Target: 98%`;
-                } else if (skill.name === "Vocabulary") {
-                     detailRight = `Learned 15 new words`;
-                    detailLeft = `Grade Level: 4`;
-                }
-
-                return `
-                    <div> 
-                        <div class="flex justify-between items-center mb-1"> 
-                            <span class="text-base font-medium ${skill.statusColor}">${skill.name}</span> 
-                            <span class="text-sm font-medium ${skill.statusColor}">${skill.status}</span> 
-                        </div> 
-                        <div class="w-full bg-gray-200 rounded-full h-2.5"> 
-                            <div class="${skill.color} h-2.5 rounded-full" style="width: ${skill.percentage}%"></div> 
-                        </div> 
-                        <div class="flex justify-between items-center mt-1"> 
-                            <span class="text-xs text-gray-500">${detailLeft}</span> 
-                            <span class="text-xs text-gray-500">${detailRight}</span> 
-                        </div> 
+            container.innerHTML = skills.map(skill => `
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <span class="text-sm font-medium text-gray-700">${skill.name}</span>
+                        <span class="text-sm font-medium text-gray-500">${skill.progress}%</span>
                     </div>
-                `;
-            }).join('');
-
-            container.innerHTML = html;
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-${skill.color} h-2 rounded-full" style="width: ${skill.progress}%"></div>
+                    </div>
+                </div>
+            `).join('');
         }
 
         function renderSubjectChart() {
-            const chartCanvas = document.getElementById('subjectChart');
-            if (!chartCanvas) return;
-            const ctx = chartCanvas.getContext('2d');
-            const primaryTextColor = getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim();
-            const gridColor = getComputedStyle(document.documentElement).getPropertyValue('--chart-grid-color').trim();
-            const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+            const ctx = document.getElementById('subjectChart');
+            if (!ctx) return;
 
-            const chartData = {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                datasets: [{
-                    label: 'Minutes Practiced',
-                    data: [35, 45, 60, 20, 55, 10, 45], // Simulated daily practice minutes
-                    backgroundColor: accentColor, 
-                    borderColor: accentColor,
-                    borderWidth: 1,
-                    borderRadius: 4,
-                    barPercentage: 0.8,
-                    categoryPercentage: 0.8,
-                }]
-            };
+            const gridColor = document.documentElement.classList.contains('dark') ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
 
-            if (subjectChart) subjectChart.destroy();
+            if (subjectChart) {
+                subjectChart.destroy();
+            }
 
-            subjectChart = new Chart(ctx, {
-                type: 'bar', 
-                data: chartData,
+            subjectChart = new Chart(ctx.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Minutes',
+                        data: [45, 30, 55, 40, 60, 25, 40],
+                        backgroundColor: 'rgba(56, 189, 248, 0.6)', // sky-400 with opacity
+                        borderColor: 'rgba(56, 189, 248, 1)',
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
                 options: {
-                    responsive: true, 
+                    responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
                         legend: { display: false },
                         tooltip: {
-                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                            titleFont: { size: 14 }, 
-                            bodyFont: { size: 12 }, 
-                            padding: 10, 
-                            cornerRadius: 6,
-                            callbacks: {
-                                label: function(context) {
-                                    return `${context.dataset.label}: ${context.parsed.y} min`;
-                                }
-                            }
+                            backgroundColor: '#0f172a',
+                            titleColor: '#f8fafc',
+                            bodyColor: '#cbd5e1',
+                            displayColors: false
                         }
                     },
                     scales: {
-                        x: {
-                            grid: { color: gridColor },
-                            ticks: { color: primaryTextColor }
-                        },
                         y: {
                             beginAtZero: true,
-                            max: 70, // Max minutes on a day
-                            title: {
-                                display: true,
-                                text: 'Minutes',
-                                color: primaryTextColor
-                            },
                             grid: { color: gridColor },
-                            ticks: { color: primaryTextColor }
+                            ticks: { color: 'var(--text-muted)' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: 'var(--text-muted)' }
                         }
                     }
                 }
             });
-            // Removed doughnut specific code
         }
         
-        const toast = document.getElementById('toast-notification'); const toastMessage = document.getElementById('toast-message'); function showToast(message, type = 'info') { toastMessage.textContent = message; toast.className = 'toast-notification'; void toast.offsetWidth; if (type === 'success') toast.classList.add('bg-green-600'); else if (type === 'error') toast.classList.add('bg-red-600'); else toast.classList.add('bg-blue-600'); toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 3000); }
-        function handleLogout() { document.getElementById('logout-modal').classList.add('hidden'); showToast('Logged out successfully!', 'success'); setTimeout(() => navigateTo('page-home'), 500); }
-
-        // --- Notification Toggle (Now opens Modal) ---
-        function toggleNotificationDropdown(event) {
-            event.stopPropagation(); // Prevent click from bubbling up
-            document.getElementById('notification-modal').classList.remove('hidden');
+        const toast = document.getElementById('toast-notification'); 
+        const toastMessage = document.getElementById('toast-message'); 
+        function showToast(message, type = 'info') { 
+            toastMessage.textContent = message; 
+            toast.className = 'toast-notification'; 
+            void toast.offsetWidth; 
+            if (type === 'success') toast.classList.add('bg-green-600'); 
+            else if (type === 'error') toast.classList.add('bg-red-600'); 
+            else toast.classList.add('bg-blue-600'); 
+            toast.classList.add('show'); 
+            setTimeout(() => toast.classList.remove('show'), 3000); 
         }
 
-
         // --- Assessment Page Setup Functions ---
-
         function setupReadingAssessmentPage() { 
             const passageElement = document.getElementById('reading-passage'); 
             if(passageElement){ 
@@ -1387,24 +1382,30 @@ Format the output cleanly using Markdown.`;
             const resultsDiv = document.getElementById('reading-assessment-results'); 
             if(resultsDiv) resultsDiv.classList.add('hidden'); 
         }
-
+        
         function setupComprehensionAssessmentPage() { 
             selectedComprehensionFile = null; 
-            const fileInput = document.getElementById('comprehension-file-input'); 
-            if(fileInput) fileInput.value = ''; 
+            const comprehensionInput = document.getElementById('comprehension-written-response');
+            if (comprehensionInput) comprehensionInput.value = '';
 
-            // 1. Set Given Passage
             const passageElement = document.getElementById('comprehension-given-passage');
             if(passageElement) {
                 const randomIndex = Math.floor(Math.random() * comprehensionPassages.length);
                 passageElement.textContent = comprehensionPassages[randomIndex];
             }
             
-            // 2. Set initial mode to upload (which populates the input area)
+            // Set default mode to 'upload'
             setComprehensionMode('upload');
-
+            
             const resultsDiv = document.getElementById('comprehension-assessment-results'); 
             if(resultsDiv) resultsDiv.classList.add('hidden'); 
+            
+            const submitBtn = document.getElementById('start-comprehension-btn');
+            if(submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+                submitBtn.classList.remove('bg-accent', 'hover:bg-accent-dark');
+            }
         }
 
         function setComprehensionMode(mode) {
@@ -1412,506 +1413,749 @@ Format the output cleanly using Markdown.`;
             const inputArea = document.getElementById('comprehension-input-area');
             const uploadBtn = document.getElementById('mode-upload-btn');
             const writeBtn = document.getElementById('mode-write-btn');
+            const dyslexiaCheck = document.getElementById('dyslexia-check-container');
+
+            if (!inputArea || !uploadBtn || !writeBtn || !dyslexiaCheck) return;
 
             if (mode === 'upload') {
-                uploadBtn?.classList.add('active');
-                uploadBtn?.classList.remove('inactive');
-                writeBtn?.classList.add('inactive');
-                writeBtn?.classList.remove('active');
+                uploadBtn.classList.replace('inactive', 'active');
+                writeBtn.classList.replace('active', 'inactive');
+                dyslexiaCheck.classList.remove('hidden');
                 
                 inputArea.innerHTML = `
-                    <div class="bg-gray-50 p-4 rounded-lg border text-center">
-                        <p class="text-sm text-gray-800 mb-3">Upload a file (e.g., text, document, recording summary) containing Akash's response to the passage.</p>
-                        <input type="file" id="comprehension-file-input" class="hidden" accept=".txt,.md,.pdf" onchange="handleFileSelect(event)">
-                        <label for="comprehension-file-input" class="file-input-button"> 
-                            <ion-icon name="cloud-upload-outline" class="text-xl"></ion-icon> Choose Response File 
-                        </label>
-                        <p id="comprehension-selected-filename" class="text-xs text-gray-500 mt-2">No file chosen</p>
+                    <label for="comprehension-file-input" class="file-input-button w-full">
+                        <ion-icon name="cloud-upload-outline" class="text-xl"></ion-icon>
+                        <span id="comprehension-file-name">Click to Upload Image (PNG, JPG)</span>
+                        <input id="comprehension-file-input" type="file" class="hidden" accept="image/png, image/jpeg" onchange="handleComprehensionFileSelect(event)">
+                    </label>
+                    <p class="text-xs text-gray-500 mt-2">Please upload a clear image of the handwritten response.</p>
+                    <div id="comprehension-image-preview" class="mt-4 hidden max-h-48 overflow-hidden rounded-lg border">
+                        <img id="preview-image-src" src="#" alt="Image preview" class="w-full h-auto object-cover">
                     </div>
                 `;
-                // Re-attach event listener if dynamic HTML insertion removed it
-                document.getElementById('comprehension-file-input')?.addEventListener('change', handleFileSelect);
+            } else { // mode === 'write'
+                uploadBtn.classList.replace('active', 'inactive');
+                writeBtn.classList.replace('inactive', 'active');
+                dyslexiaCheck.classList.add('hidden');
 
-            } else { // 'write' mode
-                uploadBtn?.classList.add('inactive');
-                uploadBtn?.classList.remove('active');
-                writeBtn?.classList.add('active');
-                writeBtn?.classList.remove('inactive');
-                
                 inputArea.innerHTML = `
-                    <div>
-                        <textarea id="comprehension-text-area" rows="8" placeholder="Type Akash's summary or response here (Min. 50 words)..." class="w-full p-4 border border-gray-300 rounded-lg text-sm focus:ring-accent focus:border-accent resize-none"></textarea>
-                        <p id="word-count-display" class="text-xs text-gray-600 text-right mt-1">0 words</p>
-                    </div>
+                    <label for="comprehension-written-response" class="block text-sm font-medium text-gray-900 mb-1">Written Response:</label>
+                    <textarea id="comprehension-written-response" rows="8" placeholder="Type Akash's response to the passage here..." class="w-full p-3 border border-gray-300 rounded-lg text-sm focus:ring-accent focus:border-accent resize-vertical" oninput="validateComprehensionInput()"></textarea>
+                    <p id="comprehension-word-count" class="text-xs text-gray-500 mt-1">0 words (Minimum ${MIN_COMPREHENSION_WORDS} required)</p>
                 `;
-                // Re-attach event listener for dynamic text area
-                document.getElementById('comprehension-text-area')?.addEventListener('input', checkComprehensionInput);
             }
-            
-            checkComprehensionInput();
+            // Reset validation after mode switch
+            validateComprehensionInput();
         }
 
+        function handleComprehensionFileSelect(event) {
+            const file = event.target.files[0];
+            const fileNameEl = document.getElementById('comprehension-file-name');
+            const previewContainer = document.getElementById('comprehension-image-preview');
+            const previewImg = document.getElementById('preview-image-src');
 
-        function checkComprehensionInput() {
-            const startButton = document.getElementById('start-comprehension-btn');
-            let readyToStart = false;
+            if (file && file.type.startsWith('image/')) {
+                selectedComprehensionFile = file;
+                fileNameEl.textContent = file.name;
+                
+                fileToDataURL(file).then(dataUrl => {
+                    previewImg.src = dataUrl;
+                    previewContainer.classList.remove('hidden');
+                }).catch(err => {
+                    console.error(err);
+                    showToast(err.message, 'error');
+                });
 
+            } else {
+                selectedComprehensionFile = null;
+                fileNameEl.textContent = 'Click to Upload Image (PNG, JPG)';
+                previewContainer.classList.add('hidden');
+                previewImg.src = "#";
+                if(file) { // if a file was selected but it wasn't an image
+                    showToast('Invalid file type. Please select a PNG or JPG image.', 'error');
+                }
+            }
+            validateComprehensionInput();
+        }
+
+        function validateComprehensionInput() {
+            const submitBtn = document.getElementById('start-comprehension-btn');
+            if (!submitBtn) return;
+
+            let isValid = false;
             if (currentComprehensionMode === 'upload') {
-                const filenameDisplay = document.getElementById('comprehension-selected-filename');
-                readyToStart = selectedComprehensionFile !== null;
-                if(filenameDisplay) filenameDisplay.textContent = selectedComprehensionFile ? selectedComprehensionFile.name : 'No file chosen';
-            } else { // 'write' mode
-                const textarea = document.getElementById('comprehension-text-area');
-                const text = textarea?.value || '';
-                const wordCount = text.trim().split(/\s+/).filter(word => word.length > 0).length;
-                const wordCountDisplay = document.getElementById('word-count-display');
-                if(wordCountDisplay) wordCountDisplay.textContent = `${wordCount} words (Min. ${MIN_COMPREHENSION_WORDS} required)`;
-                readyToStart = wordCount >= MIN_COMPREHENSION_WORDS;
-            }
-
-            if (startButton) {
-                startButton.disabled = !readyToStart;
-                if (readyToStart) {
-                    startButton.classList.remove('bg-gray-400', 'cursor-not-allowed');
-                    startButton.classList.add('bg-accent', 'hover:bg-accent-dark');
-                } else {
-                    startButton.classList.add('bg-gray-400', 'cursor-not-allowed');
-                    startButton.classList.remove('bg-accent', 'hover:bg-accent-dark');
+                isValid = selectedComprehensionFile != null;
+            } else { // mode === 'write'
+                const textArea = document.getElementById('comprehension-written-response');
+                if (textArea) {
+                    const wordCount = textArea.value.trim().split(/\s+/).filter(Boolean).length;
+                    document.getElementById('comprehension-word-count').textContent = `${wordCount} words (Minimum ${MIN_COMPREHENSION_WORDS} required)`;
+                    isValid = wordCount >= MIN_COMPREHENSION_WORDS;
                 }
             }
-        }
 
-        function handleFileSelect(event) { 
-            const fileInput = document.getElementById('comprehension-file-input');
-            const file = fileInput?.files?.[0]; 
-            selectedComprehensionFile = file || null;
-            checkComprehensionInput();
-        }
-
-        function startComprehensionAssessment() { 
-            if (currentComprehensionMode === 'upload' && !selectedComprehensionFile) {
-                showToast("Please select a file first.", "error"); return;
+            if (isValid) {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                submitBtn.classList.add('bg-accent', 'hover:bg-accent-dark');
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+                submitBtn.classList.remove('bg-accent', 'hover:bg-accent-dark');
             }
-            const textarea = document.getElementById('comprehension-text-area');
-            if (currentComprehensionMode === 'write' && (!textarea || textarea.value.trim().split(/\s+/).filter(word => word.length > 0).length < MIN_COMPREHENSION_WORDS)) {
-                 showToast(`Please enter at least ${MIN_COMPREHENSION_WORDS} words in the response area.`, "error"); return;
-            }
-
-            const passageName = currentComprehensionMode === 'upload' ? selectedComprehensionFile.name : "Custom Text Response";
-
-            showToast(`Submitting response for ${passageName}...`, "info"); 
-            
-            setTimeout(() => { 
-                showToast("Assessment complete! Results below.", "success"); 
-                const resultsDiv = document.getElementById('comprehension-assessment-results'); 
-                if(resultsDiv){ 
-                    resultsDiv.innerHTML = `<p class="font-medium text-gray-800 mb-1">Assessment Results:</p><p><strong class="text-blue-600">Strong comprehension!</strong> Score: 9/10. Akash correctly identified the main theme and character motivations. Missed one detail question about the setting. (Response: ${passageName})</p>`; 
-                    resultsDiv.classList.remove('hidden'); 
-                } 
-            }, 2500); 
         }
 
 
-        // --- Reading Fluency Recording (unchanged) ---
+        // --- Reading Assessment (Recording) ---
         function resetRecordingState() {
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') { mediaRecorder.stop(); }
-            mediaRecorder = null; audioChunks = []; audioBlob = null;
-            updateRecordingStatus('Idle');
-            document.getElementById('start-record-btn')?.classList.remove('hidden');
-            document.getElementById('pause-record-btn')?.classList.add('hidden');
-            document.getElementById('resume-record-btn')?.classList.add('hidden');
-            document.getElementById('stop-record-btn')?.classList.add('hidden');
-            // Don't hide results here, only when starting a new assessment (in setup function)
+            document.getElementById('start-record-btn').classList.remove('hidden');
+            document.getElementById('pause-record-btn').classList.add('hidden');
+            document.getElementById('resume-record-btn').classList.add('hidden');
+            document.getElementById('stop-record-btn').classList.add('hidden');
+            document.getElementById('recording-status').innerHTML = '';
+            audioChunks = [];
+            audioBlob = null;
         }
-        function updateRecordingStatus(status) { const statusEl = document.getElementById('recording-status'); if (!statusEl) return; let content = ''; switch (status) { case 'Recording': content = `<span class="recording-dot mr-1"></span> Recording...`; break; case 'Paused': content = `<ion-icon name="pause-circle-outline" class="text-yellow-500 text-lg mr-1"></ion-icon> Paused`; break; case 'Processing': content = `<ion-icon name="hourglass-outline" class="text-blue-500 text-lg mr-1 animate-spin"></ion-icon> Processing...`; break; default: content = `<ion-icon name="mic-off-circle-outline" class="text-gray-500 text-lg mr-1"></ion-icon> Idle`; break; } statusEl.innerHTML = content; }
-        async function startRecording() { try { const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); mediaRecorder = new MediaRecorder(stream); mediaRecorder.ondataavailable = e => audioChunks.push(e.data); mediaRecorder.onstop = () => { audioBlob = new Blob(audioChunks, { type: 'audio/wav' }); audioChunks = []; updateRecordingStatus('Processing'); setTimeout(() => { showToast("Recording complete! Results below.", "success"); const resultsDiv = document.getElementById('reading-assessment-results'); if(resultsDiv){ resultsDiv.innerHTML = `<p class="font-medium text-gray-800 mb-1">Assessment Results:</p><p><strong class="text-green-600">Excellent fluency!</strong> Speed: 92 WPM (+4 WPM). Accuracy: 96%. Only minor hesitation on 'horizon'. Great job, Akash!</p>`; resultsDiv.classList.remove('hidden'); } resetRecordingState(); /* Reset UI after showing result */ }, 1500); stream.getTracks().forEach(track => track.stop()); }; mediaRecorder.start(); updateRecordingStatus('Recording'); document.getElementById('start-record-btn')?.classList.add('hidden'); document.getElementById('pause-record-btn')?.classList.remove('hidden'); document.getElementById('stop-record-btn')?.classList.remove('hidden'); document.getElementById('resume-record-btn')?.classList.add('hidden'); } catch (err) { console.error("Mic error:", err); showToast("Error: Could not access microphone.", "error"); resetRecordingState(); } }
-        function pauseRecording() { if (mediaRecorder?.state === 'recording') { mediaRecorder.pause(); updateRecordingStatus('Paused'); document.getElementById('pause-record-btn')?.classList.add('hidden'); document.getElementById('resume-record-btn')?.classList.remove('hidden'); } }
-        function resumeRecording() { if (mediaRecorder?.state === 'paused') { mediaRecorder.resume(); updateRecordingStatus('Recording'); document.getElementById('pause-record-btn')?.classList.remove('hidden'); document.getElementById('resume-record-btn')?.classList.add('hidden'); } }
-        function stopRecording() { if (mediaRecorder && (mediaRecorder.state === 'recording' || mediaRecorder.state === 'paused')) { mediaRecorder.stop(); /* onstop handles UI */ } }
-        
-        // --- Report Download Authorization Check ---
-        function checkReportAuthorization(reportName) {
-            // Simulated check: Only "Weekly Summary" is authorized for download.
-            // Other reports (Monthly Deep Dive, Reading & Comprehension) trigger an error.
-            if (reportName.includes('Weekly Summary')) {
-                return { authorized: true, message: "Download started." };
-            } else {
-                return { authorized: false, message: `Download Unauthorized: Downloading "${reportName}" requires higher administrative permissions.` };
-            }
-        }
-        
-        function handleReportDownload(reportName, dateRange) {
-            const authResult = checkReportAuthorization(reportName);
-            if (authResult.authorized) {
-                showToast(`Downloading: ${reportName} (${dateRange})...`, 'info');
-            } else {
-                showToast(authResult.message, 'error');
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.ondataavailable = event => {
+                    audioChunks.push(event.data);
+                };
+                mediaRecorder.onstop = handleStopRecording;
+                
+                mediaRecorder.start();
+                
+                document.getElementById('start-record-btn').classList.add('hidden');
+                document.getElementById('pause-record-btn').classList.remove('hidden');
+                document.getElementById('stop-record-btn').classList.remove('hidden');
+                document.getElementById('recording-status').innerHTML = '<span class="recording-dot"></span> Recording...';
+                showToast('Recording started!', 'info');
+            } catch (err) {
+                console.error("Error starting recording:", err);
+                showToast('Could not start recording. Please check microphone permissions.', 'error');
+                document.getElementById('recording-status').innerHTML = '<span class="text-red-500">Mic access denied.</span>';
             }
         }
 
-        // --- Recommended Actions Handlers ---
+        function pauseRecording() {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.pause();
+                document.getElementById('pause-record-btn').classList.add('hidden');
+                document.getElementById('resume-record-btn').classList.remove('hidden');
+                document.getElementById('recording-status').innerHTML = 'Paused';
+            }
+        }
+
+        function resumeRecording() {
+            if (mediaRecorder && mediaRecorder.state === 'paused') {
+                mediaRecorder.resume();
+                document.getElementById('pause-record-btn').classList.remove('hidden');
+                document.getElementById('resume-record-btn').classList.add('hidden');
+                document.getElementById('recording-status').innerHTML = '<span class="recording-dot"></span> Recording...';
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && (mediaRecorder.state === 'recording' || mediaRecorder.state === 'paused')) {
+                mediaRecorder.stop();
+                document.getElementById('recording-status').innerHTML = 'Processing...';
+                // The onstop event will handle the rest
+            }
+        }
+
+        async function handleStopRecording() {
+            audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            // Stop all media tracks to turn off the mic indicator
+            if (mediaRecorder.stream) {
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+            }
+            resetRecordingState();
+            showToast('Recording stopped. Analyzing...', 'info');
+
+            // --- AI Analysis ---
+            const resultsDiv = document.getElementById('reading-assessment-results');
+            resultsDiv.classList.remove('hidden');
+            resultsDiv.innerHTML = `<p class="font-medium text-gray-800 mb-1">Analyzing audio...</p><p>This may take a moment. The AI is calculating reading speed and accuracy.</p>`;
+
+            try {
+                // 1. Get base64 audio data
+                const base64Audio = await blobToBase64(audioBlob);
+                
+                // 2. Prepare API call
+                const passageText = document.getElementById('reading-passage').textContent;
+                const prompt = READING_ANALYSIS_PROMPT(passageText);
+                const audioFileData = {
+                    mimeType: audioBlob.type,
+                    data: base64Audio
+                };
+
+                // 3. Call Gemini API
+                const analysisResult = await callGeminiAPI(prompt, audioFileData);
+
+                // 4. Display results
+                resultsDiv.innerHTML = renderMarkdown(analysisResult);
+                showToast('Reading analysis complete!', 'success');
+
+            } catch (error) {
+                console.error("Error during reading analysis:", error);
+                resultsDiv.innerHTML = `<p class="font-medium text-red-600 mb-1">Analysis Failed</p><p>Could not analyze the audio. Please try again. (${error.message})</p>`;
+                showToast('Analysis failed.', 'error');
+            }
+        }
+
+
+        // --- Comprehension Assessment ---
+        async function startComprehensionAssessment() {
+            const submitBtn = document.getElementById('start-comprehension-btn');
+            const resultsDiv = document.getElementById('comprehension-assessment-results');
+            const givenPassage = document.getElementById('comprehension-given-passage').textContent;
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<ion-icon name="sync-outline" class="text-xl animate-spin"></ion-icon> Analyzing...`;
+            resultsDiv.classList.remove('hidden');
+            resultsDiv.innerHTML = `<p class="font-medium text-gray-800 mb-1">Analyzing response...</p><p>This may take a moment. The AI is evaluating comprehension and structure.</p>`;
+
+            let comprehensionReport = "";
+            let dyslexiaReport = "";
+            let combinedReport = "";
+
+            try {
+                if (currentComprehensionMode === 'write') {
+                    // --- Text-based analysis ---
+                    const studentResponse = document.getElementById('comprehension-written-response').value;
+                    const prompt = COMPREHENSION_ANALYSIS_PROMPT(givenPassage, studentResponse);
+                    
+                    comprehensionReport = await callGeminiAPI(prompt, null);
+                    combinedReport = comprehensionReport;
+
+                } else {
+                    // --- Image-based analysis ---
+                    if (!selectedComprehensionFile) {
+                        throw new Error("No image file selected.");
+                    }
+                    
+                    const { mimeType, data: base64Image } = await fileToMimeAndData(selectedComprehensionFile);
+                    const imageFileData = { mimeType, data: base64Image };
+                    
+                    // 1. Call Gemini for Comprehension
+                    const comprehensionPrompt = COMPREHENSION_IMAGE_ANALYSIS_PROMPT(givenPassage);
+                    comprehensionReport = await callGeminiAPI(comprehensionPrompt, imageFileData);
+                    combinedReport = comprehensionReport;
+
+                    // 2. Check for Dyslexia Analysis
+                    const dyslexiaCheck = document.getElementById('dyslexia-check');
+                    if (dyslexiaCheck && dyslexiaCheck.checked) {
+                        resultsDiv.innerHTML += `<p class="font-medium text-gray-800 mt-4 mb-1">Analyzing handwriting for dyslexic traits...</p>`;
+                        
+                        try {
+                            dyslexiaReport = await callHuggingFaceAPI(base64Image);
+                            combinedReport += `
+<hr style="margin: 1rem 0; border-color: var(--border-color);">
+<h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem;">Handwriting Analysis (Beta)</h3>
+${dyslexiaReport}
+<p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;"><i>Note: This analysis is experimental and not a medical diagnosis. Consult a specialist for a formal assessment.</i></p>
+`;
+                        } catch (hfError) {
+                            console.error("Hugging Face API Error:", hfError);
+                            dyslexiaReport = `<p style="color: var(--text-secondary);">Handwriting analysis failed: ${hfError.message}</p>`;
+                            combinedReport += `
+<hr style="margin: 1rem 0; border-color: var(--border-color);">
+<h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem;">Handwriting Analysis (Beta)</h3>
+${dyslexiaReport}
+`;
+                        }
+                    }
+                }
+                
+                // 4. Display final combined report
+                resultsDiv.innerHTML = renderMarkdown(combinedReport);
+                showToast('Comprehension analysis complete!', 'success');
+
+            } catch (error) {
+                console.error("Error during comprehension analysis:", error);
+                resultsDiv.innerHTML = `<p class="font-medium text-red-600 mb-1">Analysis Failed</p><p>Could not analyze the response. Please try again. (${error.message})</p>`;
+                showToast('Analysis failed.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<ion-icon name="play-circle-outline" class="text-xl"></ion-icon> Submit Response for Assessment`;
+                validateComprehensionInput(); // Re-validate to set button state
+            }
+        }
+
+
+        // --- AI API Callers ---
+        const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key="; // Key is empty
+        const API_KEY = ""; // Kept empty as per instructions
+
+        async function callGeminiAPI(prompt, fileData) {
+            console.log("Calling Gemini API...");
+            const apiUrl = `${GEMINI_API_URL}${API_KEY}`;
+            
+            let parts = [{ text: prompt }];
+            if (fileData && fileData.data) {
+                parts.push({
+                    inlineData: {
+                        mimeType: fileData.mimeType,
+                        data: fileData.data
+                    }
+                });
+            }
+
+            const payload = {
+                contents: [{ role: "user", parts: parts }]
+            };
+
+            // Exponential backoff
+            let response;
+            let delay = 1000;
+            for (let i = 0; i < 5; i++) {
+                try {
+                    response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.ok) {
+                        break; // Success
+                    }
+                    if (response.status === 429) { // Throttling
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        delay *= 2;
+                        continue;
+                    }
+                    // Other non-retriable error
+                    throw new Error(`API Error: ${response.status} ${response.statusText}`);
+
+                } catch (error) {
+                    if (i === 4) { // Last retry failed
+                        throw error;
+                    }
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2;
+                }
+            }
+
+            if (!response || !response.ok) {
+                throw new Error(`API request failed after retries: ${response.status} ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            
+            if (result.candidates && result.candidates.length > 0 &&
+                result.candidates[0].content && result.candidates[0].content.parts &&
+                result.candidates[0].content.parts.length > 0 &&
+                result.candidates[0].content.parts[0].text) {
+                
+                return result.candidates[0].content.parts[0].text;
+            } else {
+                console.error("Invalid response structure from Gemini:", result);
+                if(result.promptFeedback) {
+                    throw new Error(`API call blocked. Reason: ${result.promptFeedback.blockReason}`);
+                }
+                throw new Error("Invalid response structure from Gemini API.");
+            }
+        }
+        
+        async function callHuggingFaceAPI(base64ImageData) {
+            console.log("Calling Hugging Face API for dyslexia check...");
+            
+            // The HF API expects the image data in a specific data URL format
+            const dataUrl = `data:image/jpeg;base64,${base64ImageData}`;
+
+            const payload = {
+                data: [dataUrl]
+            };
+
+            // Exponential backoff
+            let response;
+            let delay = 1000;
+            for (let i = 0; i < 5; i++) {
+                try {
+                    response = await fetch(HUGGINGFACE_API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.ok) {
+                        break; // Success
+                    }
+                    // Note: HF Spaces might not return 429, they might just fail or time out
+                    // We'll retry on any non-OK status for this example
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2;
+
+                } catch (error) {
+                    if (i === 4) throw error;
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2;
+                }
+            }
+            
+            if (!response || !response.ok) {
+                throw new Error(`Hugging Face API request failed after retries. Status: ${response?.status}`);
+            }
+
+            const result = await response.json();
+
+            if (result && result.data && result.data.length > 0) {
+                const analysis = result.data[0];
+                // Assuming the API returns a 'label' (e.g., "Healthy", "Dyslexic") 
+                // and a 'confidences' array
+                if (analysis.label && analysis.confidences) {
+                    const confidenceScore = analysis.confidences.find(c => c.label === analysis.label)?.confidence;
+                    let reportText = `**Finding:** The handwriting shows traits associated with **${analysis.label}**.`;
+                    if(confidenceScore) {
+                         reportText += ` (Confidence: ${Math.round(confidenceScore * 100)}%)`;
+                    }
+                    return reportText;
+                } else if (typeof analysis === 'string') {
+                    // Sometimes HF endpoints just return a string
+                    return analysis;
+                }
+                 else {
+                    // Fallback if structure is unknown
+                    return `Analysis complete. Result: ${JSON.stringify(analysis)}`;
+                }
+            } else {
+                throw new Error("Invalid response structure from Hugging Face API.");
+            }
+        }
+
+
+        // --- Other Page Handlers ---
+        function handleLogout() {
+            document.getElementById('logout-modal').classList.add('hidden');
+            showToast('Logged out successfully!', 'success');
+            // In a real app, you'd redirect or clear session data here.
+            // For this demo, we'll just go back to the home page.
+            navigateTo('page-home');
+        }
+
+        function handleGenerateReport() {
+            const reportTypeSelect = document.getElementById('report-type');
+            const reportRangeSelect = document.getElementById('report-range');
+
+            if (!reportTypeSelect || !reportRangeSelect) {
+                showToast('Error: Report elements not found.', 'error');
+                return;
+            }
+
+            const reportType = reportTypeSelect.value;
+            const reportRange = reportRangeSelect.value;
+            
+            const modal = document.getElementById('report-modal');
+            const title = document.getElementById('report-modal-title');
+            const content = document.getElementById('report-content');
+            
+            title.textContent = `${reportType} (${reportRange})`;
+            content.innerHTML = `
+                <p class="font-semibold text-gray-900 mb-2">AI-Generated Summary for Akash (${reportRange}):</p>
+                <p class="mb-2">This is a simulated report for the "${reportType}".</p>
+                <p class="mb-2"><strong>Overall Performance:</strong> Excellent</p>
+                <p class="mb-2">Akash has shown significant improvement, particularly in Reading Fluency, which increased by 12% over this period. Comprehension remains strong at 85%.</p>
+                <ul class="list-disc list-inside mb-2">
+                    <li><strong>Words Per Minute:</strong> 88 WPM (Up from 82 WPM)</li>
+                    <li><strong>Accuracy:</strong> 95% (Stable)</li>
+                    <li><strong>Areas to Focus:</strong> Continue practice with multi-syllabic words.</li>
+                </ul>
+                <p>Keep up the great work!</p>
+            `;
+            modal.classList.remove('hidden');
+        }
+        
+        function handleReportDownload(type, range) {
+            if (type !== 'Weekly Summary') {
+                showToast('Only "Weekly Summary" download is enabled for this demo.', 'error');
+                return;
+            }
+            showToast(`Downloading "Weekly Summary (${range})..."`, 'success');
+            // In a real app, this would trigger a file download.
+        }
+
+        function handleFindPassages() {
+            const modal = document.getElementById('report-modal');
+            const title = document.getElementById('report-modal-title');
+            const content = document.getElementById('report-content');
+            
+            title.textContent = `AI-Generated Passages`;
+            content.innerHTML = `
+                <p class="font-semibold text-gray-900 mb-2">Recommended Reading Passages:</p>
+                <p class="mb-3">Here are two passages with complex sentences, as requested:</p>
+                
+                <div class="p-3 bg-gray-100 rounded-lg border mb-3">
+                    <h4 class="font-semibold text-gray-800">Passage 1: The Mountain</h4>
+                    <p>The ancient mountain, which had stood for millennia, cast a long shadow over the valley, where villagers had built their homes from the very stone that crumbled from its peaks.</p>
+                </div>
+                <div class="p-3 bg-gray-100 rounded-lg border">
+                    <h4 class="font-semibold text-gray-800">Passage 2: The Inventor</h4>
+                    <p>Elara, an inventor known for her peculiar gadgets, worked tirelessly in her workshop, determined to finish the mechanical bird before the annual fair commenced.</p>
+                </div>
+            `;
+            modal.classList.remove('hidden');
+        }
+
         function handleViewTips() {
-            document.getElementById('tips-modal-content').innerHTML = comprehensionTips;
-            document.getElementById('recommended-tips-modal').classList.remove('hidden');
+            const modal = document.getElementById('recommended-tips-modal');
+            const content = document.getElementById('tips-modal-content');
+            content.innerHTML = comprehensionTips; // Assuming comprehensionTips is defined
+            modal.classList.remove('hidden');
         }
 
-        async function handleFindPassages() {
-            // 1. Prepare UI for loading
-            const reportModalTitle = document.getElementById('report-modal-title');
-            reportModalTitle.textContent = "Generating Practice Passage";
-            reportContent.innerHTML = `
-                <div class="flex flex-col items-center justify-center p-12 text-center text-gray-600">
-                    <ion-icon name="document-text-outline" class="text-4xl text-accent animate-pulse mb-3"></ion-icon>
-                    <p class="font-semibold text-lg text-gray-900">Generating Practice Passage...</p>
-                    <p class="text-sm">Please wait while the AI crafts a suitable reading text for complex sentences.</p>
-                </div>
-            `;
-            document.getElementById('report-modal').classList.remove('hidden');
-            showToast("Generating complex sentences practice...", 'info'); 
-            
-            // 2. Call Gemini API for passage
-            await callGeminiAPI(null, 'passage');
-        }
+        function handleGenerateContent() {
+            const btn = document.getElementById('generate-content-btn');
+            const contentType = document.getElementById('content-type-selector').value;
+            const prompt = document.getElementById('generator-prompt').value;
+            const resultsDiv = document.getElementById('generated-content-results');
+            const initialMsg = document.getElementById('initial-message');
 
-
-        // --- Report Generation ---
-        const reportModal = document.getElementById('report-modal'); 
-        const reportContent = document.getElementById('report-content'); 
-        function handleGenerateReport() { 
-            // 1. Set loading state in modal
-            const reportModalTitle = document.getElementById('report-modal-title');
-            reportModalTitle.textContent = "AI-Generated Progress Report";
-
-            reportContent.innerHTML = `
-                <div class="flex flex-col items-center justify-center p-12 text-center text-gray-600">
-                    <ion-icon name="document-text-outline" class="text-4xl text-accent animate-pulse mb-3"></ion-icon>
-                    <p class="font-semibold text-lg text-gray-900">Generating Report...</p>
-                    <p class="text-sm">Please wait while the AI compiles Akash's data.</p>
-                </div>
-            `;
-            // 2. Show Modal and Toast
-            reportModal.classList.remove('hidden');
-            showToast("Generating comprehensive progress report..."); 
-            // 3. Call API
-            callGeminiAPI(null, 'report'); 
-        }
-        
-        // --- Content Generator Functions ---
-        
-        async function handleGenerateContent() {
-            const userPromptEl = document.getElementById('generator-prompt');
-            const contentTypeEl = document.getElementById('content-type-selector');
-            const generateBtn = document.getElementById('generate-content-btn');
-        
-            const userPrompt = userPromptEl?.value.trim();
-            const contentType = contentTypeEl?.value;
-        
-            if (!userPrompt || userPrompt.length < 10) {
-                showToast("Please enter a longer, more detailed prompt (min 10 characters).", "error");
+            if (prompt.length < 10) {
+                showToast('Please enter a topic or prompt (at least 10 characters).', 'error');
                 return;
             }
-        
-            // Hide initial message
-            document.getElementById('initial-message')?.classList.add('hidden');
+            
+            // --- UI Updates ---
+            btn.disabled = true;
+            btn.innerHTML = `<ion-icon name="sync-outline" class="text-xl animate-spin"></ion-icon> Generating...`;
+            initialMsg.classList.add('hidden');
+            resultsDiv.classList.remove('hidden');
+            resultsDiv.innerHTML = `<div class="p-6 bg-white rounded-xl shadow-md text-gray-600"><p class="font-medium text-gray-800 mb-1">Generating ${contentType} for "${prompt}"...</p><p>This may take a moment. The AI is crafting the content.</p></div>`;
 
-            // Set loading state
-            generateBtn.disabled = true;
-            generateBtn.classList.add('bg-gray-500', 'cursor-wait', 'animate-pulse');
-            generateBtn.classList.remove('bg-accent', 'hover:bg-accent-dark');
-            generateBtn.innerHTML = '<ion-icon name="sync-outline" class="text-xl animate-spin"></ion-icon> Generating...';
+            // --- AI Call ---
+            // We create a specific prompt for the Gemini API
+            const generatorSystemPrompt = `You are an AI curriculum helper for a parent. You need to generate a specific type of learning material for their child, Akash.
+The parent has requested:
+- Content Type: ${contentType}
+- Topic/Prompt: ${prompt}
+
+Generate a short, clear, and encouraging piece of content based *only* on this request. Use simple Markdown for formatting (headings, lists, bold).
+Address the parent directly, e.g., "Here is the ${contentType} for Akash."`;
             
-            // Show loading in results area
-            displayGeneratedContent('loading', contentType);
-            
-            showToast(`Generating ${contentType.toLowerCase()}...`, 'info');
-            
-            // Call API with specific prompt and type
-            const combinedPrompt = `${CONTENT_GENERATOR_PROMPT}\n\n**USER REQUEST:**\nContent Type: ${contentType}\nTopic/Query: ${userPrompt}`;
-            
-            await callGeminiAPI(combinedPrompt, 'generate-content');
+            callGeminiAPI(generatorSystemPrompt, null)
+                .then(aiResponse => {
+                    resultsDiv.innerHTML = `
+                        <div class="p-6 bg-white rounded-xl shadow-md">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-3">${contentType} (AI-Generated)</h3>
+                            ${renderMarkdown(aiResponse)}
+                        </div>`;
+                    showToast('Content generated successfully!', 'success');
+                })
+                .catch(error => {
+                    console.error("Error generating content:", error);
+                    resultsDiv.innerHTML = `
+                        <div class="p-6 bg-white rounded-xl shadow-md">
+                            <h3 class="text-lg font-semibold text-red-600 mb-3">Error Generating Content</h3>
+                            <p class="text-gray-700">Sorry, there was an error: ${error.message}. Please try again.</p>
+                        </div>`;
+                    showToast('Error generating content.', 'error');
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = `<ion-icon name="sparkles-outline" class="text-xl"></ion-icon> Generate Content`;
+                });
         }
         
-        function displayGeneratedContent(content, contentType = 'AI Content') {
-            const resultsArea = document.getElementById('generated-content-results');
-            const generateBtn = document.getElementById('generate-content-btn');
-            
-            if (!resultsArea || !generateBtn) return;
-            
-            resultsArea.classList.remove('bg-red-100', 'border-red-500', 'text-red-700', 'p-4', 'bg-gray-50', 'rounded-lg', 'border'); // Clean previous styles
-            resultsArea.classList.add('bg-white', 'p-6', 'rounded-xl', 'shadow-md');
-
-            if (content === 'loading') {
-                resultsArea.innerHTML = `
-                    <div class="flex flex-col items-center justify-center p-8 text-center text-gray-600">
-                        <ion-icon name="cube-outline" class="text-4xl text-accent animate-spin mb-3"></ion-icon>
-                        <p class="font-semibold text-lg text-gray-900">Crafting your ${contentType}...</p>
-                        <p class="text-sm">This may take a few moments. Hang tight!</p>
-                    </div>
-                `;
-                resultsArea.classList.remove('hidden');
-                return;
-            }
-
-            // Reset button state
-            generateBtn.disabled = false;
-            generateBtn.classList.remove('bg-gray-500', 'cursor-wait', 'animate-pulse');
-            generateBtn.classList.add('bg-accent', 'hover:bg-accent-dark');
-            generateBtn.innerHTML = '<ion-icon name="sparkles-outline" class="text-xl"></ion-icon> Generate Content';
-
-            if (content.error) {
-                resultsArea.classList.remove('bg-white', 'p-6', 'rounded-xl', 'shadow-md');
-                resultsArea.classList.add('bg-red-100', 'border-l-4', 'border-red-500', 'text-red-700', 'p-4');
-                resultsArea.innerHTML = `
-                    <p class="font-bold">Error Generating Content</p>
-                    <p class="text-sm">${content.message}</p>
-                `;
-            } else {
-                resultsArea.innerHTML = `<h2 class="text-xl font-bold mb-4">Your Generated ${contentType}</h2>` + simpleMarkdownToHtml(content);
-            }
-            resultsArea.classList.remove('hidden');
-        }
-        
-        // --- Markdown to HTML Helper (Used by Reports and Content Generator) ---
-        function simpleMarkdownToHtml(text) { 
-            let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                         .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                         .replace(/^# (.*$)/gm, '<h1 class="text-xl font-bold mb-2">$1</h1>')
-                         .replace(/^## (.*$)/gm, '<h2 class="text-lg font-semibold mb-2">$1</h2>')
-                         .replace(/^### (.*$)/gm, '<h3 class="text-md font-semibold mb-1">$1</h3>')
-                         .replace(/^[-*] (.*$)/gm, '<li class="ml-4 list-disc">$1</li>');
-        
-            // Handle list grouping
-            html = html.replace(/<\/li>\s*<li/gs, '</li><li');
-            html = html.replace(/(?<!<\/ul>)\n*<ul>/g, '<ul>');
-            html = html.replace(/<\/li>\s*<h/g, '</li></ul><h'); // End list before new heading
-            
-            // Simple paragraph wrapping
-            html = html.split('\n\n').map(p => {
-                p = p.trim();
-                if (!p) return '';
-                // Check if it's already a block tag (heading, list, div)
-                if (p.startsWith('<h') || p.startsWith('<ul') || p.startsWith('<div')) return p.replace(/\n/g, '<br>');
-                return `<p>${p.replace(/\n/g, '<br>')}</p>`;
-            }).join('');
-            
-            html = html.replace(/<ul>\s*<ul>/g, '<ul>'); // Fix extra list tags
-            html = html.replace(/<\/ul>\s*<\/ul>/g, '</ul>');
-            html = html.replace(/<p>\s*<\/p>/g, ''); // Remove empty paragraphs
-            return html; 
-        }
-
-
-        // --- GEMINI API (UPDATED for 'generate-content') ---
-        async function exponentialBackoff(fetchFn, maxRetries = 5, baseDelay = 1000) { 
-            let attempt = 0; 
-            while (attempt < maxRetries) { 
-                try { 
-                    const response = await fetchFn(); 
-                    if (response.ok) { return await response.json(); } 
-                    if (response.status >= 400 && response.status < 500) { 
-                        console.error("Client error:", response.status); 
-                        try { 
-                            const errorData = await response.json(); 
-                            return { error: true, message: errorData.error?.message || "API error" }; 
-                        } catch (e) { 
-                            return { error: true, message: `API error: ${response.statusText}` }; 
-                        } 
-                    } 
-                } catch (error) { 
-                    console.error(`Attempt ${attempt + 1} network error:`, error); 
-                } 
-                attempt++; 
-                if (attempt >= maxRetries) { 
-                    console.error("Max retries."); 
-                    return { error: true, message: "Max retries reached." }; 
-                } 
-                const delay = baseDelay * Math.pow(2, attempt - 1) + (Math.random() * 1000); 
-                await new Promise(resolve => setTimeout(resolve, delay)); 
-            } 
-            return { error: true, message: "Max retries after network errors." }; 
-        }
-        
-        async function callGeminiAPI(userInput, mode) { 
-            const apiKey = ""; // Left empty as per instructions
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`; 
-            let payload; 
-            let promptToSend;
-            
-            if (mode === 'chat') { 
-                if(userInput) chatHistory.push({ role: "user", parts: [{ text: userInput }] }); 
-                const historyToSend = chatHistory.filter(msg => msg.role !== 'system'); 
-                payload = { contents: historyToSend, systemInstruction: { parts: [{ text: CHAT_SYSTEM_PROMPT }] } }; 
-            } else if (mode === 'report') { 
-                const reportType = document.getElementById('report-type')?.value || 'Weekly Summary'; 
-                const reportRange = document.getElementById('report-range')?.value || 'Last 7 Days'; 
-                promptToSend = `${REPORT_PROMPT}\nPlease generate a "${reportType}" for the "${reportRange}". Tailor insights. Use Markdown.`; 
-                payload = { contents: [{ parts: [{ text: promptToSend }] }] }; 
-            } else if (mode === 'passage') {
-                promptToSend = PASSAGE_PROMPT;
-                payload = { contents: [{ parts: [{ text: promptToSend }] }] };
-            } else if (mode === 'generate-content') { // NEW MODE
-                promptToSend = userInput; // User input here is the combined system + user prompt
-                payload = { contents: [{ parts: [{ text: promptToSend }] }] };
-            }
-            
-            const fetchFn = () => fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); 
-            try { 
-                const result = await exponentialBackoff(fetchFn); 
-                if (!result || result.error) throw new Error(result?.message || "API call failed."); 
-                const candidate = result.candidates?.[0]; 
-                const text = candidate?.content?.parts?.[0]?.text; 
-                
-                if (!text) { 
-                    const safety = candidate?.safetyRatings; 
-                    const reason = candidate?.finishReason; 
-                    if (reason === "SAFETY" || reason === "RECITATION" || (safety && safety.some(r => r.block))) throw new Error("Blocked: safety/policy."); 
-                    else if (reason) throw new Error(`API finished: ${reason}`); 
-                    else if (!candidate?.content) throw new Error("Blocked or invalid (no content)."); 
-                    else throw new Error("Invalid response (no text)."); 
-                } 
-                
-                if (mode === 'chat') { 
-                    chatHistory.push({ role: "model", parts: [{ text: text }] }); 
-                    const thinkBubble = document.getElementById('thinking-bubble'); 
-                    if (thinkBubble) { 
-                        thinkBubble.textContent = text; 
-                        thinkBubble.classList.remove('thinking'); 
-                        thinkBubble.id = ''; 
-                    } else addChatMessage(text, 'ai'); 
-                } else if (mode === 'report') { 
-                    showToast("Report Generated!", "success"); 
-                    reportContent.innerHTML = simpleMarkdownToHtml(text); 
-                    reportModal.classList.remove('hidden'); 
-                } else if (mode === 'passage') {
-                    showToast("Passage Generated!", "success");
-                    // Format the passage text for display
-                    reportContent.innerHTML = `
-                        <h4 class="text-lg font-bold text-gray-900 mb-2">Generated Practice Passage:</h4>
-                        <p class="text-xs text-gray-500 mb-4">Focus on complex words and comprehension when reading this text.</p>
-                        <div class="bg-white p-4 rounded-lg border border-accent/30 shadow-inner">
-                            <p class="text-base text-gray-800 whitespace-pre-wrap">${text}</p>
-                        </div>
-                    `;
-                    reportModal.classList.remove('hidden');
-                } else if (mode === 'generate-content') { // NEW: Handle Content Generation result
-                    const contentTypeEl = document.getElementById('content-type-selector');
-                    const contentType = contentTypeEl?.value || 'AI Content';
-                    showToast("Content Generated!", "success");
-                    displayGeneratedContent(text, contentType);
-                }
-            } catch (error) { 
-                console.error("Gemini API Error:", error); 
-                const errorMsg = `Error: ${error.message || "Failed."}`; 
-                if (mode === 'chat') { 
-                    const thinkBubble = document.getElementById('thinking-bubble'); 
-                    if (thinkBubble) { 
-                        thinkBubble.textContent = `Sorry, error. ${errorMsg}`; 
-                        thinkBubble.classList.remove('thinking'); 
-                        thinkBubble.id = ''; 
-                    } else addChatMessage(`Sorry, error. ${errorMsg}`, 'ai'); 
-                    if (userInput) chatHistory.pop(); 
-                } else if (mode === 'report' || mode === 'passage') {
-                    // Update the modal with an error message on failure
-                    reportContent.innerHTML = `
-                        <div class="flex flex-col items-center justify-center p-12 text-center text-gray-600">
-                            <ion-icon name="warning-outline" class="text-4xl text-red-500 mb-3"></ion-icon>
-                            <p class="font-semibold text-lg text-gray-900">${mode === 'report' ? 'Report' : 'Passage'} Generation Failed</p>
-                            <p class="text-sm text-red-600">${errorMsg}</p>
-                            <p class="text-xs mt-2 text-gray-500">Please try again later.</p>
-                        </div>
-                    `;
-                    showToast(errorMsg, 'error');
-                } else if (mode === 'generate-content') { // NEW: Handle Content Generation Error
-                    const contentTypeEl = document.getElementById('content-type-selector');
-                    const contentType = contentTypeEl?.value || 'AI Content';
-                    displayGeneratedContent({ error: true, message: errorMsg }, contentType);
-                }
-            } 
-        }
-
-
-        // --- Theme Toggle ---
-        const themeToggle = document.getElementById('theme-toggle');
-        const applyTheme = (isDark) => {
-            if (isDark) { document.documentElement.classList.add('dark'); }
-            else { document.documentElement.classList.remove('dark'); }
-            // Re-render chart if visible to potentially update colors (e.g., border, axis text)
-            if (document.getElementById('page-progress')?.classList.contains('active')) {
-                renderSubjectChart();
-                renderSkillProgress(); // Re-render skill bars to apply new colors
-            }
-        };
-
-        themeToggle?.addEventListener('change', (e) => {
-            const isDark = e.target.checked;
-            applyTheme(isDark);
-            localStorage.setItem('soundslate-theme', isDark ? 'dark' : 'light');
-        });
-
-
-        // --- Chat Functions (needed for chat API usage) ---
+        // --- Chat Widget ---
+        let isChatOpen = false;
+        const chatWidget = document.getElementById('chat-widget');
+        const fabContainer = document.getElementById('fab-container');
         
         function toggleChat() {
-            document.getElementById('chat-widget').classList.toggle('hidden');
+            isChatOpen = !isChatOpen;
+            if (isChatOpen) {
+                chatWidget.classList.remove('hidden');
+                chatWidget.classList.add('flex');
+                // Hide FABs when chat is open
+                fabContainer.classList.add('hidden');
+            } else {
+                chatWidget.classList.add('hidden');
+                chatWidget.classList.remove('flex');
+                // Show FABs when chat is closed (if they were supposed to be visible)
+                if (document.getElementById('page-home').classList.contains('active')) {
+                     fabContainer.classList.remove('hidden');
+                }
+            }
         }
-        function addChatMessage(message, sender) {
-            const chatMessages = document.getElementById('chat-messages');
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('flex');
-            messageDiv.innerHTML = `<div class="chat-bubble ${sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-ai'}">${message}</div>`;
-            if (sender === 'user') messageDiv.classList.add('justify-end');
+        
+        document.getElementById('chat-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const chatInput = document.getElementById('chat-input');
+            const userMessage = chatInput.value.trim();
+            if (!userMessage) return;
+
+            addMessageToChat(userMessage, 'user');
+            chatInput.value = '';
             
-            if (sender === 'ai' && message === '...') {
-                messageDiv.querySelector('.chat-bubble').classList.add('thinking');
-                messageDiv.querySelector('.chat-bubble').id = 'thinking-bubble';
+            // Add thinking indicator
+            const thinkingId = 'thinking-' + Date.now();
+            addMessageToChat('Boo is thinking...', 'ai', thinkingId);
+
+            try {
+                // Construct a prompt for the chatbot
+                const prompt = `You are Boo, an AI assistant for a parent named ${currentUserName}. You are helping them understand their child's (Akash) reading and comprehension progress on the "SoundSlate" platform. Be helpful, concise, and encouraging.
+                
+                User question: "${userMessage}"`;
+
+                const aiResponse = await callGeminiAPI(prompt, null);
+                
+                // Update or replace thinking message
+                const thinkingBubble = document.getElementById(thinkingId);
+                if(thinkingBubble) {
+                    thinkingBubble.innerHTML = renderMarkdown(aiResponse); // Use renderMarkdown
+                    thinkingBubble.classList.remove('thinking');
+                } else {
+                    addMessageToChat(aiResponse, 'ai');
+                }
+
+            } catch (error) {
+                console.error("Error in chatbot:", error);
+                // Update or replace thinking message with an error
+                const thinkingBubble = document.getElementById(thinkingId);
+                const errorMessage = "Sorry, I'm having trouble connecting right now. Please try again in a moment.";
+                if(thinkingBubble) {
+                    thinkingBubble.textContent = errorMessage;
+                    thinkingBubble.classList.remove('thinking');
+                } else {
+                    addMessageToChat(errorMessage, 'ai');
+                }
+            }
+        });
+
+        function addMessageToChat(message, sender, id = null) {
+            const chatMessages = document.getElementById('chat-messages');
+            const wrapper = document.createElement('div');
+            wrapper.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start');
+            
+            const messageEl = document.createElement('div');
+            messageEl.classList.add('chat-bubble', `chat-bubble-${sender}`);
+            if(id) messageEl.id = id;
+            if(sender === 'ai' && message.includes('thinking')) messageEl.classList.add('thinking');
+            
+            // Use renderMarkdown for AI messages, but not for "thinking"
+            if (sender === 'ai' && !message.includes('thinking')) {
+                messageEl.innerHTML = renderMarkdown(message);
+            } else {
+                messageEl.textContent = message;
             }
             
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to bottom
+            wrapper.appendChild(messageEl);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
-        document.getElementById('chat-form')?.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const input = document.getElementById('chat-input');
-            const message = input.value.trim();
-            if (message === '') return;
-            
-            addChatMessage(message, 'user');
-            input.value = '';
-            
-            // Add thinking bubble before calling API
-            addChatMessage('...', 'ai');
-            
-            await callGeminiAPI(message, 'chat');
-        });
 
+        // --- Markdown Renderer ---
+        function renderMarkdown(text) {
+            if (!text) return '';
+            
+            // A simple pseudo-markdown renderer for the demo
+            // Note: This is NOT a full or secure markdown parser, just for this app's specific output.
+            
+            // Process headings (e.g., ### Heading)
+            let html = text.replace(/^### (.*$)/gim, '<h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem;">$1</h3>');
+            html = html.replace(/^## (.*$)/gim, '<h2 style="font-size: 1.25rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.75rem;">$1</h2>');
+            html = html.replace(/^# (.*$)/gim, '<h1 style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-bottom: 1rem;">$1</h1>');
 
-        // --- Initialization ---
+            // Process bold (**text**)
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong style="font-weight: 600; color: var(--text-primary);">$1</strong>');
+            
+            // Process lists (* item)
+            html = html.replace(/^\* (.*$)/gim, '<li style="margin-left: 1.5rem; list-style-type: disc; margin-bottom: 0.25rem;">$1</li>');
+            html = html.replace(/<\/li>\n<li/g, '</li><li'); // Fix newlines between list items
+            html = html.replace(/^(<li.*<\/li>)/gms, '<ul style="padding-left: 0.5rem; margin-bottom: 1rem;">$1</ul>'); // Wrap lists in <ul>
+            
+             // Process numbered lists (1. item)
+            html = html.replace(/^(\d+)\. (.*$)/gim, '<li style="margin-left: 1.5rem; list-style-type: decimal; margin-bottom: 0.25rem;" value="$1">$2</li>');
+            html = html.replace(/<\/li>\n<li/g, '</li><li'); // Fix newlines
+            html = html.replace(/^(<li.*<\/li>)/gms, '<ol style="padding-left: 0.5rem; margin-bottom: 1rem;">$1</ol>'); // Wrap lists in <ol>
+
+            // Process paragraphs (split by newlines)
+            html = html.split(/\n\n+/).map(paragraph => {
+                if (paragraph.startsWith('<ul') || paragraph.startsWith('<ol') || paragraph.startsWith('<h')) {
+                    return paragraph; // Don't wrap lists or headings in <p>
+                }
+                // Handle paragraphs that might just be newlines
+                const trimmedParagraph = paragraph.trim();
+                if (!trimmedParagraph) return '';
+                
+                // Replace single newlines within a paragraph with a space, not <br>
+                return `<p style="margin-bottom: 0.75rem; color: var(--text-secondary);">${trimmedParagraph.replace(/\n/g, ' ')}</p>`;
+            }).join('');
+            
+            // Clean up empty paragraphs
+            html = html.replace(/<p>\s*<\/p>/g, '');
+            // Fix paragraphs that were incorrectly joined
+            html = html.replace(/<\/p><p>/g, '</p>\n<p>');
+
+            return html;
+        }
+
+        // --- Init ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Apply saved theme or default to LIGHT (per user request)
-            const savedTheme = localStorage.getItem('soundslate-theme');
-            const isDark = savedTheme === 'dark'; 
-            
-            if (themeToggle) themeToggle.checked = isDark;
-            applyTheme(isDark); // Apply the theme immediately
-
-            // Set user names, avatars, etc. (unchanged)
+            // Set initial user name (example)
+            currentUserName = "Abhishek"; 
+            document.getElementById('welcome-banner').textContent = `Welcome back, ${currentUserName}!`;
+            document.getElementById('progress-welcome').textContent = `Hi ${currentUserName}!`;
             document.querySelectorAll('[id^="user-name-"]').forEach(el => el.textContent = `Hi, ${currentUserName}!`);
-            document.querySelectorAll('[id^="user-avatar-"]').forEach(el => el.textContent = currentUserName.charAt(0).toUpperCase());
-            const welcomeBanner = document.getElementById('welcome-banner');
-            if(welcomeBanner) welcomeBanner.textContent = `Welcome back, ${currentUserName}!`;
-            if(document.getElementById('progress-welcome')) document.getElementById('progress-welcome').textContent = `Hi ${currentUserName}!`;
+            document.querySelectorAll('[id^="user-avatar-"]').forEach(el => el.textContent = currentUserName.charAt(0));
 
-            // Initial render and navigation
-            renderSubjectChart(); // Render initially even if hidden
-            navigateTo('page-home'); // Set initial page
-            // We ensure renderSkillProgress is called inside navigateTo('page-progress') or applyTheme
+            // Set up theme toggle
+            const themeToggle = document.getElementById('theme-toggle');
+            if (localStorage.getItem('theme') === 'dark') {
+                document.documentElement.classList.add('dark');
+                themeToggle.checked = true;
+            } else {
+                document.documentElement.classList.remove('dark');
+                themeToggle.checked = false;
+            }
+            themeToggle.addEventListener('change', () => {
+                if (themeToggle.checked) {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                }
+                // Redraw chart if on progress page
+                if (document.getElementById('page-progress').classList.contains('active')) {
+                    renderSubjectChart();
+                }
+            });
 
-            // Initialize chat history (unchanged)
-            const initialGreeting = "Hi! I'm Boo. How can I help you understand Akash's reading and comprehension progress today?";
-            // Ensure chat history is reset on page load for consistent API calls
-            chatHistory = [{ role: "user", parts: [{ text: "Hello" }] }, { role: "model", parts: [{ text: initialGreeting }] }];
-            const aiBubble = document.querySelector('#chat-messages .chat-bubble-ai'); if(aiBubble) aiBubble.textContent = initialGreeting;
+            // Initial page setup
+            navigateTo('page-home');
+            
+            // Render charts/data for pages that need it
+            renderSkillProgress();
+            renderSubjectChart();
+            
+            // Show FABs on home page
+            fabContainer.classList.remove('hidden');
         });
+
+        // Handle notification dropdown
+        let isNotificationOpen = false;
+        function toggleNotificationDropdown(event) {
+            event.stopPropagation();
+            const modal = document.getElementById('notification-modal');
+            modal.classList.toggle('hidden');
+            isNotificationOpen = !modal.classList.contains('hidden');
+        }
+
+        // Close dropdowns if clicking outside
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('notification-modal');
+            if (!modal.classList.contains('hidden') && !modal.firstElementChild.contains(e.target)) {
+                 // Check if the click was outside the modal's content
+                modal.classList.add('hidden');
+                isNotificationOpen = false;
+            }
+        });
+
     </script>
 </body>
 </html>
+
+
