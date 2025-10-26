@@ -23,9 +23,9 @@
             theme: {
                 extend: {
                     colors: {
-                        'accent': '#38BDF8',       // sky-400
-                        'accent-dark': '#0EA5E9',   // sky-500
-                        'bg-light': '#F9FAFB',     // gray-50
+                        'accent': '#38BDF8', // sky-400
+                        'accent-dark': '#0EA5E9', // sky-500
+                        'bg-light': '#F9FAFB', // gray-50
                         // Dark mode colors (defined via CSS variables below for easier JS toggle)
                     }
                 }
@@ -99,13 +99,13 @@
         .dark .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2); } /* Darker shadow */
         .hover\:bg-gray-100:hover { background-color: var(--bg-tertiary); }
         .hover\:text-gray-900:hover { color: var(--text-primary); }
-        input, select { background-color: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-color); }
-        input::placeholder { color: var(--text-muted); }
+        input, select, textarea { background-color: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-color); }
+        input::placeholder, textarea::placeholder { color: var(--text-muted); }
 
         /* DARK MODE FIX: Ensure select options are legible in the reports dropdowns */
         .dark select option {
             background-color: var(--bg-secondary); /* Dark background for dropdown options */
-            color: var(--text-primary);            /* Light text for dropdown options */
+            color: var(--text-primary);           /* Light text for dropdown options */
         }
         
         /* Icon specific hover styles */
@@ -134,7 +134,7 @@
 
         /* Starry backgrounds remain the same */
         .bg-starry-gradient { background-image: linear-gradient(to right, #2c3e50, #000000); }
-        .bg-starry-night { background-image: url('https://images.unsplash.com/photo-1502134249126-9f3755a50d78?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); background-size: cover; background-position: center; }
+        .bg-starry-night { background-image: url('https://images.unsplash.com/photo-1502134249126-9f3755a50d78?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8fHx8fA%3D%3D'); background-size: cover; background-position: center; }
 
         /* Nav links */
         .nav-link.active { @apply bg-starry-night text-white rounded-lg shadow-md; background-size: cover; background-position: center; text-shadow: 0 0 6px rgba(255, 255, 255, 0.7); }
@@ -144,25 +144,11 @@
 
         /* Logo styles */
         .logo-container { display: flex; align-items: center; gap: 0.5rem; }
-        .logo-image { height: 1.5rem; width: auto; display: inline-block; vertical-align: middle; }
-        .logo-image-fallback { 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            height: 1.5rem; 
-            width: 1.25rem; /* Reduced width for sleeker rectangle/pill shape */
-            background-color: var(--accent); 
-            color: white; 
-            font-weight: 900; /* Bolder font weight for S */
-            border-radius: 0.25rem; /* Small radius */
-            font-size: 1rem; 
-            line-height: 1.5rem; 
-            vertical-align: middle; 
-            /* Added transform to simulate a compressed rectangle feel */
-            transform: scaleX(0.85);
-            margin-right: 0.25rem; /* Adjust spacing after transformation */
-        }
-        .soundslate-logo-text { display: inline-block; font-size: 1.5rem; line-height: 2rem; font-weight: 700; color: var(--accent); vertical-align: middle; }
+        /* Increased font weight for the S to be 'sleeky skype bold' */
+        .soundslate-logo-text { display: inline-block; font-size: 1.5rem; line-height: 2rem; font-weight: 800; color: var(--accent); vertical-align: middle; }
+        /* Style for active mode button */
+        .toggle-button.active { @apply bg-accent text-white shadow-md; }
+        .toggle-button.inactive { background-color: var(--bg-muted); color: var(--text-secondary); }
 
         /* File Input & Recording */
         .file-input-button { @apply inline-flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium bg-white hover:bg-gray-50 cursor-pointer; color: var(--text-secondary); background-color: var(--bg-secondary); border-color: var(--border-color); }
@@ -183,15 +169,56 @@
         /* Report Modal Wrapping */
         #report-content { white-space: normal; word-wrap: break-word; overflow-wrap: break-word; }
         #report-content p, #report-content li, #report-content strong, #report-content em { white-space: normal; word-wrap: break-word; overflow-wrap: break-word; }
+        /* Markdown generated content styles */
+        #generated-content-results h1, #generated-content-results h2, #generated-content-results h3 { color: var(--text-primary); margin-bottom: 0.5rem; font-weight: 600; }
+        #generated-content-results p { color: var(--text-secondary); margin-bottom: 1rem; }
+        #generated-content-results ul { list-style-type: disc; margin-left: 1.5rem; margin-bottom: 1rem; color: var(--text-secondary); }
+        #generated-content-results li { margin-bottom: 0.5rem; }
+
 
         /* Theme Toggle Switch */
         .theme-switch-wrapper { @apply flex items-center; }
-        .theme-switch { @apply relative inline-block w-10 h-6 cursor-pointer; }
+        .theme-switch { @apply relative inline-block w-12 h-6 cursor-pointer; } /* Increased width to 12 */
         .theme-switch input { @apply opacity-0 w-0 h-0; }
-        .slider { @apply absolute top-0 left-0 right-0 bottom-0 rounded-full transition duration-300; background-color: var(--bg-muted); }
-        .slider:before { @apply absolute content-[''] h-4 w-4 left-1 bottom-1 rounded-full transition duration-300; background-color: white; }
-        input:checked + .slider { background-color: var(--accent); }
-        input:checked + .slider:before { @apply transform translate-x-4; }
+        .slider { 
+            @apply absolute top-0 left-0 right-0 bottom-0 rounded-full transition duration-300; 
+            background-color: var(--bg-muted); 
+            box-shadow: inset 0 0 4px rgba(0,0,0,0.2);
+        }
+        .slider:before { 
+            @apply absolute content-[''] h-4 w-4 left-1 bottom-1 rounded-full transition duration-300; 
+            background-color: white; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+        }
+        /* Style for the sun icon */
+        .slider ion-icon.sun {
+            @apply absolute text-yellow-500 w-4 h-4;
+            top: 5px;
+            right: 4px;
+            transition: opacity 0.2s;
+        }
+         /* Style for the moon icon */
+        .slider ion-icon.moon {
+            @apply absolute text-sky-200 w-4 h-4;
+            top: 5px;
+            left: 4px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        /* CHECKED STATE */
+        input:checked + .slider { 
+            background-color: var(--accent); 
+        }
+        input:checked + .slider:before { 
+            @apply transform translate-x-6; /* Pushed further right */
+        }
+        input:checked + .slider ion-icon.sun {
+            opacity: 0;
+        }
+        input:checked + .slider ion-icon.moon {
+            opacity: 1;
+        }
 
     </style>
 </head>
@@ -205,16 +232,15 @@
                     <!-- Logo and Nav -->
                     <div class="flex items-center space-x-4">
                         <div class="logo-container">
-                            <!-- Placeholder image URL updated to use placehold.co for reliability -->
-                            <img src="https://placehold.co/100x40/38BDF8/FFFFFF?text=S&font=inter" alt="SoundSlate Logo" class="logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex'">
-                            <!-- The updated logo style is applied via the .logo-image-fallback CSS class -->
-                            <div class="logo-image-fallback" style="display: none;">S</div>
+                            <!-- Logo for SoundSlate: Sleek 'S' in a rounded box -->
+                            <div class="w-6 h-6 rounded-md flex items-center justify-center font-black text-white" style="background-color: var(--accent); font-size: 1.25rem; line-height: 1;">S</div>
                             <div class="soundslate-logo-text">SOUNDSLATE</div>
                         </div>
                         <nav class="hidden md:flex space-x-2">
                             <a href="#" onclick="navigateTo('page-home')" data-page="page-home" class="nav-link active flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="home-outline" class="text-xl"></ion-icon> Home </a>
                             <a href="#" onclick="navigateTo('page-progress')" data-page="page-progress" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="stats-chart-outline" class="text-xl"></ion-icon> Progress </a>
                             <a href="#" onclick="navigateTo('page-insights')" data-page="page-insights" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="bulb-outline" class="text-xl"></ion-icon> Insights </a>
+                            <a href="#" onclick="navigateTo('page-generator')" data-page="page-generator" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="sparkles-outline" class="text-xl"></ion-icon> AI Content </a>
                             <a href="#" onclick="navigateTo('page-reports')" data-page="page-reports" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="document-text-outline" class="text-xl"></ion-icon> Reports </a>
                             <a href="#" onclick="navigateTo('page-assessment')" data-page="page-assessment" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="play-outline" class="text-xl"></ion-icon> Assessment </a>
                         </nav>
@@ -255,7 +281,7 @@
                 </div>
 
                 <!-- Stat Cards -->
-                <h2 class="text-2xl font-semibold text-gray-900 mb-4">Your Child's Progress Overview</h2>
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4">Your Child's Progress Overview </h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                     <!-- Cards remain here -->
                     <div class="bg-white p-6 rounded-xl shadow-md flex items-center space-x-4"> <div class="p-3 rounded-full bg-sky-100 text-sky-600"><ion-icon name="checkmark-done-circle-outline" class="text-3xl"></ion-icon></div> <div><div class="text-3xl font-bold text-gray-900">27</div><div class="text-sm text-gray-500">Tasks Completed</div></div> </div>
@@ -322,11 +348,16 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-16">
                     <div class="flex items-center space-x-4">
-                        <div class="logo-container"> <img src="https://placehold.co/100x40/38BDF8/FFFFFF?text=S&font=inter" alt="SoundSlate Logo" class="logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex'"> <div class="logo-image-fallback" style="display: none;">S</div> <div class="soundslate-logo-text">SOUNDSLATE</div> </div>
+                        <div class="logo-container">
+                            <!-- Logo for SoundSlate: Sleek 'S' in a rounded box -->
+                            <div class="w-6 h-6 rounded-md flex items-center justify-center font-black text-white" style="background-color: var(--accent); font-size: 1.25rem; line-height: 1;">S</div>
+                            <div class="soundslate-logo-text">SOUNDSLATE</div>
+                        </div>
                         <nav class="hidden md:flex space-x-2">
                             <a href="#" onclick="navigateTo('page-home')" data-page="page-home" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="home-outline" class="text-xl"></ion-icon> Home </a>
                             <a href="#" onclick="navigateTo('page-progress')" data-page="page-progress" class="nav-link active flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="stats-chart-outline" class="text-xl"></ion-icon> Progress </a>
                             <a href="#" onclick="navigateTo('page-insights')" data-page="page-insights" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="bulb-outline" class="text-xl"></ion-icon> Insights </a>
+                            <a href="#" onclick="navigateTo('page-generator')" data-page="page-generator" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="sparkles-outline" class="text-xl"></ion-icon> AI Content </a>
                             <a href="#" onclick="navigateTo('page-reports')" data-page="page-reports" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="document-text-outline" class="text-xl"></ion-icon> Reports </a>
                             <a href="#" onclick="navigateTo('page-assessment')" data-page="page-assessment" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="play-outline" class="text-xl"></ion-icon> Assessment </a>
                         </nav>
@@ -349,42 +380,114 @@
         <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
             <!-- Main content grid -->
             <div class="px-4 py-6 sm:px-0"> 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6"> 
-                    <div class="lg:col-span-2 space-y-6"> 
-                        <div class="bg-white p-6 rounded-xl shadow-md"> <h3 class="text-xl font-semibold text-gray-900 mb-4">Skill Progress</h3> <div class="space-y-5"> <div> <div class="flex justify-between items-center mb-1"> <span class="text-base font-medium text-blue-700">Reading Speed</span> <span class="text-sm font-medium text-blue-700">Improving</span> </div> <div class="w-full bg-gray-200 rounded-full h-2.5"> <div class="bg-blue-500 h-2.5 rounded-full" style="width: 75%"></div> </div> <div class="flex justify-between items-center mt-1"> <span class="text-xs text-gray-500">Target: 100 WPM</span> <span class="text-xs text-gray-500">Current: 85 WPM (+10 WPM this week)</span> </div> </div> <div> <div class="flex justify-between items-center mb-1"> <span class="text-base font-medium text-green-700">Accuracy</span> <span class="text-sm font-medium text-green-700">Excellent</span> </div> <div class="w-full bg-gray-200 rounded-full h-2.5"> <div class="bg-green-500 h-2.5 rounded-full" style="width: 95%"></div> </div> <div class="flex justify-between items-center mt-1"> <span class="text-xs text-gray-500">Target: 98%</span> <span class="text-xs text-gray-500">Current: 95%</span> </div> </div> <div> <div class="flex justify-between items-center mb-1"> <span class="text-base font-medium text-violet-700">Vocabulary</span> <span class="text-sm font-medium text-violet-700">Excellent</span> </div> <div class="w-full bg-gray-200 rounded-full h-2.5"> <div class="bg-violet-500 h-2.5 rounded-full" style="width: 90%"></div> </div> <div class="flex justify-between items-center mt-1"> <span class="text-xs text-gray-500">Grade Level: 4</span> <span class="text-xs text-gray-500">Learned 15 new words</span> </div> </div> <div> <div class="flex justify-between items-center mb-1"> <span class="text-base font-medium text-amber-700">Comprehension</span> <span class="text-sm font-medium text-amber-700">Good</span> </div> <div class="w-full bg-gray-200 rounded-full h-2.5"> <div class="bg-amber-500 h-2.5 rounded-full" style="width: 80%"></div> </div> <div class="flex justify-between items-center mt-1"> <span class="text-xs text-gray-500">Target: 85%</span> <span class="text-xs text-gray-500">Current: 80% (+5% this week)</span> </div> </div> </div> </div> 
-                        <div class="bg-white p-6 rounded-xl shadow-md"> <div class="flex justify-between items-center mb-4"> <h3 class="text-xl font-semibold text-gray-900">Recent Activities</h3> <a href="#" class="text-sm font-medium text-accent hover:underline">View All</a> </div> <ul class="space-y-4"> <li class="flex items-center justify-between p-4 bg-gray-50 rounded-lg"> <div class="flex items-center space-x-3"> <div class="p-2 rounded-full bg-green-100 text-green-600"><ion-icon name="book-outline" class="text-xl"></ion-icon></div> <div> <p class="font-medium text-gray-900">Completed Reading Fluency Test</p> <p class="text-sm text-gray-500">Speed: 88 WPM, Accuracy: 95% • 1 hour ago</p> </div> </div> <span class="text-sm font-semibold text-green-600">Excellent</span> </li> <li class="flex items-center justify-between p-4 bg-gray-50 rounded-lg"> <div class="flex items-center space-x-3"> <div class="p-2 rounded-full bg-blue-100 text-blue-600"><ion-icon name="chatbox-ellipses-outline" class="text-xl"></ion-icon></div> <div> <p class="font-medium text-gray-900">Finished Comprehension Practice</p> <p class="text-sm text-gray-500">Score: 8/10 • 2 hours ago</p> </div> </div> <span class="text-sm font-semibold text-blue-600">Good</span> </li> <li class="flex items-center justify-between p-4 bg-gray-50 rounded-lg"> <div class="flex items-center space-x-3"> <div class="p-2 rounded-full bg-violet-100 text-violet-600"><ion-icon name="library-outline" class="text-xl"></ion-icon></div> <div> <p class="font-medium text-gray-900">Vocabulary Quiz</p> <p class="text-sm text-gray-500">Score: 9/10 • Yesterday</p> </div> </div> <span class="text-sm font-semibold text-violet-600">Excellent</span> </li> </ul> </div> 
-                        <div class="bg-white p-6 rounded-xl shadow-md"> <h3 class="text-xl font-semibold text-gray-900 mb-4">Recommended Actions</h3> <ul class="space-y-3"> <li class="flex items-center justify-between p-4 bg-gray-50 rounded-lg"> <div class="flex items-center"> <span class="text-xs font-bold text-orange-600 bg-orange-100 px-2 py-1 rounded-full mr-3">MEDIUM</span> <div> <p class="font-medium text-gray-900">Practice Complex Sentences</p> <p class="text-sm text-gray-600">Assign reading passages with longer sentences to improve fluency.</p> </div> </div> <button class="bg-accent text-white font-medium px-4 py-2 rounded-lg text-sm hover:bg-accent-dark">Find Passages</button> </li> <li class="flex items-center justify-between p-4 bg-gray-50 rounded-lg"> <div class="flex items-center"> <span class="text-xs font-bold text-blue-600 bg-blue-100 px-2 py-1 rounded-full mr-3">LOW</span> <div> <p class="font-medium text-gray-900">Review Comprehension Strategy</p> <p class="text-sm text-gray-600">Go over strategies for identifying the main idea in texts.</p> </div> </div> <button class="bg-accent text-white font-medium px-4 py-2 rounded-lg text-sm hover:bg-accent-dark">View Tips</button> </li> </ul> </div> 
-                    </div> 
+                <!-- Changed to a 2-column layout (lg:grid-cols-2) -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6"> 
                     
-                    <div class="lg:col-span-1 space-y-6"> 
-                        <!-- REPLACED DOUGHNUT CHART WITH BAR CHART -->
-                        <div class="bg-white p-6 rounded-xl shadow-md"> 
-                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Daily Practice Minutes (Past Week)</h3> 
-                            <div class="chart-container relative w-full h-56"> 
-                                <canvas id="subjectChart"></canvas> 
-                            </div> 
-                            <p class="text-sm text-gray-500 mt-4">Total time this week: ~4h 30m</p>
+                    <!-- TOP ROW -->
+                    <!-- TOP LEFT: Skill Progress -->
+                    <div id="skill-progress-container" class="bg-white p-6 rounded-xl shadow-md"> 
+                        <h3 class="text-xl font-semibold text-gray-900 mb-4">Skill Progress</h3> 
+                        <div id="skill-progress-bars" class="space-y-5">
+                            <!-- Content injected by renderSkillProgress() -->
                         </div> 
-                        
-                        <div class="bg-white p-6 rounded-xl shadow-md"> 
-                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Time Spent This Week</h3> 
-                            <div class="space-y-4"> 
-                                <div> 
-                                    <div class="flex justify-between mb-1"> <span class="text-sm font-medium text-gray-700">Reading Practice</span> <span class="text-sm font-medium text-gray-500">2h 45m</span> </div> 
-                                    <div class="w-full bg-gray-200 rounded-full h-2"> <div class="bg-blue-500 h-2 rounded-full" style="width: 60%"></div> </div> 
+                    </div>
+
+                    <!-- TOP RIGHT: Daily Practice Minutes (Chart) -->
+                    <div class="bg-white p-6 rounded-xl shadow-md"> 
+                        <h3 class="text-xl font-semibold text-gray-900 mb-4">Daily Practice Minutes (Past Week)</h3> 
+                        <div class="chart-container relative w-full h-56"> 
+                            <canvas id="subjectChart"></canvas> 
+                        </div> 
+                        <p class="text-sm text-gray-500 mt-4">Total time this week: ~4h 30m</p>
+                    </div> 
+
+                </div>
+                
+                <!-- MIDDLE ROW (Activities & Time Spent) -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6"> 
+                    <!-- BOTTOM LEFT: Recent Activities -->
+                    <div class="bg-white p-6 rounded-xl shadow-md"> 
+                        <div class="flex justify-between items-center mb-4"> 
+                            <h3 class="text-xl font-semibold text-gray-900">Recent Activities</h3> 
+                            <a href="#" class="text-sm font-medium text-accent hover:underline">View All</a> 
+                        </div> 
+                        <ul class="space-y-4"> 
+                            <li class="flex items-center justify-between p-4 bg-gray-50 rounded-lg"> 
+                                <div class="flex items-center space-x-3"> 
+                                    <div class="p-2 rounded-full bg-green-100 text-green-600"><ion-icon name="book-outline" class="text-xl"></ion-icon></div> 
+                                    <div> 
+                                        <p class="font-medium text-gray-900">Completed Reading Fluency Test</p> 
+                                        <p class="text-sm text-gray-500">Speed: 88 WPM, Accuracy: 95% • 1 hour ago</p> 
+                                    </div> 
                                 </div> 
-                                <div> 
-                                    <div class="flex justify-between mb-1"> <span class="text-sm font-medium text-gray-700">Vocabulary Games</span> <span class="text-sm font-medium text-gray-500">1h 15m</span> </div> 
-                                    <div class="w-full bg-gray-200 rounded-full h-2"> <div class="bg-violet-500 h-2 rounded-full" style="width: 25%"></div> </div> 
+                                <span class="text-sm font-semibold text-green-600">Excellent</span> 
+                            </li> 
+                            <li class="flex items-center justify-between p-4 bg-gray-50 rounded-lg"> 
+                                <div class="flex items-center space-x-3"> 
+                                    <div class="p-2 rounded-full bg-blue-100 text-blue-600"><ion-icon name="chatbox-ellipses-outline" class="text-xl"></ion-icon></div> 
+                                    <div> 
+                                        <p class="font-medium text-gray-900">Finished Comprehension Practice</p> 
+                                        <p class="text-sm text-gray-500">Score: 8/10 • 2 hours ago</p> 
+                                    </div> 
                                 </div> 
-                                <div> 
-                                    <div class="flex justify-between mb-1"> <span class="text-sm font-medium text-gray-700">Comprehension Tasks</span> <span class="text-sm font-medium text-gray-500">1h 00m</span> </div> 
-                                    <div class="w-full bg-gray-200 rounded-full h-2"> <div class="bg-amber-500 h-2 rounded-full" style="width: 15%"></div> </div> 
+                                <span class="text-sm font-semibold text-blue-600">Good</span> 
+                            </li> 
+                            <li class="flex items-center justify-between p-4 bg-gray-50 rounded-lg"> 
+                                <div class="flex items-center space-x-3"> 
+                                    <div class="p-2 rounded-full bg-violet-100 text-violet-600"><ion-icon name="library-outline" class="text-xl"></ion-icon></div> 
+                                    <div> 
+                                        <p class="font-medium text-gray-900">Vocabulary Quiz</p> 
+                                        <p class="text-sm text-gray-500">Score: 9/10 • Yesterday</p> 
+                                    </div> 
                                 </div> 
+                                <span class="text-sm font-semibold text-violet-600">Excellent</span> 
+                            </li> 
+                        </ul> 
+                    </div> 
+
+                    <!-- BOTTOM RIGHT: Time Spent This Week -->
+                    <div class="bg-white p-6 rounded-xl shadow-md"> 
+                        <h3 class="text-xl font-semibold text-gray-900 mb-4">Time Spent This Week</h3> 
+                        <div class="space-y-4"> 
+                            <div> 
+                                <div class="flex justify-between mb-1"> <span class="text-sm font-medium text-gray-700">Reading Practice</span> <span class="text-sm font-medium text-gray-500">2h 45m</span> </div> 
+                                <div class="w-full bg-gray-200 rounded-full h-2"> <div class="bg-blue-500 h-2 rounded-full" style="width: 60%"></div> </div> 
+                            </div> 
+                            <div> 
+                                <div class="flex justify-between mb-1"> <span class="text-sm font-medium text-gray-700">Vocabulary Games</span> <span class="text-sm font-medium text-gray-500">1h 15m</span> </div> 
+                                <div class="w-full bg-gray-200 rounded-full h-2"> <div class="bg-violet-500 h-2 rounded-full" style="width: 25%"></div> </div> 
+                            </div> 
+                            <div> 
+                                <div class="flex justify-between mb-1"> <span class="text-sm font-medium text-gray-700">Comprehension Tasks</span> <span class="text-sm font-medium text-gray-500">1h 00m</span> </div> 
+                                <div class="w-full bg-gray-200 rounded-full h-2"> <div class="bg-amber-500 h-2 rounded-full" style="width: 15%"></div> </div> 
                             </div> 
                         </div> 
                     </div> 
-                </div> 
+                </div>
+
+                <!-- BOTTOM SECTION: Recommended Actions (Full Width) -->
+                <div class="mt-6">
+                    <div class="bg-white p-6 rounded-xl shadow-md"> 
+                        <h3 class="text-xl font-semibold text-gray-900 mb-4">Recommended Actions</h3> 
+                        <ul class="space-y-3"> 
+                            <li class="flex items-center justify-between p-4 bg-gray-50 rounded-lg"> 
+                                <div class="flex items-center"> 
+                                    <span class="text-xs font-bold text-orange-600 bg-orange-100 px-2 py-1 rounded-full mr-3">MEDIUM</span> 
+                                    <div> <p class="font-medium text-gray-900">Practice Complex Sentences</p> <p class="text-sm text-gray-600">Assign reading passages with longer sentences to improve fluency.</p> </div> 
+                                </div> 
+                                <button onclick="handleFindPassages()" class="bg-accent text-white font-medium px-4 py-2 rounded-lg text-sm hover:bg-accent-dark">Find Passages</button> 
+                            </li> 
+                            <li class="flex items-center justify-between p-4 bg-gray-50 rounded-lg"> 
+                                <div class="flex items-center"> 
+                                    <span class="text-xs font-bold text-blue-600 bg-blue-100 px-2 py-1 rounded-full mr-3">LOW</span> 
+                                    <div> <p class="font-medium text-gray-900">Review Comprehension Strategy</p> <p class="text-sm text-gray-600">Go over strategies for identifying the main idea in texts.</p> </div> 
+                                </div> 
+                                <button onclick="handleViewTips()" class="bg-accent text-white font-medium px-4 py-2 rounded-lg text-sm hover:bg-accent-dark">View Tips</button> 
+                            </li> 
+                        </ul> 
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
@@ -396,11 +499,16 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-16">
                     <div class="flex items-center space-x-4">
-                        <div class="logo-container"> <img src="https://placehold.co/100x40/38BDF8/FFFFFF?text=S&font=inter" alt="SoundSlate Logo" class="logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex'"> <div class="logo-image-fallback" style="display: none;">S</div> <div class="soundslate-logo-text">SOUNDSLATE</div> </div>
+                        <div class="logo-container">
+                             <!-- Logo for SoundSlate: Sleek 'S' in a rounded box -->
+                            <div class="w-6 h-6 rounded-md flex items-center justify-center font-black text-white" style="background-color: var(--accent); font-size: 1.25rem; line-height: 1;">S</div>
+                            <div class="soundslate-logo-text">SOUNDSLATE</div>
+                        </div>
                         <nav class="hidden md:flex space-x-2">
                             <a href="#" onclick="navigateTo('page-home')" data-page="page-home" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="home-outline" class="text-xl"></ion-icon> Home </a>
                             <a href="#" onclick="navigateTo('page-progress')" data-page="page-progress" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="stats-chart-outline" class="text-xl"></ion-icon> Progress </a>
                             <a href="#" onclick="navigateTo('page-insights')" data-page="page-insights" class="nav-link active flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="bulb-outline" class="text-xl"></ion-icon> Insights </a>
+                            <a href="#" onclick="navigateTo('page-generator')" data-page="page-generator" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="sparkles-outline" class="text-xl"></ion-icon> AI Content </a>
                             <a href="#" onclick="navigateTo('page-reports')" data-page="page-reports" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="document-text-outline" class="text-xl"></ion-icon> Reports </a>
                             <a href="#" onclick="navigateTo('page-assessment')" data-page="page-assessment" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="play-outline" class="text-xl"></ion-icon> Assessment </a>
                         </nav>
@@ -425,6 +533,89 @@
         </main>
     </div>
 
+    <!-- PAGE 9: AI CONTENT GENERATOR (NEW) -->
+    <div id="page-generator" class="page">
+        <!-- Header updated -->
+        <header class="bg-white shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center space-x-4">
+                        <div class="logo-container">
+                            <!-- Logo for SoundSlate: Sleek 'S' in a rounded box -->
+                            <div class="w-6 h-6 rounded-md flex items-center justify-center font-black text-white" style="background-color: var(--accent); font-size: 1.25rem; line-height: 1;">S</div>
+                            <div class="soundslate-logo-text">SOUNDSLATE</div>
+                        </div>
+                        <nav class="hidden md:flex space-x-2">
+                            <a href="#" onclick="navigateTo('page-home')" data-page="page-home" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="home-outline" class="text-xl"></ion-icon> Home </a>
+                            <a href="#" onclick="navigateTo('page-progress')" data-page="page-progress" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="stats-chart-outline" class="text-xl"></ion-icon> Progress </a>
+                            <a href="#" onclick="navigateTo('page-insights')" data-page="page-insights" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="bulb-outline" class="text-xl"></ion-icon> Insights </a>
+                            <a href="#" onclick="navigateTo('page-generator')" data-page="page-generator" class="nav-link active flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="sparkles-outline" class="text-xl"></ion-icon> AI Content </a>
+                            <a href="#" onclick="navigateTo('page-reports')" data-page="page-reports" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="document-text-outline" class="text-xl"></ion-icon> Reports </a>
+                            <a href="#" onclick="navigateTo('page-assessment')" data-page="page-assessment" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="play-outline" class="text-xl"></ion-icon> Assessment </a>
+                        </nav>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div id="user-avatar-generator" class="w-8 h-8 rounded-full bg-starry-night text-white flex items-center justify-center font-semibold bg-cover bg-center">A</div>
+                        <span id="user-name-generator" class="hidden md:block text-sm font-medium text-gray-700">Hi, Abhishek!</span>
+                        <div class="flex items-center space-x-1 relative">
+                            <!-- Notification Button - opens modal via JS -->
+                            <button onclick="toggleNotificationDropdown(event)" class="notification-badge-container text-gray-500 hover:text-white hover:bg-accent p-2 rounded-full transition-all duration-200" title="Notifications"> <ion-icon name="notifications-outline" class="text-2xl"></ion-icon> <span class="notification-badge"></span> </button>
+                            <button onclick="navigateTo('page-settings')" class="text-gray-500 hover:text-white hover:bg-accent p-2 rounded-full transition-all duration-200" title="Settings"> <ion-icon name="settings-outline" class="text-2xl"></ion-icon> </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Page Content -->
+        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <div class="px-4 py-6 sm:px-0">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">AI Content Generator</h1>
+                <p class="text-lg text-gray-600 mb-8">Generate custom learning materials based on a topic for Akash.</p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Generator Controls -->
+                    <div class="lg:col-span-1 bg-white p-6 rounded-xl shadow-md h-min space-y-6">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-4">Customize Content</h3>
+                        
+                        <!-- Content Type Selector -->
+                        <div>
+                            <label for="content-type-selector" class="block text-sm font-medium text-gray-900 mb-1">Content Type</label>
+                            <select id="content-type-selector" name="content-type" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent sm:text-sm">
+                                <option>Study Guide</option>
+                                <option>Creative Story Prompt</option>
+                                <option>Vocabulary Challenge</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Topic Prompt Area -->
+                        <div>
+                            <label for="generator-prompt" class="block text-sm font-medium text-gray-900 mb-1">Topic/Prompt (e.g., "The lifecycle of a butterfly")</label>
+                            <textarea id="generator-prompt" rows="4" placeholder="Enter the topic or a detailed request here..." class="w-full p-3 border border-gray-300 rounded-lg text-sm focus:ring-accent focus:border-accent resize-none"></textarea>
+                            <p class="text-xs text-gray-500 mt-1">Provide at least 10 characters.</p>
+                        </div>
+
+                        <!-- Generate Button -->
+                        <button id="generate-content-btn" onclick="handleGenerateContent()" class="w-full bg-accent text-white font-semibold px-5 py-3 rounded-lg shadow-md hover:bg-accent-dark transition duration-200 flex items-center justify-center gap-2">
+                            <ion-icon name="sparkles-outline" class="text-xl"></ion-icon> Generate Content
+                        </button>
+                    </div>
+
+                    <!-- Generated Output -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-4">Generated Output</h3>
+                        <div id="generated-content-results" class="bg-gray-50 text-gray-700 hidden">
+                            <!-- Content or Loading state injected here -->
+                        </div>
+                        <div id="initial-message" class="bg-white p-6 rounded-xl shadow-md text-center text-gray-500">
+                             <ion-icon name="chatbubble-ellipses-outline" class="text-4xl mb-2 text-accent"></ion-icon>
+                             <p class="text-md font-medium">Enter a topic and hit 'Generate' to create custom learning materials for Akash.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
     <!-- PAGE 4: REPORTS -->
     <div id="page-reports" class="page">
         <!-- Header updated -->
@@ -432,11 +623,16 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-16">
                     <div class="flex items-center space-x-4">
-                        <div class="logo-container"> <img src="https://placehold.co/100x40/38BDF8/FFFFFF?text=S&font=inter" alt="SoundSlate Logo" class="logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex'"> <div class="logo-image-fallback" style="display: none;">S</div> <div class="soundslate-logo-text">SOUNDSLATE</div> </div>
+                        <div class="logo-container">
+                            <!-- Logo for SoundSlate: Sleek 'S' in a rounded box -->
+                            <div class="w-6 h-6 rounded-md flex items-center justify-center font-black text-white" style="background-color: var(--accent); font-size: 1.25rem; line-height: 1;">S</div>
+                            <div class="soundslate-logo-text">SOUNDSLATE</div>
+                        </div>
                         <nav class="hidden md:flex space-x-2">
                             <a href="#" onclick="navigateTo('page-home')" data-page="page-home" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="home-outline" class="text-xl"></ion-icon> Home </a>
                             <a href="#" onclick="navigateTo('page-progress')" data-page="page-progress" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="stats-chart-outline" class="text-xl"></ion-icon> Progress </a>
                             <a href="#" onclick="navigateTo('page-insights')" data-page="page-insights" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="bulb-outline" class="text-xl"></ion-icon> Insights </a>
+                            <a href="#" onclick="navigateTo('page-generator')" data-page="page-generator" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="sparkles-outline" class="text-xl"></ion-icon> AI Content </a>
                             <a href="#" onclick="navigateTo('page-reports')" data-page="page-reports" class="nav-link active flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="document-text-outline" class="text-xl"></ion-icon> Reports </a>
                             <a href="#" onclick="navigateTo('page-assessment')" data-page="page-assessment" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="play-outline" class="text-xl"></ion-icon> Assessment </a>
                         </nav>
@@ -456,14 +652,79 @@
         </header>
         <!-- Page Content -->
         <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-            <!-- Content with enhanced recent reports list (unchanged from previous) -->
-            <div class="px-4 py-6 sm:px-0"> <h1 class="text-3xl font-bold text-gray-900 mb-2">Download Reports</h1> <p class="text-lg text-gray-600 mb-8">Generate new reports or download past reports for Akash.</p> <div class="grid grid-cols-1 md:grid-cols-2 gap-6"> <div class="bg-white p-6 rounded-xl shadow-md"> <h3 class="text-xl font-semibold text-gray-900 mb-4">Generate New Report</h3> <div class="space-y-4"> <div> 
-                <!-- FIX: Changed label class to text-gray-900 for high dark mode contrast -->
-                <label for="report-type" class="block text-sm font-medium text-gray-900">Report Type</label> 
-                <select id="report-type" name="report-type" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"> <option>Weekly Progress Summary</option> <option>Monthly Deep Dive</option> <option>Reading & Comprehension Report</option> </select> </div> <div> 
-                <!-- FIX: Changed label class to text-gray-900 for high dark mode contrast -->
-                <label for="report-range" class="block text-sm font-medium text-gray-900">Date Range</label> 
-                <select id="report-range" name="report-range" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"> <option>Last 7 Days</option> <option>Last 30 Days</option> <option>This Quarter</option> </select> </div> <button onclick="handleGenerateReport()" class="w-full bg-accent text-white font-semibold px-5 py-3 rounded-lg shadow-md hover:bg-accent-dark transition duration-200 flex items-center justify-center gap-2"> <ion-icon name="document-text-outline" class="text-xl"></ion-icon> Generate & View Report </button> </div> </div> <div class="bg-white p-6 rounded-xl shadow-md"> <h3 class="text-xl font-semibold text-gray-900 mb-4">Recent Reports</h3> <ul class="space-y-3"> <li class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-150"> <div class="flex items-center space-x-3"> <ion-icon name="document-outline" class="text-xl text-gray-500"></ion-icon> <div> <p class="font-medium text-gray-900">Weekly Summary</p> <p class="text-sm text-gray-600">Oct 19, 2025 - Oct 25, 2025</p> </div> </div> <button onclick="showToast('Downloading report... (Demo)', 'info')" class="text-accent hover:text-accent-dark" title="Download"> <ion-icon name="download-outline" class="text-2xl"></ion-icon> </button> </li> <li class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-150"> <div class="flex items-center space-x-3"> <ion-icon name="reader-outline" class="text-xl text-gray-500"></ion-icon> <div> <p class="font-medium text-gray-900">Reading & Comprehension Report</p> <p class="text-sm text-gray-600">Sep 1, 2025 - Sep 30, 2025</p> </div> </div> <button onclick="showToast('Downloading report... (Demo)', 'info')" class="text-accent hover:text-accent-dark" title="Download"> <ion-icon name="download-outline" class="text-2xl"></ion-icon> </button> </li> <li class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-150"> <div class="flex items-center space-x-3"> <ion-icon name="calendar-outline" class="text-xl text-gray-500"></ion-icon> <div> <p class="font-medium text-gray-900">Monthly Deep Dive</p> <p class="text-sm text-gray-600">September 2025</p> </div> </div> <button onclick="showToast('Downloading report... (Demo)', 'info')" class="text-accent hover:text-accent-dark" title="Download"> <ion-icon name="download-outline" class="text-2xl"></ion-icon> </button> </li> </ul> </div> </div> </div>
+            <!-- Content with enhanced recent reports list -->
+            <div class="px-4 py-6 sm:px-0"> 
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Download Reports</h1> 
+                <p class="text-lg text-gray-600 mb-8">Generate new reports or download past reports for Akash.</p> 
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6"> 
+                    <div class="bg-white p-6 rounded-xl shadow-md"> 
+                        <h3 class="text-xl font-semibold text-gray-900 mb-4">Generate New Report</h3> 
+                        <div class="space-y-4"> 
+                            <div> 
+                                <label for="report-type" class="block text-sm font-medium text-gray-900">Report Type</label> 
+                                <select id="report-type" name="report-type" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"> 
+                                    <option>Weekly Progress Summary</option> 
+                                    <option>Monthly Deep Dive</option> 
+                                    <option>Reading & Comprehension Report</option> 
+                                </select> 
+                            </div> 
+                            <div> 
+                                <label for="report-range" class="block text-sm font-medium text-gray-900">Date Range</label> 
+                                <select id="report-range" name="report-range" class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"> 
+                                    <option>Last 7 Days</option> 
+                                    <option>Last 30 Days</option> 
+                                    <option>This Quarter</option> 
+                                </select> 
+                            </div> 
+                            <button onclick="handleGenerateReport()" class="w-full bg-accent text-white font-semibold px-5 py-3 rounded-lg shadow-md hover:bg-accent-dark transition duration-200 flex items-center justify-center gap-2"> 
+                                <ion-icon name="document-text-outline" class="text-xl"></ion-icon> Generate & View Report 
+                            </button> 
+                        </div> 
+                    </div> 
+                    <div class="bg-white p-6 rounded-xl shadow-md"> 
+                        <h3 class="text-xl font-semibold text-gray-900 mb-4">Recent Reports (Simulated)</h3> 
+                        <ul class="space-y-3"> 
+                            <li class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-150"> 
+                                <div class="flex items-center space-x-3"> 
+                                    <ion-icon name="document-outline" class="text-xl text-gray-500"></ion-icon> 
+                                    <div> 
+                                        <p class="font-medium text-gray-900">Weekly Summary</p> 
+                                        <p class="text-sm text-gray-600">Oct 19, 2025 - Oct 25, 2025</p> 
+                                    </div> 
+                                </div> 
+                                <button onclick="handleReportDownload('Weekly Summary', 'Oct 19-25')" class="text-accent hover:text-accent-dark" title="Download"> 
+                                    <ion-icon name="download-outline" class="text-2xl"></ion-icon> 
+                                </button> 
+                            </li> 
+                            <li class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-150"> 
+                                <div class="flex items-center space-x-3"> 
+                                    <ion-icon name="reader-outline" class="text-xl text-gray-500"></ion-icon> 
+                                    <div> 
+                                        <p class="font-medium text-gray-900">Reading & Comprehension Report</p> 
+                                        <p class="text-sm text-gray-600">Sep 1, 2025 - Sep 30, 2025</p> 
+                                    </div> 
+                                </div> 
+                                <button onclick="handleReportDownload('Reading & Comprehension Report', 'Sep 1-30')" class="text-accent hover:text-accent-dark" title="Download"> 
+                                    <ion-icon name="download-outline" class="text-2xl"></ion-icon> 
+                                </button> 
+                            </li> 
+                            <li class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-150"> 
+                                <div class="flex items-center space-x-3"> 
+                                    <ion-icon name="calendar-outline" class="text-xl text-gray-500"></ion-icon> 
+                                    <div> 
+                                        <p class="font-medium text-gray-900">Monthly Deep Dive</p> 
+                                        <p class="text-sm text-gray-600">September 2025</p> 
+                                    </div> 
+                                </div> 
+                                <button onclick="handleReportDownload('Monthly Deep Dive', 'September')" class="text-accent hover:text-accent-dark" title="Download"> 
+                                    <ion-icon name="download-outline" class="text-2xl"></ion-icon> 
+                                </button> 
+                            </li> 
+                        </ul> 
+                        <p class="text-xs text-red-500 mt-4">Note: Only "Weekly Summary" download is authorized in this demo.</p>
+                    </div> 
+                </div> 
+            </div>
         </main>
     </div>
 
@@ -474,11 +735,16 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-16">
                     <div class="flex items-center space-x-4">
-                        <div class="logo-container"> <img src="https://placehold.co/100x40/38BDF8/FFFFFF?text=S&font=inter" alt="SoundSlate Logo" class="logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex'"> <div class="logo-image-fallback" style="display: none;">S</div> <div class="soundslate-logo-text">SOUNDSLATE</div> </div>
+                        <div class="logo-container">
+                            <!-- Logo for SoundSlate: Sleek 'S' in a rounded box -->
+                            <div class="w-6 h-6 rounded-md flex items-center justify-center font-black text-white" style="background-color: var(--accent); font-size: 1.25rem; line-height: 1;">S</div>
+                            <div class="soundslate-logo-text">SOUNDSLATE</div>
+                        </div>
                         <nav class="hidden md:flex space-x-2">
                             <a href="#" onclick="navigateTo('page-home')" data-page="page-home" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="home-outline" class="text-xl"></ion-icon> Home </a>
                             <a href="#" onclick="navigateTo('page-progress')" data-page="page-progress" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="stats-chart-outline" class="text-xl"></ion-icon> Progress </a>
                             <a href="#" onclick="navigateTo('page-insights')" data-page="page-insights" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="bulb-outline" class="text-xl"></ion-icon> Insights </a>
+                            <a href="#" onclick="navigateTo('page-generator')" data-page="page-generator" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="sparkles-outline" class="text-xl"></ion-icon> AI Content </a>
                             <a href="#" onclick="navigateTo('page-reports')" data-page="page-reports" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="document-text-outline" class="text-xl"></ion-icon> Reports </a>
                             <a href="#" onclick="navigateTo('page-assessment')" data-page="page-assessment" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="play-outline" class="text-xl"></ion-icon> Assessment </a>
                         </nav>
@@ -508,7 +774,12 @@
                             <div class="theme-switch-wrapper">
                                 <label class="theme-switch">
                                     <input type="checkbox" id="theme-toggle">
-                                    <span class="slider"></span>
+                                    <span class="slider">
+                                        <!-- Sun icon for light mode -->
+                                        <ion-icon name="sunny-outline" class="sun"></ion-icon> 
+                                        <!-- Moon icon for dark mode -->
+                                        <ion-icon name="moon-outline" class="moon"></ion-icon> 
+                                    </span>
                                 </label>
                             </div>
                         </div>
@@ -531,11 +802,16 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-16">
                     <div class="flex items-center space-x-4">
-                        <div class="logo-container"> <img src="https://placehold.co/100x40/38BDF8/FFFFFF?text=S&font=inter" alt="SoundSlate Logo" class="logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex'"> <div class="logo-image-fallback" style="display: none;">S</div> <div class="soundslate-logo-text">SOUNDSLATE</div> </div>
+                        <div class="logo-container">
+                            <!-- Logo for SoundSlate: Sleek 'S' in a rounded box -->
+                            <div class="w-6 h-6 rounded-md flex items-center justify-center font-black text-white" style="background-color: var(--accent); font-size: 1.25rem; line-height: 1;">S</div>
+                            <div class="soundslate-logo-text">SOUNDSLATE</div>
+                        </div>
                         <nav class="hidden md:flex space-x-2">
                             <a href="#" onclick="navigateTo('page-home')" data-page="page-home" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="home-outline" class="text-xl"></ion-icon> Home </a>
                             <a href="#" onclick="navigateTo('page-progress')" data-page="page-progress" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="stats-chart-outline" class="text-xl"></ion-icon> Progress </a>
                             <a href="#" onclick="navigateTo('page-insights')" data-page="page-insights" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="bulb-outline" class="text-xl"></ion-icon> Insights </a>
+                            <a href="#" onclick="navigateTo('page-generator')" data-page="page-generator" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="sparkles-outline" class="text-xl"></ion-icon> AI Content </a>
                             <a href="#" onclick="navigateTo('page-reports')" data-page="page-reports" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="document-text-outline" class="text-xl"></ion-icon> Reports </a>
                             <a href="#" onclick="navigateTo('page-assessment')" data-page="page-assessment" class="nav-link active flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="play-outline" class="text-xl"></ion-icon> Assessment </a>
                         </nav>
@@ -564,11 +840,16 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-16">
                     <div class="flex items-center space-x-4">
-                        <div class="logo-container"> <img src="https://placehold.co/100x40/38BDF8/FFFFFF?text=S&font=inter" alt="SoundSlate Logo" class="logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex'"> <div class="logo-image-fallback" style="display: none;">S</div> <div class="soundslate-logo-text">SOUNDSLATE</div> </div>
+                        <div class="logo-container">
+                            <!-- Logo for SoundSlate: Sleek 'S' in a rounded box -->
+                            <div class="w-6 h-6 rounded-md flex items-center justify-center font-black text-white" style="background-color: var(--accent); font-size: 1.25rem; line-height: 1;">S</div>
+                            <div class="soundslate-logo-text">SOUNDSLATE</div>
+                        </div>
                         <nav class="hidden md:flex space-x-2">
                             <a href="#" onclick="navigateTo('page-home')" data-page="page-home" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="home-outline" class="text-xl"></ion-icon> Home </a>
                             <a href="#" onclick="navigateTo('page-progress')" data-page="page-progress" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="stats-chart-outline" class="text-xl"></ion-icon> Progress </a>
                             <a href="#" onclick="navigateTo('page-insights')" data-page="page-insights" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="bulb-outline" class="text-xl"></ion-icon> Insights </a>
+                            <a href="#" onclick="navigateTo('page-generator')" data-page="page-generator" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="sparkles-outline" class="text-xl"></ion-icon> AI Content </a>
                             <a href="#" onclick="navigateTo('page-reports')" data-page="page-reports" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="document-text-outline" class="text-xl"></ion-icon> Reports </a>
                             <a href="#" onclick="navigateTo('page-assessment')" data-page="page-assessment" class="nav-link active flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="play-outline" class="text-xl"></ion-icon> Assessment </a>
                         </nav>
@@ -620,11 +901,16 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-16">
                     <div class="flex items-center space-x-4">
-                        <div class="logo-container"> <img src="https://placehold.co/100x40/38BDF8/FFFFFF?text=S&font=inter" alt="SoundSlate Logo" class="logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex'"> <div class="logo-image-fallback" style="display: none;">S</div> <div class="soundslate-logo-text">SOUNDSLATE</div> </div>
+                        <div class="logo-container">
+                            <!-- Logo for SoundSlate: Sleek 'S' in a rounded box -->
+                            <div class="w-6 h-6 rounded-md flex items-center justify-center font-black text-white" style="background-color: var(--accent); font-size: 1.25rem; line-height: 1;">S</div>
+                            <div class="soundslate-logo-text">SOUNDSLATE</div>
+                        </div>
                         <nav class="hidden md:flex space-x-2">
                             <a href="#" onclick="navigateTo('page-home')" data-page="page-home" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="home-outline" class="text-xl"></ion-icon> Home </a>
                             <a href="#" onclick="navigateTo('page-progress')" data-page="page-progress" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="stats-chart-outline" class="text-xl"></ion-icon> Progress </a>
                             <a href="#" onclick="navigateTo('page-insights')" data-page="page-insights" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="bulb-outline" class="text-xl"></ion-icon> Insights </a>
+                            <a href="#" onclick="navigateTo('page-generator')" data-page="page-generator" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="sparkles-outline" class="text-xl"></ion-icon> AI Content </a>
                             <a href="#" onclick="navigateTo('page-reports')" data-page="page-reports" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="document-text-outline" class="text-xl"></ion-icon> Reports </a>
                             <a href="#" onclick="navigateTo('page-assessment')" data-page="page-assessment" class="nav-link active flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="play-outline" class="text-xl"></ion-icon> Assessment </a>
                         </nav>
@@ -647,22 +933,41 @@
             <div class="px-4 py-6 sm:px-0">
                 <button onclick="navigateTo('page-assessment')" class="text-sm text-gray-600 hover:text-accent mb-4 inline-flex items-center gap-1"> <ion-icon name="arrow-back-outline"></ion-icon> Back to Assessments </button>
                 <h1 class="text-3xl font-bold text-gray-900 mb-2">Comprehension Skills Assessment</h1>
-                <p class="text-lg text-gray-600 mb-8">Upload a text file for Akash to read, then start the assessment.</p>
+                <p class="text-lg text-gray-600 mb-8">Provide a text passage for Akash to read, then start the assessment.</p>
+                
                 <div class="bg-white p-6 rounded-xl shadow-md max-w-2xl mx-auto space-y-6">
+                    
+                    <!-- 1. GIVEN PASSAGE (Read-only) -->
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Upload Text Passage:</h3>
-                        <div class="bg-gray-50 p-4 rounded-lg border text-center">
-                            <p class="text-sm text-gray-800 mb-3">Select a .txt, .md, or .pdf file containing the text for the assessment.</p>
-                            <input type="file" id="comprehension-file-input" class="hidden" accept=".txt,.md,.pdf" onchange="handleFileSelect(event)">
-                            <label for="comprehension-file-input" class="file-input-button"> <ion-icon name="cloud-upload-outline" class="text-xl"></ion-icon> Choose File </label>
-                            <p id="comprehension-selected-filename" class="text-xs text-gray-500 mt-2">No file chosen</p>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Passage for Comprehension:</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg border border-indigo-300/50">
+                            <p id="comprehension-given-passage" class="text-gray-800 text-base leading-relaxed italic">Loading passage...</p>
+                            <p class="text-xs text-gray-600 mt-2 font-medium">Read this text and use the space below to provide your written response or upload a file.</p>
                         </div>
                     </div>
-                    <button id="start-comprehension-btn" onclick="startComprehensionFromFile()" disabled class="w-full bg-gray-400 text-white font-semibold px-5 py-3 rounded-lg shadow-md cursor-not-allowed flex items-center justify-center gap-2 transition duration-200"> <ion-icon name="play-circle-outline" class="text-xl"></ion-icon> Start Assessment </button>
+
+                    <!-- 2. STUDENT INPUT MODE TOGGLE -->
+                    <div class="flex justify-center space-x-3 p-1 rounded-lg bg-gray-100">
+                        <button id="mode-upload-btn" onclick="setComprehensionMode('upload')" class="toggle-button active flex-1 px-4 py-2 rounded-md text-sm font-medium transition duration-150 flex items-center justify-center gap-2">
+                             <ion-icon name="cloud-upload-outline"></ion-icon> Upload File (Response)
+                        </button>
+                        <button id="mode-write-btn" onclick="setComprehensionMode('write')" class="toggle-button inactive flex-1 px-4 py-2 rounded-md text-sm font-medium transition duration-150 flex items-center justify-center gap-2">
+                            <ion-icon name="pencil-outline"></ion-icon> Write Response
+                        </button>
+                    </div>
+
+                    <!-- 3. INPUT CONTAINER (Dynamically Populated) -->
+                    <div id="comprehension-input-area">
+                        <!-- Initial Content (Upload) is set here by setupComprehensionAssessmentPage() -->
+                    </div>
+
+                    <button id="start-comprehension-btn" onclick="startComprehensionAssessment()" disabled class="w-full bg-gray-400 text-white font-semibold px-5 py-3 rounded-lg shadow-md cursor-not-allowed flex items-center justify-center gap-2 transition duration-200"> <ion-icon name="play-circle-outline" class="text-xl"></ion-icon> Submit Response for Assessment </button>
+                    
                     <div id="comprehension-assessment-results" class="mt-4 p-4 bg-gray-100 rounded-lg text-sm text-gray-600 hidden"> <p class="font-medium text-gray-800 mb-1">Assessment Results:</p> <p>Placeholder...</p> </div>
+                    
                     <!-- Previous Results Section -->
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-900 mb-3 border-t pt-6">Previous Results</h3>
+                        <h3 class="lg:text-lg font-semibold text-gray-900 mb-3 border-t pt-6">Previous Results</h3>
                         <ul class="space-y-3">
                             <li class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"> <div> <p class="font-medium text-gray-800 text-sm">Oct 23, 2025 (Story: The Fox)</p> <p class="text-xs text-gray-600">Score: 8/10, Vocabulary: 9/10</p> </div> <span class="text-sm font-semibold text-blue-600">Good</span> </li>
                             <li class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"> <div> <p class="font-medium text-gray-800 text-sm">Oct 15, 2025 (Article: Planets)</p> <p class="text-xs text-gray-600">Score: 7/10, Vocabulary: 8/10</p> </div> <span class="text-sm font-semibold text-yellow-600">Fair</span> </li>
@@ -678,7 +983,7 @@
     <div id="fab-container" class="fixed bottom-6 right-6 space-y-3 z-40 hidden"> <button onclick="showToast('Connecting to teacher... (Demo)', 'info')" class="bg-starry-night text-white w-14 h-14 rounded-full shadow-md flex items-center justify-center transition-all duration-200 hover:scale-110 opacity-90 hover:opacity-100 hover:shadow-xl bg-cover bg-center" title="Chat with Teacher"> <ion-icon name="people" class="text-3xl"></ion-icon> </button> <button onclick="handleGenerateReport()" class="bg-starry-night text-white w-14 h-14 rounded-full shadow-md flex items-center justify-center transition-all duration-200 hover:scale-110 opacity-90 hover:opacity-100 hover:shadow-xl bg-cover bg-center" title="Generate Report"> <ion-icon name="document-text" class="text-3xl"></ion-icon> </button> <button onclick="toggleChat()" class="bg-starry-night text-white w-14 h-14 rounded-full shadow-md flex items-center justify-center transition-all duration-200 hover:scale-110 opacity-90 hover:opacity-100 hover:shadow-xl bg-cover bg-center" title="AI Assistant"> <ion-icon name="chatbubbles" class="text-3xl"></ion-icon> </button> </div>
     <div id="chat-widget" class="fixed bottom-24 right-6 w-80 h-96 bg-white rounded-2xl shadow-xl z-40 hidden flex-col overflow-hidden border"> <div class="p-4 bg-starry-gradient text-white flex justify-between items-center"> <h3 class="font-semibold text-lg">Boo - AI Assistant</h3> <button onclick="toggleChat()" class="text-white/80 hover:text-white"> <ion-icon name="close-outline" class="text-2xl"></ion-icon> </button> </div> <div id="chat-messages" class="flex-1 p-4 space-y-4 overflow-y-auto"> <div class="flex"><div class="chat-bubble chat-bubble-ai"> Hi! I'm Boo. How can I help you understand Akash's reading and comprehension progress today? </div></div> </div> <div class="p-4 border-t bg-white"> <form id="chat-form" class="flex items-center gap-2"> <input id="chat-input" type="text" placeholder="Ask about progress..." class="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-accent"> <button type="submit" class="bg-accent text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-accent-dark"> <ion-icon name="arrow-up-outline" class="text-xl"></ion-icon> </button> </form> </div> </div>
     
-    <!-- NEW: All Notifications Modal -->
+    <!-- All Notifications Modal -->
     <div id="notification-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
         <div class="bg-white p-6 rounded-xl shadow-xl w-full max-w-lg max-h-[80vh] flex flex-col">
             <div class="flex justify-between items-center mb-4 border-b pb-2">
@@ -732,18 +1037,96 @@
 
     <!-- Modals (Logout, Report) -->
     <div id="logout-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden"> <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm"> <h3 class="text-lg font-medium text-gray-900 mb-2">Are you sure?</h3> <p class="text-sm text-gray-600 mb-4">Are you sure you want to log out?</p> <div class="flex justify-end space-x-3"> <button onclick="document.getElementById('logout-modal').classList.add('hidden')" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"> Cancel </button> <button onclick="handleLogout()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"> OK </button> </div> </div> </div>
-    <div id="report-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden"> <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col"> <div class="flex justify-between items-center mb-4"> <h3 class="text-xl font-semibold text-gray-900">AI-Generated Progress Report</h3> <button onclick="document.getElementById('report-modal').classList.add('hidden')" class="text-gray-500 hover:text-gray-800"> <ion-icon name="close-outline" class="text-3xl"></ion-icon> </button> </div> <div class="overflow-y-auto"> <div id="report-content" class="text-sm text-gray-700 bg-gray-50 p-4 rounded-lg border"></div> </div> <div class="flex justify-end space-x-3 mt-6"> <button onclick="document.getElementById('report-modal').classList.add('hidden')" class="px-5 py-2 bg-accent text-white rounded-lg hover:bg-accent-dark"> Done </button> </div> </div> </div>
+    
+    <!-- Report Modal (Used for Report and AI Passages) -->
+    <div id="report-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden"> 
+        <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col"> 
+            <div class="flex justify-between items-center mb-4"> 
+                <h3 id="report-modal-title" class="text-xl font-semibold text-gray-900">AI-Generated Progress Report</h3> 
+                <button onclick="document.getElementById('report-modal').classList.add('hidden')" class="text-gray-500 hover:text-gray-800"> <ion-icon name="close-outline" class="text-3xl"></ion-icon> </button> 
+            </div> 
+            <div class="overflow-y-auto"> 
+                <div id="report-content" class="text-sm text-gray-700 bg-gray-50 p-4 rounded-lg border"></div> 
+            </div> 
+            <div class="flex justify-end space-x-3 mt-6"> 
+                <button onclick="document.getElementById('report-modal').classList.add('hidden')" class="px-5 py-2 bg-accent text-white rounded-lg hover:bg-accent-dark"> Done </button> 
+            </div> 
+        </div> 
+    </div>
+
+    <!-- New Tips Modal -->
+    <div id="recommended-tips-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white p-6 rounded-xl shadow-xl w-full max-w-xl max-h-[80vh] flex flex-col">
+            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                <h3 class="text-xl font-semibold text-gray-900">Comprehension Improvement Tips</h3>
+                <button onclick="document.getElementById('recommended-tips-modal').classList.add('hidden')" class="text-gray-500 hover:text-gray-800">
+                    <ion-icon name="close-outline" class="text-3xl"></ion-icon>
+                </button>
+            </div>
+            <div class="overflow-y-auto">
+                <div id="tips-modal-content" class="text-sm text-gray-700 space-y-4">
+                    <!-- Content injected by JS -->
+                </div>
+            </div>
+            <div class="flex justify-end space-x-3 mt-6"> 
+                <button onclick="document.getElementById('recommended-tips-modal').classList.add('hidden')" class="px-5 py-2 bg-accent text-white rounded-lg hover:bg-accent-dark"> Got it! </button>
+            </div>
+        </div>
+    </div>
+
+
     <div id="toast-notification" class="toast-notification"> <p id="toast-message">Default Toast Message</p> </div>
 
     <script>
+        // --- GLOBAL VARIABLES ---
         let currentUserName = "Abhishek";
         let subjectChart = null;
         let mediaRecorder;
         let audioChunks = [];
         let audioBlob = null;
         let selectedComprehensionFile = null;
-        // currentNotificationDropdown and related functions removed as we are now using a fixed modal
-        const readingPassages = [ "The sun dipped below the horizon, painting the sky in shades of orange and purple.", "A gentle breeze rustled the leaves in the tall oak trees.", "Butterflies with vibrant wings danced among the colorful wildflowers.", "The old lighthouse stood watch over the rocky coastline.", "Children laughed as they built sandcastles on the beach.", "A curious squirrel scampered up a tree, chattering loudly.", "Stars began to appear one by one in the darkening twilight sky.", "The wise owl hooted softly from its perch high above.", "Waves crashed against the shore, creating a soothing rhythm.", "A small boat sailed peacefully across the calm blue water." ];
+        let currentComprehensionMode = 'upload'; // 'upload' or 'write'
+        let chatHistory = []; // Moved chatHistory outside DOMContentLoaded
+        
+        const MIN_COMPREHENSION_WORDS = 50;
+
+        // Sentences for Reading Fluency Assessment (Page 7)
+        const readingPassages = [ 
+            "The sun dipped below the horizon, painting the sky in shades of orange and purple.", 
+            "A gentle breeze rustled the leaves in the tall oak trees.", 
+            "Butterflies with vibrant wings danced among the colorful wildflowers.", 
+            "The old lighthouse stood watch over the rocky coastline.", 
+            "Children laughed as they built sandcastles on the beach.", 
+            "A curious squirrel scampered up a tree, chattering loudly.", 
+            "Stars began to appear one by one in the darkening twilight sky.", 
+            "The wise owl hooted softly from its perch high above.", 
+            "Waves crashed against the shore, creating a soothing rhythm.", 
+            "A small boat sailed peacefully across the calm blue water." 
+        ];
+
+        // Sample passages for Comprehension Assessment
+        const comprehensionPassages = [
+            "A small town called Oakhaven was famous for its ancient clock tower. Every noon, it chimed twelve times, a sound that echoed through the surrounding valley. Recently, the clock began skipping chimes, sometimes ringing eleven, sometimes thirteen. The town elder believed this was a sign of a coming change, while the young clockmaker insisted it was merely a faulty spring that needed careful replacement. This mysterious development sparked significant speculation among the townspeople.",
+            "The planet Xylos orbits a twin-star system, meaning it never truly experiences night. The inhabitants, known as Sylvans, have developed incredible bioluminescent abilities to cope with the perpetual light. They use patterns of light emission as their primary form of communication, a silent, colorful language of flashes and fades. This unique form of existence has dictated their entire social structure and architectural development over millennia.",
+            "Professor Anya Sharma was a botanist who discovered an entirely new species of mushroom in the Amazon rainforest. This mushroom had a peculiar characteristic: it glowed intensely when exposed to low-frequency sound waves. Anya realized the potential for this discovery, especially for deep-sea exploration where light is scarce. She immediately began preparing a detailed documentation of her findings, knowing its publication would dramatically alter the scientific establishment.",
+            "The annual Great Balloon Race took place every June. Competitors from around the world gathered in the central meadow, preparing their massive, colorful airships. This year's favorite, Captain Elara, checked her ropes with intense concentration. Her primary competitor, the notoriously arrogant Lord Vex, watched her from his magnificent, custom-built balloon, determined to sabotage her success through calculated maneuvering. The immense crowd waited in anticipation for the starting cannon to fire.",
+            "Eliza, the chief archaeologist, discovered an extraordinary artifact deep within the Egyptian tomb. It was a shimmering, three-dimensional map displaying constellations that scientists believed were impossible to observe from Earth. She felt immense responsibility for the discovery's preservation. Despite immense pressure from rival institutions, she maintained her meticulous documentation, determined to complete the deciphering without interruption. Her meticulous nature proved essential to understanding the complex astronomical configuration.",
+        ];
+
+        const comprehensionTips = `
+            <h4 class="font-bold text-gray-900">1. Focus on the Main Idea:</h4>
+            <p>Encourage Akash to pause after every paragraph or section and verbally summarize the main point. If he can't, re-read that section together to reinforce understanding.</p>
+
+            <h4 class="font-bold text-gray-900">2. Ask the 'W' Questions:</h4>
+            <p>Before, during, and after reading, ask: **Who** is the story about? **What** happened? **Where** did it take place? **Why** did the character do that? **When** did it happen? This ensures comprehension of key details.</p>
+
+            <h4 class="font-bold text-gray-900">3. Visualize the Text:</h4>
+            <p>Suggest he draw a quick sketch or picture in his mind of what he is reading. This helps turn abstract words into concrete images, strengthening memory and overall understanding.</p>
+
+            <h4 class="font-bold text-gray-900">4. Contextual Clues:</h4>
+            <p>If he encounters a hard word, remind him to look at the words around it to guess the meaning before asking for help. This builds independence and vocabulary skills.</p>
+        `;
+
 
         // --- GEMINI API Config (unchanged) ---
         const CHAT_SYSTEM_PROMPT = `You are Boo, a friendly and encouraging AI assistant for the SoundSlate platform, designed to help parents understand their child's reading and comprehension progress.
@@ -755,6 +1138,7 @@
 - Do not make up specific data points not provided in the context. Speak generally about progress.
 - Be positive and highlight strengths before suggesting areas for improvement.
 - The child's name is Akash.`;
+
         const REPORT_PROMPT = `Please act as a supportive AI learning assistant for a parent named ${currentUserName}.
 The child's name is Akash.
 You are generating a progress report from the "SoundSlate" platform.
@@ -775,11 +1159,35 @@ Generate a concise, encouraging, and easy-to-read report in Markdown format.
 - Provide one or two actionable recommendations based on the struggle area.
 - Keep it positive and supportive.`;
 
+        const PASSAGE_PROMPT = `Generate a creative, short story passage, approximately 200 words long, suitable for a 4th-grade student working on reading fluency and comprehension. The passage should focus on describing a vivid scene and naturally incorporate at least five complex, multi-syllable words (e.g., 'imagination', 'enthusiastically', 'consequence', 'establishment', 'determination'). Format the output as plain text suitable for direct reading.`;
+        
+        // NEW PROMPT FOR CONTENT GENERATOR PAGE
+        const CONTENT_GENERATOR_PROMPT = `You are a helpful and creative educational content generator for the SoundSlate platform. The user will provide a prompt and a content type (e.g., 'Study Guide', 'Creative Story Prompt'). Your task is to generate the requested content based on the user's input and the selected type, suitable for a 4th-grade student.
+
+- If the type is 'Study Guide': Generate a short guide (max 150 words) with 3-4 key facts and 2 simple comprehension questions based on the user's topic. Format as Markdown lists and headers.
+- If the type is 'Creative Story Prompt': Generate a vivid, exciting, and short (max 100 words) story starter to inspire a child to write. Focus on tone, setting, and an interesting conflict.
+- If the type is 'Vocabulary Challenge': Provide 5 challenging words related to the topic, along with their simple definitions and one example sentence for each. Use Markdown for clarity.
+
+Format the output cleanly using Markdown.`;
+
+
+        // --- SKILL DATA ARRAY ---
+        const skillData = [
+            { name: "Accuracy", percentage: 95, color: "bg-green-500", detail: "Target: 98%", status: "Excellent", statusColor: "text-green-700" },
+            { name: "Vocabulary", percentage: 90, color: "bg-violet-500", detail: "Grade Level: 4 / Learned 15 new words", status: "Excellent", statusColor: "text-violet-700" },
+            { name: "Reading Speed", percentage: 75, color: "bg-blue-500", detail: "Target: 100 WPM / Current: 85 WPM (+10 WPM this week)", status: "Improving", statusColor: "text-blue-700" },
+            { name: "Comprehension", percentage: 80, color: "bg-amber-500", detail: "Target: 85% / Current: 80% (+5% this week)", status: "Good", statusColor: "text-amber-700" }
+        ];
+
         // --- GLOBAL HELPER FUNCTIONS ---
+        // Functions are defined globally to fix ReferenceErrors on initial load.
+
         function navigateTo(pageId) {
             // Close all modals (including notification modal) on navigation
             document.getElementById('notification-modal').classList.add('hidden');
             document.getElementById('chat-widget').classList.add('hidden');
+            document.getElementById('report-modal').classList.add('hidden'); // Close report/passage modal
+            document.getElementById('recommended-tips-modal').classList.add('hidden'); // Close tips modal
             
             document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
             const targetPage = document.getElementById(pageId);
@@ -791,7 +1199,10 @@ Generate a concise, encouraging, and easy-to-read report in Markdown format.
                 fabContainer.classList.remove('hidden');
                 fabContainer.classList.add('flex', 'flex-col');
                 // Only render chart if it's visible (prevents errors if page loaded hidden)
-                if (targetPage.offsetParent !== null) renderSubjectChart();
+                if (targetPage.offsetParent !== null) {
+                    renderSubjectChart();
+                    renderSkillProgress(); // Render the skill progress bars
+                }
             } else {
                 fabContainer.classList.add('hidden');
                 fabContainer.classList.remove('flex', 'flex-col');
@@ -830,6 +1241,61 @@ Generate a concise, encouraging, and easy-to-read report in Markdown format.
             // Setup assessment pages if navigating to them
             if (pageId === 'page-assessment-reading') setupReadingAssessmentPage();
             else if (pageId === 'page-assessment-comprehension') setupComprehensionAssessmentPage();
+            else if (pageId === 'page-generator') {
+                // Ensure generator input is always active on page load
+                document.getElementById('generated-content-results')?.classList.add('hidden');
+                document.getElementById('initial-message')?.classList.remove('hidden');
+            }
+        }
+
+        /**
+         * Renders and sorts the skill progress bars based on percentage.
+         */
+        function renderSkillProgress() {
+            const container = document.getElementById('skill-progress-bars');
+            if (!container) return;
+
+            // 1. Sort the data array by percentage (descending)
+            const sortedData = [...skillData].sort((a, b) => b.percentage - a.percentage);
+
+            // 2. Generate the HTML based on sorted data
+            let html = sortedData.map(skill => {
+                let detailLeft = skill.detail.includes('/') ? skill.detail.split('/')[0].trim() : skill.detail;
+                let detailRight = skill.detail.includes('/') ? skill.detail.split('/')[1].trim() : `Current: ${skill.percentage}%`;
+                
+                // Overriding text for Comprehension and Reading Speed to match the screenshot better
+                if (skill.name === "Comprehension") {
+                    detailRight = `Current: 80% (+5% this week)`;
+                    detailLeft = `Target: 85%`;
+                } else if (skill.name === "Reading Speed") {
+                    detailRight = `Current: 85 WPM (+10 WPM this week)`;
+                    detailLeft = `Target: 100 WPM`;
+                } else if (skill.name === "Accuracy") {
+                    detailRight = `Current: 95%`;
+                    detailLeft = `Target: 98%`;
+                } else if (skill.name === "Vocabulary") {
+                     detailRight = `Learned 15 new words`;
+                    detailLeft = `Grade Level: 4`;
+                }
+
+                return `
+                    <div> 
+                        <div class="flex justify-between items-center mb-1"> 
+                            <span class="text-base font-medium ${skill.statusColor}">${skill.name}</span> 
+                            <span class="text-sm font-medium ${skill.statusColor}">${skill.status}</span> 
+                        </div> 
+                        <div class="w-full bg-gray-200 rounded-full h-2.5"> 
+                            <div class="${skill.color} h-2.5 rounded-full" style="width: ${skill.percentage}%"></div> 
+                        </div> 
+                        <div class="flex justify-between items-center mt-1"> 
+                            <span class="text-xs text-gray-500">${detailLeft}</span> 
+                            <span class="text-xs text-gray-500">${detailRight}</span> 
+                        </div> 
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = html;
         }
 
         function renderSubjectChart() {
@@ -908,9 +1374,142 @@ Generate a concise, encouraging, and easy-to-read report in Markdown format.
             document.getElementById('notification-modal').classList.remove('hidden');
         }
 
-        // --- Assessment Page Setup Functions (unchanged) ---
-        function setupReadingAssessmentPage() { const passageElement = document.getElementById('reading-passage'); if(passageElement){ const randomIndex = Math.floor(Math.random() * readingPassages.length); passageElement.textContent = readingPassages[randomIndex]; } resetRecordingState(); const resultsDiv = document.getElementById('reading-assessment-results'); if(resultsDiv) resultsDiv.classList.add('hidden'); }
-        function setupComprehensionAssessmentPage() { selectedComprehensionFile = null; const fileInput = document.getElementById('comprehension-file-input'); if(fileInput) fileInput.value = ''; const filenameDisplay = document.getElementById('comprehension-selected-filename'); if(filenameDisplay) filenameDisplay.textContent = 'No file chosen'; const startButton = document.getElementById('start-comprehension-btn'); if(startButton){ startButton.disabled = true; startButton.classList.add('bg-gray-400', 'cursor-not-allowed'); startButton.classList.remove('bg-accent', 'hover:bg-accent-dark'); } const resultsDiv = document.getElementById('comprehension-assessment-results'); if(resultsDiv) resultsDiv.classList.add('hidden'); }
+
+        // --- Assessment Page Setup Functions ---
+
+        function setupReadingAssessmentPage() { 
+            const passageElement = document.getElementById('reading-passage'); 
+            if(passageElement){ 
+                const randomIndex = Math.floor(Math.random() * readingPassages.length); 
+                passageElement.textContent = readingPassages[randomIndex]; 
+            } 
+            resetRecordingState(); 
+            const resultsDiv = document.getElementById('reading-assessment-results'); 
+            if(resultsDiv) resultsDiv.classList.add('hidden'); 
+        }
+
+        function setupComprehensionAssessmentPage() { 
+            selectedComprehensionFile = null; 
+            const fileInput = document.getElementById('comprehension-file-input'); 
+            if(fileInput) fileInput.value = ''; 
+
+            // 1. Set Given Passage
+            const passageElement = document.getElementById('comprehension-given-passage');
+            if(passageElement) {
+                const randomIndex = Math.floor(Math.random() * comprehensionPassages.length);
+                passageElement.textContent = comprehensionPassages[randomIndex];
+            }
+            
+            // 2. Set initial mode to upload (which populates the input area)
+            setComprehensionMode('upload');
+
+            const resultsDiv = document.getElementById('comprehension-assessment-results'); 
+            if(resultsDiv) resultsDiv.classList.add('hidden'); 
+        }
+
+        function setComprehensionMode(mode) {
+            currentComprehensionMode = mode;
+            const inputArea = document.getElementById('comprehension-input-area');
+            const uploadBtn = document.getElementById('mode-upload-btn');
+            const writeBtn = document.getElementById('mode-write-btn');
+
+            if (mode === 'upload') {
+                uploadBtn?.classList.add('active');
+                uploadBtn?.classList.remove('inactive');
+                writeBtn?.classList.add('inactive');
+                writeBtn?.classList.remove('active');
+                
+                inputArea.innerHTML = `
+                    <div class="bg-gray-50 p-4 rounded-lg border text-center">
+                        <p class="text-sm text-gray-800 mb-3">Upload a file (e.g., text, document, recording summary) containing Akash's response to the passage.</p>
+                        <input type="file" id="comprehension-file-input" class="hidden" accept=".txt,.md,.pdf" onchange="handleFileSelect(event)">
+                        <label for="comprehension-file-input" class="file-input-button"> 
+                            <ion-icon name="cloud-upload-outline" class="text-xl"></ion-icon> Choose Response File 
+                        </label>
+                        <p id="comprehension-selected-filename" class="text-xs text-gray-500 mt-2">No file chosen</p>
+                    </div>
+                `;
+                // Re-attach event listener if dynamic HTML insertion removed it
+                document.getElementById('comprehension-file-input')?.addEventListener('change', handleFileSelect);
+
+            } else { // 'write' mode
+                uploadBtn?.classList.add('inactive');
+                uploadBtn?.classList.remove('active');
+                writeBtn?.classList.add('active');
+                writeBtn?.classList.remove('inactive');
+                
+                inputArea.innerHTML = `
+                    <div>
+                        <textarea id="comprehension-text-area" rows="8" placeholder="Type Akash's summary or response here (Min. 50 words)..." class="w-full p-4 border border-gray-300 rounded-lg text-sm focus:ring-accent focus:border-accent resize-none"></textarea>
+                        <p id="word-count-display" class="text-xs text-gray-600 text-right mt-1">0 words</p>
+                    </div>
+                `;
+                // Re-attach event listener for dynamic text area
+                document.getElementById('comprehension-text-area')?.addEventListener('input', checkComprehensionInput);
+            }
+            
+            checkComprehensionInput();
+        }
+
+
+        function checkComprehensionInput() {
+            const startButton = document.getElementById('start-comprehension-btn');
+            let readyToStart = false;
+
+            if (currentComprehensionMode === 'upload') {
+                const filenameDisplay = document.getElementById('comprehension-selected-filename');
+                readyToStart = selectedComprehensionFile !== null;
+                if(filenameDisplay) filenameDisplay.textContent = selectedComprehensionFile ? selectedComprehensionFile.name : 'No file chosen';
+            } else { // 'write' mode
+                const textarea = document.getElementById('comprehension-text-area');
+                const text = textarea?.value || '';
+                const wordCount = text.trim().split(/\s+/).filter(word => word.length > 0).length;
+                const wordCountDisplay = document.getElementById('word-count-display');
+                if(wordCountDisplay) wordCountDisplay.textContent = `${wordCount} words (Min. ${MIN_COMPREHENSION_WORDS} required)`;
+                readyToStart = wordCount >= MIN_COMPREHENSION_WORDS;
+            }
+
+            if (startButton) {
+                startButton.disabled = !readyToStart;
+                if (readyToStart) {
+                    startButton.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                    startButton.classList.add('bg-accent', 'hover:bg-accent-dark');
+                } else {
+                    startButton.classList.add('bg-gray-400', 'cursor-not-allowed');
+                    startButton.classList.remove('bg-accent', 'hover:bg-accent-dark');
+                }
+            }
+        }
+
+        function handleFileSelect(event) { 
+            const fileInput = document.getElementById('comprehension-file-input');
+            const file = fileInput?.files?.[0]; 
+            selectedComprehensionFile = file || null;
+            checkComprehensionInput();
+        }
+
+        function startComprehensionAssessment() { 
+            if (currentComprehensionMode === 'upload' && !selectedComprehensionFile) {
+                showToast("Please select a file first.", "error"); return;
+            }
+            const textarea = document.getElementById('comprehension-text-area');
+            if (currentComprehensionMode === 'write' && (!textarea || textarea.value.trim().split(/\s+/).filter(word => word.length > 0).length < MIN_COMPREHENSION_WORDS)) {
+                 showToast(`Please enter at least ${MIN_COMPREHENSION_WORDS} words in the response area.`, "error"); return;
+            }
+
+            const passageName = currentComprehensionMode === 'upload' ? selectedComprehensionFile.name : "Custom Text Response";
+
+            showToast(`Submitting response for ${passageName}...`, "info"); 
+            
+            setTimeout(() => { 
+                showToast("Assessment complete! Results below.", "success"); 
+                const resultsDiv = document.getElementById('comprehension-assessment-results'); 
+                if(resultsDiv){ 
+                    resultsDiv.innerHTML = `<p class="font-medium text-gray-800 mb-1">Assessment Results:</p><p><strong class="text-blue-600">Strong comprehension!</strong> Score: 9/10. Akash correctly identified the main theme and character motivations. Missed one detail question about the setting. (Response: ${passageName})</p>`; 
+                    resultsDiv.classList.remove('hidden'); 
+                } 
+            }, 2500); 
+        }
 
 
         // --- Reading Fluency Recording (unchanged) ---
@@ -929,18 +1528,150 @@ Generate a concise, encouraging, and easy-to-read report in Markdown format.
         function pauseRecording() { if (mediaRecorder?.state === 'recording') { mediaRecorder.pause(); updateRecordingStatus('Paused'); document.getElementById('pause-record-btn')?.classList.add('hidden'); document.getElementById('resume-record-btn')?.classList.remove('hidden'); } }
         function resumeRecording() { if (mediaRecorder?.state === 'paused') { mediaRecorder.resume(); updateRecordingStatus('Recording'); document.getElementById('pause-record-btn')?.classList.remove('hidden'); document.getElementById('resume-record-btn')?.classList.add('hidden'); } }
         function stopRecording() { if (mediaRecorder && (mediaRecorder.state === 'recording' || mediaRecorder.state === 'paused')) { mediaRecorder.stop(); /* onstop handles UI */ } }
+        
+        // --- Report Download Authorization Check ---
+        function checkReportAuthorization(reportName) {
+            // Simulated check: Only "Weekly Summary" is authorized for download.
+            // Other reports (Monthly Deep Dive, Reading & Comprehension) trigger an error.
+            if (reportName.includes('Weekly Summary')) {
+                return { authorized: true, message: "Download started." };
+            } else {
+                return { authorized: false, message: `Download Unauthorized: Downloading "${reportName}" requires higher administrative permissions.` };
+            }
+        }
+        
+        function handleReportDownload(reportName, dateRange) {
+            const authResult = checkReportAuthorization(reportName);
+            if (authResult.authorized) {
+                showToast(`Downloading: ${reportName} (${dateRange})...`, 'info');
+            } else {
+                showToast(authResult.message, 'error');
+            }
+        }
+
+        // --- Recommended Actions Handlers ---
+        function handleViewTips() {
+            document.getElementById('tips-modal-content').innerHTML = comprehensionTips;
+            document.getElementById('recommended-tips-modal').classList.remove('hidden');
+        }
+
+        async function handleFindPassages() {
+            // 1. Prepare UI for loading
+            const reportModalTitle = document.getElementById('report-modal-title');
+            reportModalTitle.textContent = "Generating Practice Passage";
+            reportContent.innerHTML = `
+                <div class="flex flex-col items-center justify-center p-12 text-center text-gray-600">
+                    <ion-icon name="document-text-outline" class="text-4xl text-accent animate-pulse mb-3"></ion-icon>
+                    <p class="font-semibold text-lg text-gray-900">Generating Practice Passage...</p>
+                    <p class="text-sm">Please wait while the AI crafts a suitable reading text for complex sentences.</p>
+                </div>
+            `;
+            document.getElementById('report-modal').classList.remove('hidden');
+            showToast("Generating complex sentences practice...", 'info'); 
+            
+            // 2. Call Gemini API for passage
+            await callGeminiAPI(null, 'passage');
+        }
 
 
-        // --- Comprehension Assessment (unchanged) ---
-        function handleFileSelect(event) { const file = event.target.files[0]; const filenameDisplay = document.getElementById('comprehension-selected-filename'); const startButton = document.getElementById('start-comprehension-btn'); if (file) { selectedComprehensionFile = file; if(filenameDisplay) filenameDisplay.textContent = file.name; if(startButton){ startButton.disabled = false; startButton.classList.remove('bg-gray-400', 'cursor-not-allowed'); startButton.classList.add('bg-accent', 'hover:bg-accent-dark'); } } else { selectedComprehensionFile = null; if(filenameDisplay) filenameDisplay.textContent = 'No file chosen'; if(startButton){ startButton.disabled = true; startButton.classList.add('bg-gray-400', 'cursor-not-allowed'); startButton.classList.remove('bg-accent', 'hover:bg-accent-dark'); } } }
-        function startComprehensionFromFile() { if (!selectedComprehensionFile) { showToast("Please select a file first.", "error"); return; } showToast(`Starting assessment for ${selectedComprehensionFile.name}...`, "info"); setTimeout(() => { showToast("Assessment complete! Results below.", "success"); const resultsDiv = document.getElementById('comprehension-assessment-results'); if(resultsDiv){ resultsDiv.innerHTML = `<p class="font-medium text-gray-800 mb-1">Assessment Results:</p><p><strong class="text-blue-600">Strong comprehension!</strong> Score: 9/10. Akash correctly identified the main theme and character motivations. Missed one detail question about the setting.</p>`; resultsDiv.classList.remove('hidden'); } /* Don't reset UI automatically */ }, 2500); }
+        // --- Report Generation ---
+        const reportModal = document.getElementById('report-modal'); 
+        const reportContent = document.getElementById('report-content'); 
+        function handleGenerateReport() { 
+            // 1. Set loading state in modal
+            const reportModalTitle = document.getElementById('report-modal-title');
+            reportModalTitle.textContent = "AI-Generated Progress Report";
 
+            reportContent.innerHTML = `
+                <div class="flex flex-col items-center justify-center p-12 text-center text-gray-600">
+                    <ion-icon name="document-text-outline" class="text-4xl text-accent animate-pulse mb-3"></ion-icon>
+                    <p class="font-semibold text-lg text-gray-900">Generating Report...</p>
+                    <p class="text-sm">Please wait while the AI compiles Akash's data.</p>
+                </div>
+            `;
+            // 2. Show Modal and Toast
+            reportModal.classList.remove('hidden');
+            showToast("Generating comprehensive progress report..."); 
+            // 3. Call API
+            callGeminiAPI(null, 'report'); 
+        }
+        
+        // --- Content Generator Functions ---
+        
+        async function handleGenerateContent() {
+            const userPromptEl = document.getElementById('generator-prompt');
+            const contentTypeEl = document.getElementById('content-type-selector');
+            const generateBtn = document.getElementById('generate-content-btn');
+        
+            const userPrompt = userPromptEl?.value.trim();
+            const contentType = contentTypeEl?.value;
+        
+            if (!userPrompt || userPrompt.length < 10) {
+                showToast("Please enter a longer, more detailed prompt (min 10 characters).", "error");
+                return;
+            }
+        
+            // Hide initial message
+            document.getElementById('initial-message')?.classList.add('hidden');
 
-        // --- AI Chatbot (unchanged) ---
-        const chatWidget = document.getElementById('chat-widget'); const chatMessages = document.getElementById('chat-messages'); const chatForm = document.getElementById('chat-form'); const chatInput = document.getElementById('chat-input'); let chatHistory = []; function toggleChat() { chatWidget.classList.toggle('hidden'); chatWidget.classList.toggle('flex'); } chatForm.addEventListener('submit', (e) => { e.preventDefault(); const userIn = chatInput.value.trim(); if (!userIn) return; addChatMessage(userIn, 'user'); chatInput.value = ''; addChatMessage('Boo is thinking...', 'ai', true); callGeminiAPI(userIn, 'chat'); }); function addChatMessage(message, sender, isThinking = false) { const bubble = document.createElement('div'); bubble.className = 'flex'; if (sender === 'user') bubble.classList.add('justify-end'); const inner = document.createElement('div'); inner.className = 'chat-bubble'; if (sender === 'user') inner.classList.add('chat-bubble-user'); else { inner.classList.add('chat-bubble-ai'); if(isThinking) { inner.classList.add('thinking'); inner.id = 'thinking-bubble'; } } inner.textContent = message; bubble.appendChild(inner); chatMessages.appendChild(bubble); chatMessages.scrollTop = chatMessages.scrollHeight; }
+            // Set loading state
+            generateBtn.disabled = true;
+            generateBtn.classList.add('bg-gray-500', 'cursor-wait', 'animate-pulse');
+            generateBtn.classList.remove('bg-accent', 'hover:bg-accent-dark');
+            generateBtn.innerHTML = '<ion-icon name="sync-outline" class="text-xl animate-spin"></ion-icon> Generating...';
+            
+            // Show loading in results area
+            displayGeneratedContent('loading', contentType);
+            
+            showToast(`Generating ${contentType.toLowerCase()}...`, 'info');
+            
+            // Call API with specific prompt and type
+            const combinedPrompt = `${CONTENT_GENERATOR_PROMPT}\n\n**USER REQUEST:**\nContent Type: ${contentType}\nTopic/Query: ${userPrompt}`;
+            
+            await callGeminiAPI(combinedPrompt, 'generate-content');
+        }
+        
+        function displayGeneratedContent(content, contentType = 'AI Content') {
+            const resultsArea = document.getElementById('generated-content-results');
+            const generateBtn = document.getElementById('generate-content-btn');
+            
+            if (!resultsArea || !generateBtn) return;
+            
+            resultsArea.classList.remove('bg-red-100', 'border-red-500', 'text-red-700', 'p-4', 'bg-gray-50', 'rounded-lg', 'border'); // Clean previous styles
+            resultsArea.classList.add('bg-white', 'p-6', 'rounded-xl', 'shadow-md');
 
-        // --- Report Generation (unchanged) ---
-        const reportModal = document.getElementById('report-modal'); const reportContent = document.getElementById('report-content'); function handleGenerateReport() { showToast("Generating comprehensive progress report..."); callGeminiAPI(null, 'report'); } 
+            if (content === 'loading') {
+                resultsArea.innerHTML = `
+                    <div class="flex flex-col items-center justify-center p-8 text-center text-gray-600">
+                        <ion-icon name="cube-outline" class="text-4xl text-accent animate-spin mb-3"></ion-icon>
+                        <p class="font-semibold text-lg text-gray-900">Crafting your ${contentType}...</p>
+                        <p class="text-sm">This may take a few moments. Hang tight!</p>
+                    </div>
+                `;
+                resultsArea.classList.remove('hidden');
+                return;
+            }
+
+            // Reset button state
+            generateBtn.disabled = false;
+            generateBtn.classList.remove('bg-gray-500', 'cursor-wait', 'animate-pulse');
+            generateBtn.classList.add('bg-accent', 'hover:bg-accent-dark');
+            generateBtn.innerHTML = '<ion-icon name="sparkles-outline" class="text-xl"></ion-icon> Generate Content';
+
+            if (content.error) {
+                resultsArea.classList.remove('bg-white', 'p-6', 'rounded-xl', 'shadow-md');
+                resultsArea.classList.add('bg-red-100', 'border-l-4', 'border-red-500', 'text-red-700', 'p-4');
+                resultsArea.innerHTML = `
+                    <p class="font-bold">Error Generating Content</p>
+                    <p class="text-sm">${content.message}</p>
+                `;
+            } else {
+                resultsArea.innerHTML = `<h2 class="text-xl font-bold mb-4">Your Generated ${contentType}</h2>` + simpleMarkdownToHtml(content);
+            }
+            resultsArea.classList.remove('hidden');
+        }
+        
+        // --- Markdown to HTML Helper (Used by Reports and Content Generator) ---
         function simpleMarkdownToHtml(text) { 
             let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                          .replace(/\*(.*?)\*/g, '<em>$1</em>')
@@ -950,26 +1681,27 @@ Generate a concise, encouraging, and easy-to-read report in Markdown format.
                          .replace(/^[-*] (.*$)/gm, '<li class="ml-4 list-disc">$1</li>');
         
             // Handle list grouping
-            html = html.replace(/<li>(.*?)<\/li>(?!\s*<li>)/gs, '<li>$1</li></ul>'); 
-            if (html.endsWith('</li>')) html += '</ul>';
-            html = html.replace(/(?:<br>\s*)*<li/g, '<ul><li'); 
-        
-            // Handle paragraphs
+            html = html.replace(/<\/li>\s*<li/gs, '</li><li');
+            html = html.replace(/(?<!<\/ul>)\n*<ul>/g, '<ul>');
+            html = html.replace(/<\/li>\s*<h/g, '</li></ul><h'); // End list before new heading
+            
+            // Simple paragraph wrapping
             html = html.split('\n\n').map(p => {
                 p = p.trim();
                 if (!p) return '';
-                if (p.startsWith('<h') || p.startsWith('<ul') || p.startsWith('<li')) return p.replace(/\n/g, '<br>');
-                if (p.startsWith('<ul>')) return p; 
+                // Check if it's already a block tag (heading, list, div)
+                if (p.startsWith('<h') || p.startsWith('<ul') || p.startsWith('<div')) return p.replace(/\n/g, '<br>');
                 return `<p>${p.replace(/\n/g, '<br>')}</p>`;
             }).join('');
-        
-            html = html.replace(/<\/ul>\s*<ul>/g, ''); // Fix extra list tags
+            
+            html = html.replace(/<ul>\s*<ul>/g, '<ul>'); // Fix extra list tags
+            html = html.replace(/<\/ul>\s*<\/ul>/g, '</ul>');
             html = html.replace(/<p>\s*<\/p>/g, ''); // Remove empty paragraphs
             return html; 
         }
 
 
-        // --- GEMINI API (unchanged) ---
+        // --- GEMINI API (UPDATED for 'generate-content') ---
         async function exponentialBackoff(fetchFn, maxRetries = 5, baseDelay = 1000) { 
             let attempt = 0; 
             while (attempt < maxRetries) { 
@@ -1003,6 +1735,8 @@ Generate a concise, encouraging, and easy-to-read report in Markdown format.
             const apiKey = ""; // Left empty as per instructions
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`; 
             let payload; 
+            let promptToSend;
+            
             if (mode === 'chat') { 
                 if(userInput) chatHistory.push({ role: "user", parts: [{ text: userInput }] }); 
                 const historyToSend = chatHistory.filter(msg => msg.role !== 'system'); 
@@ -1010,15 +1744,23 @@ Generate a concise, encouraging, and easy-to-read report in Markdown format.
             } else if (mode === 'report') { 
                 const reportType = document.getElementById('report-type')?.value || 'Weekly Summary'; 
                 const reportRange = document.getElementById('report-range')?.value || 'Last 7 Days'; 
-                const dynamicPrompt = `${REPORT_PROMPT}\nPlease generate a "${reportType}" for the "${reportRange}". Tailor insights. Use Markdown.`; 
-                payload = { contents: [{ parts: [{ text: dynamicPrompt }] }] }; 
-            } 
+                promptToSend = `${REPORT_PROMPT}\nPlease generate a "${reportType}" for the "${reportRange}". Tailor insights. Use Markdown.`; 
+                payload = { contents: [{ parts: [{ text: promptToSend }] }] }; 
+            } else if (mode === 'passage') {
+                promptToSend = PASSAGE_PROMPT;
+                payload = { contents: [{ parts: [{ text: promptToSend }] }] };
+            } else if (mode === 'generate-content') { // NEW MODE
+                promptToSend = userInput; // User input here is the combined system + user prompt
+                payload = { contents: [{ parts: [{ text: promptToSend }] }] };
+            }
+            
             const fetchFn = () => fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); 
             try { 
                 const result = await exponentialBackoff(fetchFn); 
                 if (!result || result.error) throw new Error(result?.message || "API call failed."); 
                 const candidate = result.candidates?.[0]; 
                 const text = candidate?.content?.parts?.[0]?.text; 
+                
                 if (!text) { 
                     const safety = candidate?.safetyRatings; 
                     const reason = candidate?.finishReason; 
@@ -1027,6 +1769,7 @@ Generate a concise, encouraging, and easy-to-read report in Markdown format.
                     else if (!candidate?.content) throw new Error("Blocked or invalid (no content)."); 
                     else throw new Error("Invalid response (no text)."); 
                 } 
+                
                 if (mode === 'chat') { 
                     chatHistory.push({ role: "model", parts: [{ text: text }] }); 
                     const thinkBubble = document.getElementById('thinking-bubble'); 
@@ -1039,7 +1782,23 @@ Generate a concise, encouraging, and easy-to-read report in Markdown format.
                     showToast("Report Generated!", "success"); 
                     reportContent.innerHTML = simpleMarkdownToHtml(text); 
                     reportModal.classList.remove('hidden'); 
-                } 
+                } else if (mode === 'passage') {
+                    showToast("Passage Generated!", "success");
+                    // Format the passage text for display
+                    reportContent.innerHTML = `
+                        <h4 class="text-lg font-bold text-gray-900 mb-2">Generated Practice Passage:</h4>
+                        <p class="text-xs text-gray-500 mb-4">Focus on complex words and comprehension when reading this text.</p>
+                        <div class="bg-white p-4 rounded-lg border border-accent/30 shadow-inner">
+                            <p class="text-base text-gray-800 whitespace-pre-wrap">${text}</p>
+                        </div>
+                    `;
+                    reportModal.classList.remove('hidden');
+                } else if (mode === 'generate-content') { // NEW: Handle Content Generation result
+                    const contentTypeEl = document.getElementById('content-type-selector');
+                    const contentType = contentTypeEl?.value || 'AI Content';
+                    showToast("Content Generated!", "success");
+                    displayGeneratedContent(text, contentType);
+                }
             } catch (error) { 
                 console.error("Gemini API Error:", error); 
                 const errorMsg = `Error: ${error.message || "Failed."}`; 
@@ -1051,7 +1810,22 @@ Generate a concise, encouraging, and easy-to-read report in Markdown format.
                         thinkBubble.id = ''; 
                     } else addChatMessage(`Sorry, error. ${errorMsg}`, 'ai'); 
                     if (userInput) chatHistory.pop(); 
-                } else if (mode === 'report') showToast(errorMsg, 'error'); 
+                } else if (mode === 'report' || mode === 'passage') {
+                    // Update the modal with an error message on failure
+                    reportContent.innerHTML = `
+                        <div class="flex flex-col items-center justify-center p-12 text-center text-gray-600">
+                            <ion-icon name="warning-outline" class="text-4xl text-red-500 mb-3"></ion-icon>
+                            <p class="font-semibold text-lg text-gray-900">${mode === 'report' ? 'Report' : 'Passage'} Generation Failed</p>
+                            <p class="text-sm text-red-600">${errorMsg}</p>
+                            <p class="text-xs mt-2 text-gray-500">Please try again later.</p>
+                        </div>
+                    `;
+                    showToast(errorMsg, 'error');
+                } else if (mode === 'generate-content') { // NEW: Handle Content Generation Error
+                    const contentTypeEl = document.getElementById('content-type-selector');
+                    const contentType = contentTypeEl?.value || 'AI Content';
+                    displayGeneratedContent({ error: true, message: errorMsg }, contentType);
+                }
             } 
         }
 
@@ -1064,6 +1838,7 @@ Generate a concise, encouraging, and easy-to-read report in Markdown format.
             // Re-render chart if visible to potentially update colors (e.g., border, axis text)
             if (document.getElementById('page-progress')?.classList.contains('active')) {
                 renderSubjectChart();
+                renderSkillProgress(); // Re-render skill bars to apply new colors
             }
         };
 
@@ -1071,6 +1846,42 @@ Generate a concise, encouraging, and easy-to-read report in Markdown format.
             const isDark = e.target.checked;
             applyTheme(isDark);
             localStorage.setItem('soundslate-theme', isDark ? 'dark' : 'light');
+        });
+
+
+        // --- Chat Functions (needed for chat API usage) ---
+        
+        function toggleChat() {
+            document.getElementById('chat-widget').classList.toggle('hidden');
+        }
+        function addChatMessage(message, sender) {
+            const chatMessages = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('flex');
+            messageDiv.innerHTML = `<div class="chat-bubble ${sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-ai'}">${message}</div>`;
+            if (sender === 'user') messageDiv.classList.add('justify-end');
+            
+            if (sender === 'ai' && message === '...') {
+                messageDiv.querySelector('.chat-bubble').classList.add('thinking');
+                messageDiv.querySelector('.chat-bubble').id = 'thinking-bubble';
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to bottom
+        }
+        document.getElementById('chat-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (message === '') return;
+            
+            addChatMessage(message, 'user');
+            input.value = '';
+            
+            // Add thinking bubble before calling API
+            addChatMessage('...', 'ai');
+            
+            await callGeminiAPI(message, 'chat');
         });
 
 
@@ -1093,9 +1904,11 @@ Generate a concise, encouraging, and easy-to-read report in Markdown format.
             // Initial render and navigation
             renderSubjectChart(); // Render initially even if hidden
             navigateTo('page-home'); // Set initial page
+            // We ensure renderSkillProgress is called inside navigateTo('page-progress') or applyTheme
 
             // Initialize chat history (unchanged)
             const initialGreeting = "Hi! I'm Boo. How can I help you understand Akash's reading and comprehension progress today?";
+            // Ensure chat history is reset on page load for consistent API calls
             chatHistory = [{ role: "user", parts: [{ text: "Hello" }] }, { role: "model", parts: [{ text: initialGreeting }] }];
             const aiBubble = document.querySelector('#chat-messages .chat-bubble-ai'); if(aiBubble) aiBubble.textContent = initialGreeting;
         });
