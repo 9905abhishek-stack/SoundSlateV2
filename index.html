@@ -11,8 +11,21 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
 
-    <!-- Ionicons for solid icons --><script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <!-- Use v5.5.2 for solid icons -->
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+    <!-- Firebase Imports -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, updateDoc, collection, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // Expose Firebase functions globally for use in the main <script> block
+        window.firebase = {
+            initializeApp, getAuth, signInAnonymously, signInWithCustomToken, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, getFirestore, doc, setDoc, updateDoc, collection, setPersistence, browserLocalPersistence, setLogLevel
+        };
+    </script>
 
     <style>
         /* Configure Tailwind for dark mode and custom colors */
@@ -47,15 +60,12 @@
         .hover\:bg-accent-dark:hover { background-color: var(--accent-dark); color: var(--accent-contrast); }
         .border { border-color: var(--border-color); }
 
-        /* Auth Layout Specific Styles: Sidebar now uses flex-1 for 50/50 split on desktop */
-        #auth-container { height: 100vh; width: 100%; display: flex; align-items: center; justify-content: center; }
-        #auth-sidebar { 
-            background-color: var(--bg-tertiary); 
-            border-color: var(--border-color); 
-            min-height: 100vh; 
-            flex-shrink: 0; 
-            color: var(--text-primary); 
-        }
+        /* Auth Layout Specific Styles */
+        #auth-container { height: 100vh; width: 100%; display: flex; align-items: stretch; justify-content: stretch; }
+        /* 50/50 Split on Desktop/Tablet */
+        #auth-sidebar { background-color: var(--bg-tertiary); border-color: var(--border-color); min-height: 100vh; flex: 1; color: var(--text-primary); transition: background-color 0.3s; }
+        #auth-form-container { flex: 1; }
+        
         @media (max-width: 768px) { #auth-sidebar { display: none; } }
         
         /* Theme Toggle Switch */
@@ -74,24 +84,48 @@
         /* Icon colors inside the sidebar content */
         .sidebar-item .icon-box { background-color: var(--bg-muted); }
         .dark .sidebar-item .icon-box { background-color: var(--bg-muted); }
-        
-        /* Toast Animation */
-        #toast-notification.show {
-            transform: translateX(-0.5rem); /* Moves toast slightly left from the edge */
+
+        /* Form Transition Classes */
+        .form-wrapper { 
+            position: relative; 
+            width: 100%; 
+            /* Added transition for height to smooth out the form container resize */
+            transition: height 0.5s ease-in-out; 
         }
-        
-        /* Form Transition Classes: Using opacity and transform for smooth fade/slide */
-        .form-transition {
+        .auth-form {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
             transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-            will-change: opacity, transform;
-            /* Forms are positioned absolutely within #form-wrapper */
-            @apply absolute top-0 left-0 w-full;
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+            /* Removed max-height here as it's set dynamically in JS for the wrapper */
+        }
+        .auth-form.hide {
+            opacity: 0;
+            pointer-events: none;
+            /* Keep forms from affecting layout while hiding */
+            height: 0; 
+            overflow: hidden;
+            transform: translateX(100px);
+        }
+        #signup-form.auth-form.hide {
+            transform: translateX(-100px);
         }
 
-        /* Sprite Colors (using inline style for maximum compatibility and color control) */
-        .unicorn-sprite { color: #f59e0b; } /* Amber */
-        .rocket-sprite { color: #10b981; } /* Emerald */
-        .book-sprite { color: #3b82f6; } /* Blue */
+        /* Sprite Styles */
+        .sprite { position: absolute; opacity: 0.1; font-size: 8rem; z-index: 0; user-select: none; pointer-events: none; }
+        .sprite-1 { top: 5%; left: 10%; color: #FDBA74; transform: rotate(-15deg); }
+        .sprite-2 { bottom: 5%; right: 5%; color: #93C5FD; transform: rotate(10deg); }
+        .sprite-3 { top: 50%; left: 0%; color: #34D399; transform: rotate(25deg); }
+
+        /* Toast Styles (Add .show class to translate-x-0) */
+        #toast-notification.show { transform: translateX(0); }
+        /* Spinner for buttons */
+        .spinner { border: 4px solid rgba(255, 255, 255, 0.3); border-top: 4px solid #ffffff; border-radius: 50%; width: 18px; height: 18px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="h-full">
@@ -113,8 +147,8 @@
         <!-- AUTH LAYOUT CONTAINER: Controls the flex order -->
         <div id="auth-layout-container" class="flex flex-col md:flex-row w-full h-full">
 
-            <!-- Sidebar: Dynamic Content (Takes 50% width on desktop due to flex-1) -->
-            <div id="auth-sidebar" class="hidden md:flex p-8 flex-col justify-start shadow-lg flex-1"> 
+            <!-- Sidebar: Dynamic Content (50%) -->
+            <div id="auth-sidebar" class="hidden md:flex p-12 flex-col justify-start shadow-xl"> 
                 <div id="sidebar-content" class="flex-1 overflow-y-auto">
                     <!-- Content injected by JS -->
                 </div>
@@ -128,17 +162,14 @@
                 </div>
             </div>
 
-            <!-- Form Content (Takes 50% width on desktop due to flex-1) -->
-            <div id="auth-form-container" class="flex-1 flex flex-col items-center justify-center p-6 sm:p-12 relative overflow-hidden h-full">
-                
-                <!-- Background Sprites/Decorations -->
-                <div class="absolute inset-0 z-0 opacity-10 md:opacity-15">
-                    <span style="font-size: 8rem;" class="unicorn-sprite absolute top-10 left-10 transform -rotate-12 select-none">🦄</span>
-                    <span style="font-size: 6rem;" class="rocket-sprite absolute bottom-5 right-5 transform rotate-6 select-none">🚀</span>
-                    <span style="font-size: 7rem;" class="book-sprite absolute top-1/3 right-1/4 transform rotate-45 select-none hidden sm:block">📚</span>
-                </div>
+            <!-- Form Content (50%) -->
+            <div id="auth-form-container" class="relative flex-1 flex flex-col items-center justify-center p-6 sm:p-12 overflow-hidden">
+                <!-- Kid-Friendly Sprites -->
+                <div class="sprite sprite-1">🦄</div>
+                <div class="sprite sprite-2">🚀</div>
+                <div class="sprite sprite-3">📚</div>
 
-                <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-2xl relative z-10">
+                <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-2xl z-10">
                     <div class="flex justify-center mb-6 md:hidden">
                         <!-- Mobile Logo -->
                         <div class="logo-container">
@@ -150,22 +181,28 @@
                     
                     <!-- Form Toggle Button Group -->
                     <div class="flex justify-center mb-6">
-                        <button onclick="setAuthMode('login')" id="btn-login" class="px-6 py-2 rounded-l-lg font-semibold text-sm transition-all duration-300 border border-r-0">Log In</button>
-                        <button onclick="setAuthMode('signup')" id="btn-signup" class="px-6 py-2 rounded-r-lg font-semibold text-sm transition-all duration-300 border">Sign Up</button>
+                        <button onclick="setAuthMode('login')" id="btn-login" class="px-6 py-2 rounded-l-lg font-semibold text-sm transition-all duration-300 border border-r-0" disabled>
+                            Log In
+                            <span id="login-loading" class="spinner ml-2 hidden"></span>
+                        </button>
+                        <button onclick="setAuthMode('signup')" id="btn-signup" class="px-6 py-2 rounded-r-lg font-semibold text-sm transition-all duration-300 border" disabled>
+                            Sign Up
+                            <span id="signup-loading" class="spinner ml-2 hidden"></span>
+                        </button>
                     </div>
 
-                    <!-- Wrapper to hold the forms using absolute positioning for clean transitions -->
-                    <div id="form-wrapper" class="relative min-h-[420px] pt-4">
+                    <!-- Form Wrapper for Transitions -->
+                    <div class="form-wrapper">
                         
                         <!-- Login Form -->
-                        <form id="login-form" onsubmit="handleAuth(event, 'login')" class="space-y-4 form-transition">
+                        <form id="login-form" onsubmit="handleAuth(event, 'login')" class="auth-form space-y-4">
                             <div>
                                 <label for="login-email" class="block text-sm font-medium text-gray-700">Email Address</label>
-                                <input type="email" id="login-email" name="email" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-accent focus:border-accent">
+                                <input type="email" id="login-email" name="email" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-accent focus:border-accent" autocomplete="username">
                             </div>
                             <div>
                                 <label for="login-password" class="block text-sm font-medium text-gray-700">Password</label>
-                                <input type="password" id="login-password" name="password" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-accent focus:border-accent">
+                                <input type="password" id="login-password" name="password" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-accent focus:border-accent" autocomplete="current-password">
                             </div>
                             <div class="flex items-center justify-between text-sm">
                                 <div class="flex items-center">
@@ -174,72 +211,51 @@
                                 </div>
                                 <a href="#" class="font-medium text-accent hover:text-accent-dark">Forgot password?</a>
                             </div>
-                            <button type="submit" class="w-full bg-accent text-white font-semibold px-5 py-3 rounded-lg shadow-md hover:bg-accent-dark transition duration-200 flex items-center justify-center gap-2">
-                                <ion-icon name="log-in-outline" class="text-xl"></ion-icon> Log In
+                            <button type="submit" id="login-submit-btn" class="w-full bg-accent text-white font-semibold px-5 py-3 rounded-lg shadow-md hover:bg-accent-dark transition duration-200 flex items-center justify-center gap-2" disabled>
+                                <ion-icon name="log-in-outline" class="text-xl"></ion-icon> 
+                                <span id="login-btn-text">Log In</span>
+                                <span id="login-submit-spinner" class="spinner ml-2 hidden"></span>
                             </button>
                         </form>
 
-                        <!-- Sign Up Form -->
-                        <form id="signup-form" onsubmit="handleAuth(event, 'signup')" class="space-y-4 form-transition">
+                        <!-- Sign Up Form (Initially hidden) -->
+                        <form id="signup-form" onsubmit="handleAuth(event, 'signup')" class="auth-form hide space-y-4">
                             <div>
                                 <label for="signup-name" class="block text-sm font-medium text-gray-700">Your Name (Parent)</label>
-                                <input type="text" id="signup-name" name="name" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-accent focus:border-accent">
+                                <input type="text" id="signup-name" name="name" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-accent focus:border-accent" autocomplete="name">
                             </div>
                             <div>
                                 <label for="signup-email" class="block text-sm font-medium text-gray-700">Email Address</label>
-                                <input type="email" id="signup-email" name="email" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-accent focus:border-accent">
+                                <input type="email" id="signup-email" name="email" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-accent focus:border-accent" autocomplete="username">
                             </div>
                             <div>
                                 <label for="signup-password" class="block text-sm font-medium text-gray-700">Create Password</label>
-                                <input type="password" id="signup-password" name="password" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-accent focus:border-accent">
+                                <input type="password" id="signup-password" name="password" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-accent focus:border-accent" autocomplete="new-password">
                             </div>
                             <p class="text-xs text-gray-600">By signing up, you agree to SoundSlate's terms and conditions.</p>
-                            <button type="submit" class="w-full bg-accent text-white font-semibold px-5 py-3 rounded-lg shadow-md hover:bg-accent-dark transition duration-200 flex items-center justify-center gap-2">
-                                <ion-icon name="person-add-outline" class="text-xl"></ion-icon> Get Started
+                            <button type="submit" id="signup-submit-btn" class="w-full bg-accent text-white font-semibold px-5 py-3 rounded-lg shadow-md hover:bg-accent-dark transition duration-200 flex items-center justify-center gap-2" disabled>
+                                <ion-icon name="person-add-outline" class="text-xl"></ion-icon> 
+                                <span id="signup-btn-text">Get Started</span>
+                                <span id="signup-submit-spinner" class="spinner ml-2 hidden"></span>
                             </button>
                         </form>
-                    </div>
+                    </div> <!-- End Form Wrapper -->
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Toast Notification UI -->
     <div id="toast-notification" class="fixed top-5 right-5 bg-blue-600 text-white px-6 py-4 rounded-lg shadow-xl z-[100] transform translate-x-full transition-transform duration-300 ease-out"> <p id="toast-message">Default Toast Message</p> </div>
 
 
-    <!-- FIREBASE AND APP LOGIC -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { 
-            getAuth, 
-            signInAnonymously, 
-            signInWithCustomToken, 
-            onAuthStateChanged,
-            createUserWithEmailAndPassword,
-            signInWithEmailAndPassword,
-            updateProfile
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { 
-            getFirestore, 
-            doc, 
-            setDoc, 
-            getDoc, 
-            serverTimestamp,
-            setLogLevel
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    <script>
+        // Global variables for Firebase services
+        let db, auth;
+        let isFirebaseReady = false;
+        let isSimulationMode = false;
+        let currentUserName = "Abhishek";
 
-        // --- GLOBAL VARIABLES (MANDATORY INJECTION) ---
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-soundslate-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-        
-        // --- FIREBASE INSTANCES ---
-        let app, db, auth;
-        let currentUserName = "Parent"; // Default user name
-        let isFirebaseReady = false; // <-- NEW: Readiness flag
-
-        // --- CONFIGURATION ---
+        // --- GLOBAL CONFIGURATION ---
         const DASHBOARD_URL = "https://9905abhishek-stack.github.io/SoundSlateV2/dashboard.html"; 
         
         const LOGIN_TIPS = [
@@ -257,220 +273,8 @@
             { icon: 'document-text-outline', title: 'Detailed Reports', detail: 'Generate comprehensive weekly or monthly reports to share with educators.' },
             { icon: 'time-outline', title: 'Optimal Study Time Alerts', detail: 'Identify and capitalize on the times your child is most receptive to learning.' }
         ];
-        
-        
-        // --- CORE FUNCTIONS ---
-        
-        function renderSidebarContent(mode) {
-            const sidebarContent = document.getElementById('sidebar-content');
-            const data = mode === 'login' ? LOGIN_TIPS : SIGNUP_FEATURES;
-            const title = mode === 'login' ? 'Tips for Success' : 'Key SoundSlate Features';
-            const iconColorClass = mode === 'login' ? 'text-green-500' : 'text-accent';
 
-            let html = `<h2 class="text-xl font-bold text-gray-900 mb-6" style="color: var(--text-primary);">${title}</h2><ul class="space-y-6">`;
-
-            data.forEach(item => {
-                html += `
-                    <li class="flex items-start space-x-4 sidebar-item">
-                        <div class="p-3 rounded-full bg-gray-200 ${iconColorClass} flex-shrink-0 icon-box">
-                            <ion-icon name="${item.icon}" class="text-2xl"></ion-icon>
-                        </div>
-                        <div>
-                            <p class="font-medium text-gray-900" style="color: var(--text-primary);">${item.title}</p>
-                            <p class="text-sm text-gray-600" style="color: var(--text-muted);">${item.detail}</p>
-                        </div>
-                    </li>
-                `;
-            });
-            html += '</ul>';
-            sidebarContent.innerHTML = html;
-        }
-
-        // Updated classes for smooth fade/slide transition
-        const VISIBLE_CLASSES = ['opacity-100', 'pointer-events-auto', 'translate-y-0']; 
-        const HIDDEN_CLASSES = ['opacity-0', 'pointer-events-none', 'translate-y-4'];
-
-        window.setAuthMode = function(mode) {
-            const loginForm = document.getElementById('login-form');
-            const signupForm = document.getElementById('signup-form');
-            const authTitle = document.getElementById('auth-title');
-            const btnLogin = document.getElementById('btn-login');
-            const btnSignup = document.getElementById('btn-signup');
-            const authLayoutContainer = document.getElementById('auth-layout-container');
-
-            // Function to apply button styles
-            const updateButtonStyles = (activeBtn, inactiveBtn) => {
-                activeBtn.classList.add('bg-accent', 'text-white');
-                activeBtn.classList.remove('bg-transparent', 'text-gray-700', 'hover:bg-gray-100');
-                inactiveBtn.classList.remove('bg-accent', 'text-white');
-                inactiveBtn.classList.add('bg-transparent', 'text-gray-700', 'hover:bg-gray-100');
-            };
-
-            if (mode === 'login') {
-                authTitle.textContent = 'Welcome Back';
-                
-                // Show Login Form (Translate-Y: 0, Opacity: 1)
-                loginForm.classList.remove(...HIDDEN_CLASSES);
-                loginForm.classList.add(...VISIBLE_CLASSES);
-                
-                // Hide Signup Form (Translate-Y: +4, Opacity: 0)
-                signupForm.classList.remove(...VISIBLE_CLASSES);
-                signupForm.classList.add(...HIDDEN_CLASSES);
-
-                updateButtonStyles(btnLogin, btnSignup);
-
-                // Layout: Tips (Sidebar) on Right
-                authLayoutContainer.classList.add('md:flex-row-reverse');
-                authLayoutContainer.classList.remove('md:flex-row');
-
-            } else { // signup
-                authTitle.textContent = 'Create Your Account';
-
-                // Show Signup Form (Translate-Y: 0, Opacity: 1)
-                signupForm.classList.remove(...HIDDEN_CLASSES);
-                signupForm.classList.add(...VISIBLE_CLASSES);
-                
-                // Hide Login Form (Translate-Y: +4, Opacity: 0)
-                loginForm.classList.remove(...VISIBLE_CLASSES);
-                loginForm.classList.add(...HIDDEN_CLASSES);
-
-                updateButtonStyles(btnSignup, btnLogin);
-
-                // Layout: Features (Sidebar) on Left
-                authLayoutContainer.classList.add('md:flex-row');
-                authLayoutContainer.classList.remove('md:flex-row-reverse');
-            }
-
-            renderSidebarContent(mode);
-        }
-
-        // --- AUTHENTICATION LOGIC (NOW USING FIREBASE) ---
-        window.handleAuth = async function(event, mode) {
-            event.preventDefault();
-            
-            // Check the new readiness flag
-            if (!isFirebaseReady || !auth || !db) {
-                showToast("Firebase not ready. Please wait a moment.", 'error');
-                return;
-            }
-
-            const form = event.target;
-            const email = form.querySelector('input[name="email"]').value;
-            const password = form.querySelector('input[name="password"]').value;
-            const nameInput = form.querySelector('input[name="name"]');
-            const name = nameInput ? nameInput.value : '';
-
-            try {
-                if (mode === 'signup') {
-                    // 1. Create user with email and password
-                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                    const user = userCredential.user;
-
-                    // 2. Update profile with display name
-                    if (name) {
-                        await updateProfile(user, { displayName: name });
-                    }
-                    
-                    // 3. Store name in a private Firestore document for retrieval
-                    const userDocRef = doc(db, `/artifacts/${appId}/users/${user.uid}/config/profile`);
-                    await setDoc(userDocRef, { 
-                        name: name || 'Parent', 
-                        email: user.email,
-                        createdAt: serverTimestamp()
-                    }, { merge: true });
-
-                    currentUserName = name || 'Parent';
-                    showToast(`Success! Welcome, ${currentUserName}. Redirecting...`, 'success');
-
-                } else { // login
-                    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                    const user = userCredential.user;
-                    
-                    let fetchedName = user.displayName || 'Parent';
-                     try {
-                        // Attempt to retrieve user profile from Firestore
-                        const userDocRef = doc(db, `/artifacts/${appId}/users/${user.uid}/config/profile`);
-                        const docSnap = await getDoc(userDocRef);
-                        if (docSnap.exists() && docSnap.data().name) {
-                            fetchedName = docSnap.data().name;
-                        }
-                    } catch (e) {
-                        console.warn("Could not fetch user profile from Firestore:", e.message);
-                    }
-                    currentUserName = fetchedName;
-                    
-                    showToast(`Login successful! Welcome back, ${currentUserName}. Redirecting...`, 'success');
-                }
-
-                // Perform redirection after a short delay
-                setTimeout(() => {
-                    // Pass the username and UID to the dashboard page for personalization
-                    window.location.href = `${DASHBOARD_URL}?user=${encodeURIComponent(currentUserName)}&uid=${auth.currentUser.uid}`;
-                }, 1500);
-
-            } catch (error) {
-                console.error("Authentication Error:", error);
-                let errorMessage = "Authentication failed.";
-                if (error.code) {
-                    // Friendly error mapping
-                    switch (error.code) {
-                        case 'auth/email-already-in-use': errorMessage = 'This email is already registered.'; break;
-                        case 'auth/invalid-email': errorMessage = 'Invalid email format.'; break;
-                        case 'auth/weak-password': errorMessage = 'Password should be at least 6 characters.'; break;
-                        case 'auth/user-not-found':
-                        case 'auth/wrong-password': 
-                        case 'auth/invalid-credential': errorMessage = 'Invalid email or password.'; break;
-                        default: errorMessage = `Auth Failed: ${error.message.split('(')[0]}`;
-                    }
-                }
-                showToast(errorMessage, 'error');
-            }
-        }
-
-
-        // --- FIREBASE INITIALIZATION ---
-        async function initializeFirebase() {
-            if (firebaseConfig) {
-                setLogLevel('debug'); // Enable Firestore logging
-                app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
-
-                // Initial authentication check using the mandatory token
-                try {
-                    if (initialAuthToken) {
-                        await signInWithCustomToken(auth, initialAuthToken);
-                        console.log("Firebase: Signed in with custom token.");
-                    } else {
-                        await signInAnonymously(auth);
-                        console.log("Firebase: Signed in anonymously.");
-                    }
-                } catch (error) {
-                    console.error("Firebase Auth Initialization Error:", error.message);
-                    showToast("Firebase initialization failed.", 'error');
-                }
-                
-                // Set ready state after initialization is complete
-                isFirebaseReady = true; 
-                console.log("Firebase: Initialization complete and ready.");
-
-                // Optional: Listen for auth state changes globally
-                onAuthStateChanged(auth, (user) => {
-                    if (user) {
-                        console.log(`Auth State: User is logged in with UID: ${user.uid}`);
-                    } else {
-                        console.log("Auth State: User is logged out/anonymous.");
-                    }
-                });
-
-            } else {
-                console.error("Firebase config is missing.");
-                showToast("Warning: Firebase config not found. App running in simulation mode.", 'error');
-            }
-        }
-
-
-        // --- THEME TOGGLE AND UTILITIES ---
+        // --- UTILITY FUNCTIONS ---
 
         const toast = document.getElementById('toast-notification');
         const toastMessage = document.getElementById('toast-message');
@@ -481,10 +285,286 @@
             else if (type === 'error') toast.classList.add('bg-red-600');
             else toast.classList.add('bg-blue-600');
             
-            // Force reflow to restart CSS animation
             void toast.offsetWidth; 
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function setLoadingState(formMode, isLoading) {
+            const btnId = formMode === 'login' ? 'login' : 'signup';
+            const submitBtn = document.getElementById(`${btnId}-submit-btn`);
+            const btnText = document.getElementById(`${btnId}-btn-text`);
+            const spinner = document.getElementById(`${btnId}-submit-spinner`);
+            
+            if (isLoading) {
+                submitBtn.setAttribute('disabled', 'true');
+                btnText.classList.add('hidden');
+                spinner.classList.remove('hidden');
+            } else {
+                submitBtn.removeAttribute('disabled');
+                btnText.classList.remove('hidden');
+                spinner.classList.add('hidden');
+            }
+        }
+        
+        function setInitialButtonState(isEnabled) {
+            const buttons = ['btn-login', 'btn-signup', 'login-submit-btn', 'signup-submit-btn'];
+            const initialSpinners = ['login-loading', 'signup-loading'];
+
+            buttons.forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) {
+                    if (isEnabled) {
+                        btn.removeAttribute('disabled');
+                    } else {
+                        btn.setAttribute('disabled', 'true');
+                    }
+                }
+            });
+
+            initialSpinners.forEach(id => {
+                const spinner = document.getElementById(id);
+                if (spinner) {
+                    spinner.classList.toggle('hidden', isEnabled);
+                }
+            });
+        }
+
+        // --- FIREBASE INITIALIZATION ---
+
+        async function initializeFirebase() {
+            if (isFirebaseReady) return;
+
+            setInitialButtonState(false);
+
+            try {
+                if (!window.firebase) throw new Error("Firebase SDK not loaded.");
+
+                // 1. Get Config and Init App
+                const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+                if (!firebaseConfig) {
+                    console.warn("Firebase config not found. Entering simulation mode.");
+                    throw new Error("Missing Firebase Config.");
+                }
+
+                // setLogLevel('debug'); // Uncomment to debug Firebase issues
+                const app = firebase.initializeApp(firebaseConfig);
+                auth = firebase.getAuth(app);
+                db = firebase.getFirestore(app);
+
+                // 2. Set Persistence (optional but recommended)
+                await firebase.setPersistence(auth, firebase.browserLocalPersistence);
+
+                // 3. Authenticate User (Use provided token or sign in anonymously)
+                const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+                
+                if (initialAuthToken) {
+                    await firebase.signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await firebase.signInAnonymously(auth);
+                }
+
+                console.log("Firebase initialized and user authenticated.");
+                isFirebaseReady = true;
+
+            } catch (error) {
+                console.error("Firebase Initialization Error:", error);
+                isSimulationMode = true;
+                showToast("Firebase setup failed. Running in simulation mode.", 'error');
+            } finally {
+                // Ensure buttons are enabled after initialization attempt (success or failure)
+                setInitialButtonState(true);
+            }
+        }
+
+        // --- AUTH LOGIC ---
+
+        function getUserId() {
+            // Use the actual Firebase UID if ready, otherwise use a temporary/simulated ID
+            if (auth && auth.currentUser) {
+                return auth.currentUser.uid;
+            }
+            return crypto.randomUUID(); // Fallback UUID
+        }
+        
+        async function handleAuth(event, mode) {
+            event.preventDefault();
+
+            if (!isFirebaseReady && !isSimulationMode) {
+                showToast('Still initializing the backend. Please wait a moment.', 'info');
+                return;
+            }
+
+            const form = event.target;
+            const email = form.querySelector('input[name="email"]').value;
+            const password = form.querySelector('input[name="password"]').value;
+            let displayName = '';
+            
+            if (mode === 'signup') {
+                const nameInput = form.querySelector('input[name="name"]');
+                displayName = nameInput ? nameInput.value : 'Parent User';
+            }
+
+            setLoadingState(mode, true);
+            let success = false;
+            let message = '';
+            let userId = getUserId(); // Get ID before auth operation
+
+            try {
+                if (isSimulationMode) {
+                    // Simulation Mode: Fake delay and success
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    message = mode === 'signup' 
+                        ? `Simulation success! Welcome, ${displayName}!` 
+                        : 'Simulation success! Redirecting to dashboard...';
+                    success = true;
+                    currentUserName = displayName || 'Simulated User'; // Set name for simulation
+                } else {
+                    // Real Firebase Auth
+                    if (mode === 'signup') {
+                        const userCredential = await firebase.createUserWithEmailAndPassword(auth, email, password);
+                        await firebase.updateProfile(userCredential.user, { displayName: displayName });
+                        
+                        // Save user data to Firestore
+                        const userRef = firebase.doc(db, `artifacts/${__app_id}/users/${userCredential.user.uid}/profile/details`);
+                        await firebase.setDoc(userRef, {
+                            name: displayName,
+                            email: email,
+                            createdAt: new Date(),
+                            role: 'parent'
+                        }, { merge: true });
+
+                        message = `Success! Welcome, ${displayName}! Redirecting...`;
+                        success = true;
+                        currentUserName = displayName;
+                        userId = userCredential.user.uid;
+
+                    } else { // login
+                        const userCredential = await firebase.signInWithEmailAndPassword(auth, email, password);
+                        
+                        currentUserName = userCredential.user.displayName || 'Parent User';
+                        userId = userCredential.user.uid;
+                        message = 'Login successful! Redirecting to dashboard...';
+                        success = true;
+                    }
+                }
+
+            } catch (error) {
+                console.error("Authentication Error:", error);
+                message = `Auth failed: ${error.message.replace('Firebase: ', '').replace(/\(.*\)/, '').trim() || 'Please check your credentials.'}`;
+                showToast(message, 'error');
+            } finally {
+                setLoadingState(mode, false);
+            }
+
+            if (success) {
+                showToast(message, 'success');
+                
+                // Perform redirection after a short delay
+                setTimeout(() => {
+                    // FIX: Append a cache-buster (timestamp) to the URL to ensure the latest version of dashboard.html is loaded.
+                    const cacheBuster = Date.now();
+                    const targetUrl = `${DASHBOARD_URL}?user=${encodeURIComponent(currentUserName)}&uid=${userId}&v=${cacheBuster}`;
+                    window.location.href = targetUrl;
+                }, 1500);
+            }
+        }
+
+        // --- LAYOUT AND THEME FUNCTIONS ---
+
+        function renderSidebarContent(mode) {
+            const sidebarContent = document.getElementById('sidebar-content');
+            const data = mode === 'login' ? LOGIN_TIPS : SIGNUP_FEATURES;
+            const title = mode === 'login' ? 'Tips for Success' : 'Key SoundSlate Features';
+            const iconColorClass = mode === 'login' ? 'text-green-500' : 'text-accent';
+
+            let html = `<h2 class="text-xl font-bold mb-6" style="color: var(--text-primary);">${title}</h2><ul class="space-y-6">`;
+
+            data.forEach(item => {
+                html += `
+                    <li class="flex items-start space-x-4 sidebar-item">
+                        <div class="p-3 rounded-full bg-gray-200 ${iconColorClass} flex-shrink-0 icon-box">
+                            <ion-icon name="${item.icon}" class="text-2xl"></ion-icon>
+                        </div>
+                        <div>
+                            <p class="font-medium" style="color: var(--text-primary);">${item.title}</p>
+                            <p class="text-sm" style="color: var(--text-muted);">${item.detail}</p>
+                        </div>
+                    </li>
+                `;
+            });
+            html += '</ul>';
+            sidebarContent.innerHTML = html;
+        }
+
+        function setAuthMode(mode) {
+            const loginForm = document.getElementById('login-form');
+            const signupForm = document.getElementById('signup-form');
+            const authTitle = document.getElementById('auth-title');
+            const btnLogin = document.getElementById('btn-login');
+            const btnSignup = document.getElementById('btn-signup');
+            const authLayoutContainer = document.getElementById('auth-layout-container');
+            const formWrapper = document.querySelector('.form-wrapper');
+
+            // 1. Apply mode classes
+            if (mode === 'login') {
+                // Show Login Form (Transition: Fade in from right)
+                loginForm.classList.remove('hide');
+                signupForm.classList.add('hide');
+                authTitle.textContent = 'Welcome Back';
+                
+                // Button Styling
+                btnLogin.classList.add('bg-accent', 'text-white');
+                btnLogin.classList.remove('bg-transparent', 'text-gray-700', 'hover:bg-gray-100');
+                btnSignup.classList.remove('bg-accent', 'text-white');
+                btnSignup.classList.add('bg-transparent', 'text-gray-700', 'hover:bg-gray-100');
+
+                // Layout: Tips (Sidebar) on Right
+                authLayoutContainer.classList.add('md:flex-row-reverse');
+                authLayoutContainer.classList.remove('md:flex-row');
+
+            } else { // signup
+                // Show Sign Up Form (Transition: Fade in from left)
+                loginForm.classList.add('hide');
+                signupForm.classList.remove('hide');
+                authTitle.textContent = 'Create Your Account';
+
+                // Button Styling
+                btnSignup.classList.add('bg-accent', 'text-white');
+                btnSignup.classList.remove('bg-transparent', 'text-gray-700', 'hover:bg-gray-100');
+                btnLogin.classList.remove('bg-accent', 'text-white');
+                btnLogin.classList.add('bg-transparent', 'text-gray-700', 'hover:bg-gray-100');
+
+                // Layout: Features (Sidebar) on Left
+                authLayoutContainer.classList.add('md:flex-row');
+                authLayoutContainer.classList.remove('md:flex-row-reverse');
+            }
+
+            renderSidebarContent(mode);
+            
+            // 2. FIX: Set dynamic height for the form wrapper to prevent visual distortion
+            // Use a slight delay to ensure the browser has registered the hide/show class changes
+            setTimeout(() => {
+                const targetForm = mode === 'login' ? loginForm : signupForm;
+                // Temporarily unhide the form to measure its natural height if it was hidden via CSS
+                targetForm.style.height = 'auto';
+                targetForm.style.overflow = 'visible';
+
+                const targetHeight = targetForm.offsetHeight;
+                formWrapper.style.height = `${targetHeight}px`;
+
+                // Re-apply hidden state properties after measurement
+                if (mode === 'login') {
+                    signupForm.style.height = '0';
+                    signupForm.style.overflow = 'hidden';
+                } else {
+                    loginForm.style.height = '0';
+                    loginForm.style.overflow = 'hidden';
+                }
+
+            }, 50);
         }
 
         const themeToggle = document.getElementById('theme-toggle-auth');
@@ -494,9 +574,7 @@
             else { document.documentElement.classList.remove('dark'); }
             
             // Re-render sidebar content to apply theme-dependent colors dynamically
-            // Determine current mode by checking which form is visible
-            const isSignup = document.getElementById('signup-form').classList.contains('opacity-100');
-            const currentMode = isSignup ? 'signup' : 'login';
+            const currentMode = document.getElementById('signup-form')?.classList.contains('hide') ? 'login' : 'signup';
             renderSidebarContent(currentMode);
         };
 
@@ -506,12 +584,8 @@
             localStorage.setItem('soundslate-theme', isDark ? 'dark' : 'light');
         });
 
-
         // --- INITIALIZATION ---
-        document.addEventListener('DOMContentLoaded', () => {
-            // 0. Initialize Firebase
-            initializeFirebase();
-
+        document.addEventListener('DOMContentLoaded', async () => {
             // 1. Apply saved theme
             const savedTheme = localStorage.getItem('soundslate-theme');
             const isDark = savedTheme === 'dark'; 
@@ -520,19 +594,24 @@
             applyTheme(isDark); 
 
             // 2. Set initial state for Auth page
-            const loginForm = document.getElementById('login-form');
-            const signupForm = document.getElementById('signup-form');
-            
-            // Initialize both forms to the hidden state with transitions
-            loginForm.classList.add(...HIDDEN_CLASSES);
-            signupForm.classList.add(...HIDDEN_CLASSES);
-
-            // Determine the initial mode based on URL hash
             const fragment = window.location.hash.substring(1);
             const initialMode = (fragment === 'signup') ? 'signup' : 'login';
-            
-            // Set the correct initial state which will also trigger the smooth transition
             setAuthMode(initialMode);
+            renderSidebarContent(initialMode);
+
+            // 3. Initialize Firebase, with a 2-second hard timeout
+            const timeoutPromise = new Promise(resolve => setTimeout(() => {
+                if (!isFirebaseReady) {
+                    console.warn("Initialization Timeout: Falling back to simulation mode.");
+                    isSimulationMode = true;
+                    showToast("Network blocked. Using Simulation Mode for login.", 'info');
+                    setInitialButtonState(true);
+                }
+                resolve();
+            }, 2000)); 
+
+            await initializeFirebase();
+            await timeoutPromise; // Wait for the timeout to ensure buttons are enabled regardless of Firebase outcome
         });
     </script>
 </body>
