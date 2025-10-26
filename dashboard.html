@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full"> <!-- Defaulted to Light Theme (no 'dark' class initially) -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoundSlate - Dashboards</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+
+    <!-- Use v5.5.2 for solid icons --><script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+
+    <script>
+        // Configure Tailwind for dark mode and custom colors
+        tailwind.config = {
+            darkMode: 'class', // Enable class-based dark mode
+            theme: {
+                extend: {
+                    colors: {
+                        'accent': '#38BDF8',       // sky-400
+                        'accent-dark': '#0EA5E9',   // sky-500
+                        'bg-light': '#F9FAFB',     // gray-50
+                        // Dark mode colors (defined via CSS variables below for easier JS toggle)
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Light mode variables (default) */
+        :root {
+            --bg-primary: #F9FAFB; /* bg-light / gray-50 */
+            --bg-secondary: #ffffff; /* white */
+            --bg-tertiary: #F3F4F6; /* gray-100 */
+            --bg-muted: #E5E7EB; /* gray-200 */
+            --text-primary: #111827; /* gray-900 */
+            --text-secondary: #374151; /* gray-700 */
+            --text-muted: #6B7280; /* gray-500 */
+            --border-color: #E5E7EB; /* gray-200 */
+            --accent: #38BDF8;
+            --accent-dark: #0EA5E9;
+            --accent-contrast: #ffffff;
+            --icon-color: #6B7280; /* gray-500 */
+            --icon-hover-bg: var(--accent);
+            --icon-hover-text: #ffffff;
+            --chart-grid-color: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Dark mode variables */
+        .dark {
+            --bg-primary: #0f172a; /* slate-900 */
+            --bg-secondary: #1e293b; /* slate-800 */
+            --bg-tertiary: #334155; /* slate-700 */
+            --bg-muted: #475569; /* slate-600 */
+            --text-primary: #f8fafc; /* slate-50 */
+            --text-secondary: #cbd5e1; /* slate-300 */
+            --text-muted: #94a3b8; /* slate-400 */
+            --border-color: #475569; /* slate-600 */
+            --accent: #38BDF8; /* sky-400 */
+            --accent-dark: #7dd3fc; /* sky-300 */
+            --accent-contrast: #0f172a; /* slate-900 for text on accent */
+            --icon-color: #94a3b8; /* slate-400 */
+            --icon-hover-bg: var(--accent);
+            --icon-hover-text: #0f172a; /* slate-900 */
+            --chart-grid-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Apply variables */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        header { background-color: var(--bg-secondary); border-bottom-color: var(--border-color); }
+        main { background-color: var(--bg-primary); }
+        .bg-white { background-color: var(--bg-secondary); }
+        .bg-gray-50 { background-color: var(--bg-tertiary); }
+        .bg-gray-100 { background-color: var(--bg-tertiary); } /* Re-map gray-100 */
+        .bg-gray-200 { background-color: var(--bg-muted); }
+        .text-gray-900 { color: var(--text-primary); }
+        .text-gray-800 { color: var(--text-primary); } /* Re-map gray-800 */
+        .text-gray-700 { color: var(--text-secondary); }
+        .text-gray-600 { color: var(--text-muted); }
+        .text-gray-500 { color: var(--icon-color); }
+        .text-accent { color: var(--accent); }
+        .hover\:text-accent-dark:hover { color: var(--accent-dark); }
+        .bg-accent { background-color: var(--accent); color: var(--accent-contrast); }
+        .hover\:bg-accent-dark:hover { background-color: var(--accent-dark); color: var(--accent-contrast); }
+        .border, .border-t, .border-b, .border-l, .border-r { border-color: var(--border-color); }
+        .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .dark .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2); } /* Darker shadow */
+        .hover\:bg-gray-100:hover { background-color: var(--bg-tertiary); }
+        .hover\:text-gray-900:hover { color: var(--text-primary); }
+        input, select { background-color: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-color); }
+        input::placeholder { color: var(--text-muted); }
+
+        /* DARK MODE FIX: Ensure select options are legible in the reports dropdowns */
+        .dark select option {
+            background-color: var(--bg-secondary); /* Dark background for dropdown options */
+            color: var(--text-primary);            /* Light text for dropdown options */
+        }
+        
+        /* Icon specific hover styles */
+        .text-gray-500.hover\:text-white:hover { color: var(--icon-hover-text); }
+        .hover\:bg-accent:hover { background-color: var(--icon-hover-bg); }
+
+
+        .page { display: none; }
+        .page.active { display: block; }
+
+        /* Toast Notification styles */
+        .toast-notification {
+            @apply fixed top-5 right-5 bg-blue-600 text-white px-6 py-4 rounded-lg shadow-xl z-[100] transform translate-x-full transition-transform duration-300 ease-out;
+        }
+        .toast-notification.show { @apply translate-x-0; }
+
+        /* Chat Bubble styles */
+        .chat-bubble { @apply px-4 py-2 rounded-lg max-w-xs; }
+        .chat-bubble-user { @apply bg-accent text-white self-end rounded-br-none; color: var(--accent-contrast); }
+        .chat-bubble-ai { background-color: var(--bg-muted); color: var(--text-secondary); @apply self-start rounded-bl-none; }
+        .chat-bubble-ai.thinking { @apply italic; color: var(--text-muted); }
+
+        /* Chart Legend */
+        .chart-legend-item { @apply flex items-center text-sm; color: var(--text-muted); }
+        .chart-legend-dot { @apply w-3 h-3 rounded-full mr-2; }
+
+        /* Starry backgrounds remain the same */
+        .bg-starry-gradient { background-image: linear-gradient(to right, #2c3e50, #000000); }
+        .bg-starry-night { background-image: url('https://images.unsplash.com/photo-1502134249126-9f3755a50d78?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); background-size: cover; background-position: center; }
+
+        /* Nav links */
+        .nav-link.active { @apply bg-starry-night text-white rounded-lg shadow-md; background-size: cover; background-position: center; text-shadow: 0 0 6px rgba(255, 255, 255, 0.7); }
+        .nav-link.inactive { color: var(--text-muted); }
+        .nav-link.inactive:hover { background-color: var(--bg-tertiary); color: var(--text-primary); }
+
+
+        /* Logo styles */
+        .logo-container { display: flex; align-items: center; gap: 0.5rem; }
+        .logo-image { height: 1.5rem; width: auto; display: inline-block; vertical-align: middle; }
+        .logo-image-fallback { 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            height: 1.5rem; 
+            width: 1.25rem; /* Reduced width for sleeker rectangle/pill shape */
+            background-color: var(--accent); 
+            color: white; 
+            font-weight: 900; /* Bolder font weight for S */
+            border-radius: 0.25rem; /* Small radius */
+            font-size: 1rem; 
+            line-height: 1.5rem; 
+            vertical-align: middle; 
+            /* Added transform to simulate a compressed rectangle feel */
+            transform: scaleX(0.85);
+            margin-right: 0.25rem; /* Adjust spacing after transformation */
+        }
+        .soundslate-logo-text { display: inline-block; font-size: 1.5rem; line-height: 2rem; font-weight: 700; color: var(--accent); vertical-align: middle; }
+
+        /* File Input & Recording */
+        .file-input-button { @apply inline-flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium bg-white hover:bg-gray-50 cursor-pointer; color: var(--text-secondary); background-color: var(--bg-secondary); border-color: var(--border-color); }
+        .file-input-button:hover { background-color: var(--bg-tertiary); }
+        .recording-dot { @apply w-3 h-3 rounded-full bg-red-500 animate-pulse; }
+
+        /* Notification Badge & Dropdown */
+        .notification-badge-container { @apply relative; }
+        .notification-badge { @apply absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white; }
+        /* A default style for all notification modals to ensure theme colors are used */
+        #notification-modal .bg-white { background-color: var(--bg-secondary); }
+        #notification-modal .border-b { border-color: var(--border-color); }
+        #notification-modal .text-gray-900 { color: var(--text-primary); }
+        #notification-modal .text-gray-600 { color: var(--text-muted); }
+        #notification-modal .bg-gray-50 { background-color: var(--bg-tertiary); }
+        #notification-modal .hover\:bg-gray-100:hover { background-color: var(--bg-muted); }
+
+        /* Report Modal Wrapping */
+        #report-content { white-space: normal; word-wrap: break-word; overflow-wrap: break-word; }
+        #report-content p, #report-content li, #report-content strong, #report-content em { white-space: normal; word-wrap: break-word; overflow-wrap: break-word; }
+
+        /* Theme Toggle Switch */
+        .theme-switch-wrapper { @apply flex items-center; }
+        .theme-switch { @apply relative inline-block w-10 h-6 cursor-pointer; }
+        .theme-switch input { @apply opacity-0 w-0 h-0; }
+        .slider { @apply absolute top-0 left-0 right-0 bottom-0 rounded-full transition duration-300; background-color: var(--bg-muted); }
+        .slider:before { @apply absolute content-[''] h-4 w-4 left-1 bottom-1 rounded-full transition duration-300; background-color: white; }
+        input:checked + .slider { background-color: var(--accent); }
+        input:checked + .slider:before { @apply transform translate-x-4; }
+
+    </style>
+</head>
+<body class="min-h-full"> <!-- Body class controlled by JS -->
+
+    <!-- PAGE 1: HOME DASHBOARD -->
+    <div id="page-home" class="page active">
+        <header class="bg-white shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <!-- Logo and Nav -->
+                    <div class="flex items-center space-x-4">
+                        <div class="logo-container">
+                            <!-- Placeholder image URL updated to use placehold.co for reliability -->
+                            <img src="https://placehold.co/100x40/38BDF8/FFFFFF?text=S&font=inter" alt="SoundSlate Logo" class="logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex'">
+                            <!-- The updated logo style is applied via the .logo-image-fallback CSS class -->
+                            <div class="logo-image-fallback" style="display: none;">S</div>
+                            <div class="soundslate-logo-text">SOUNDSLATE</div>
+                        </div>
+                        <nav class="hidden md:flex space-x-2">
+                            <a href="#" onclick="navigateTo('page-home')" data-page="page-home" class="nav-link active flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="home-outline" class="text-xl"></ion-icon> Home </a>
+                            <a href="#" onclick="navigateTo('page-progress')" data-page="page-progress" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="stats-chart-outline" class="text-xl"></ion-icon> Progress </a>
+                            <a href="#" onclick="navigateTo('page-insights')" data-page="page-insights" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="bulb-outline" class="text-xl"></ion-icon> Insights </a>
+                            <a href="#" onclick="navigateTo('page-reports')" data-page="page-reports" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="document-text-outline" class="text-xl"></ion-icon> Reports </a>
+                            <a href="#" onclick="navigateTo('page-assessment')" data-page="page-assessment" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="play-outline" class="text-xl"></ion-icon> Assessment </a>
+                        </nav>
+                    </div>
+                    <!-- User Menu and Icons -->
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-2">
+                            <div id="user-avatar-home" class="w-8 h-8 rounded-full bg-starry-night text-white flex items-center justify-center font-semibold bg-cover bg-center">A</div>
+                            <span id="user-name-home" class="hidden md:block text-sm font-medium text-gray-700">Hi, Abhishek!</span>
+                        </div>
+                        <div class="flex items-center space-x-1 relative"> <!-- Added relative for dropdown positioning -->
+                            <!-- Notification Button - opens modal via JS -->
+                            <button onclick="toggleNotificationDropdown(event)" class="notification-badge-container text-gray-500 hover:text-white hover:bg-accent p-2 rounded-full transition-all duration-200" title="Notifications">
+                                <ion-icon name="notifications-outline" class="text-2xl"></ion-icon>
+                                <span class="notification-badge"></span>
+                            </button>
+                            <!-- NOTE: Notification Dropdown HTML is removed from here -->
+                            <button onclick="navigateTo('page-settings')" class="text-gray-500 hover:text-white hover:bg-accent p-2 rounded-full transition-all duration-200" title="Settings"> <ion-icon name="settings-outline" class="text-2xl"></ion-icon> </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <div class="px-4 py-6 sm:px-0">
+                <!-- Welcome Banner -->
+                <div class="relative bg-starry-night text-white p-6 md:p-8 rounded-xl shadow-md mb-8 flex flex-col md:flex-row justify-between items-center overflow-hidden">
+                    <div class="absolute inset-0 bg-black opacity-40 z-0"></div>
+                    <div class="relative z-10 mb-4 md:mb-0">
+                        <h1 id="welcome-banner" class="text-3xl font-bold">Welcome back, Abhishek!</h1>
+                        <p class="mt-1 text-lg text-sky-100">Track your child's learning journey with powerful insights.</p>
+                    </div>
+                    <div class="relative z-10 flex flex-col sm:flex-row gap-3">
+                        <button onclick="navigateTo('page-progress')" class="bg-accent text-white font-semibold px-5 py-3 rounded-lg shadow-md hover:bg-accent-dark transition duration-200 flex items-center justify-center gap-2"> <ion-icon name="bar-chart-outline" class="text-xl"></ion-icon> View Dashboard </button>
+                        <button onclick="navigateTo('page-assessment')" class="bg-white/20 text-white border-2 border-white font-semibold px-5 py-3 rounded-lg shadow-md hover:bg-white/30 transition duration-200 flex items-center justify-center gap-2"> <ion-icon name="play-outline" class="text-xl"></ion-icon> Start Assessment </button>
+                    </div>
+                </div>
+
+                <!-- Stat Cards -->
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4">Your Child's Progress Overview</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <!-- Cards remain here -->
+                    <div class="bg-white p-6 rounded-xl shadow-md flex items-center space-x-4"> <div class="p-3 rounded-full bg-sky-100 text-sky-600"><ion-icon name="checkmark-done-circle-outline" class="text-3xl"></ion-icon></div> <div><div class="text-3xl font-bold text-gray-900">27</div><div class="text-sm text-gray-500">Tasks Completed</div></div> </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md flex items-center space-x-4"> <div class="p-3 rounded-full bg-sky-100 text-sky-600"><ion-icon name="time-outline" class="text-3xl"></ion-icon></div> <div><div class="text-3xl font-bold text-gray-900">2.5h</div><div class="text-sm text-gray-500">Study Time Today</div></div> </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md flex items-center space-x-4"> <div class="p-3 rounded-full bg-sky-100 text-sky-600"><ion-icon name="trending-up-outline" class="text-3xl"></ion-icon></div> <div><div class="text-3xl font-bold text-gray-900">85%</div><div class="text-sm text-gray-500">Success Rate</div></div> </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md flex items-center space-x-4"> <div class="p-3 rounded-full bg-green-100 text-green-600"><ion-icon name="arrow-up-circle-outline" class="text-3xl"></ion-icon></div> <div><div class="text-3xl font-bold text-green-600">+12%</div><div class="text-sm text-gray-500">Weekly Improvement</div></div> </div>
+                </div>
+                
+                <!-- New Grid for Features and Notifications -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- 1. Key Features (lg:col-span-2) -->
+                    <div class="lg:col-span-2">
+                        <h2 class="text-2xl font-semibold text-gray-900 mb-4">Key Features</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Feature Cards... (content unchanged) -->
+                            <div class="bg-white p-6 rounded-xl shadow-md"> <div class="p-3 rounded-full bg-sky-100 text-sky-600 w-12 h-12 flex items-center justify-center mb-3"><ion-icon name="analytics-outline" class="text-3xl"></ion-icon></div> <h3 class="text-lg font-semibold text-gray-900 mb-1">Real-time Tracking</h3> <p class="text-gray-600 text-sm">Monitor progress with live updates.</p> </div>
+                            <div class="bg-white p-6 rounded-xl shadow-md"> <div class="p-3 rounded-full bg-sky-100 text-sky-600 w-12 h-12 flex items-center justify-center mb-3"><ion-icon name="alert-circle-outline" class="text-3xl"></ion-icon></div> <h3 class="text-lg font-semibold text-gray-900 mb-1">Early Warnings</h3> <p class="text-gray-600 text-sm">Get alerts for specific struggles.</p> </div>
+                            <div class="bg-white p-6 rounded-xl shadow-md"> <div class="p-3 rounded-full bg-sky-100 text-sky-600 w-12 h-12 flex items-center justify-center mb-3"><ion-icon name="bulb-outline" class="text-3xl"></ion-icon></div> <h3 class="text-lg font-semibold text-gray-900 mb-1">AI Insights</h3> <p class="text-gray-600 text-sm">Receive personalized recommendations.</p> </div>
+                            <div class="bg-white p-6 rounded-xl shadow-md"> <div class="p-3 rounded-full bg-sky-100 text-sky-600 w-12 h-12 flex items-center justify-center mb-3"><ion-icon name="people-outline" class="text-3xl"></ion-icon></div> <h3 class="text-lg font-semibold text-gray-900 mb-1">Teacher Connect</h3> <p class="text-gray-600 text-sm">Direct communication channel.</p> </div>
+                            <div class="bg-white p-6 rounded-xl shadow-md"> <div class="p-3 rounded-full bg-sky-100 text-sky-600 w-12 h-12 flex items-center justify-center mb-3"><ion-icon name="phone-portrait-outline" class="text-3xl"></ion-icon></div> <h3 class="text-lg font-semibold text-gray-900 mb-1">Mobile Access</h3> <p class="text-gray-600 text-sm">Stay connected anywhere.</p> </div>
+                            <div class="bg-white p-6 rounded-xl shadow-md"> <div class="p-3 rounded-full bg-sky-100 text-sky-600 w-12 h-12 flex items-center justify-center mb-3"><ion-icon name="document-text-outline" class="text-3xl"></ion-icon></div> <h3 class="text-lg font-semibold text-gray-900 mb-1">Detailed Reports</h3> <p class="text-gray-600 text-sm">Generate comprehensive reports.</p> </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 2. Recent Notifications (lg:col-span-1) -->
+                    <div>
+                        <h2 class="text-2xl font-semibold text-gray-900 mb-4">Recent Notifications</h2>
+                        <div class="bg-white p-6 rounded-xl shadow-md h-full flex flex-col justify-between">
+                            <ul class="space-y-4">
+                                <li class="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
+                                    <ion-icon name="trending-up-outline" class="text-xl text-green-600 mt-1 flex-shrink-0"></ion-icon>
+                                    <div>
+                                        <p class="font-medium text-gray-900">Reading speed increased!</p>
+                                        <p class="text-xs text-gray-600">Akash is now reading at 88 WPM. 2h ago</p>
+                                    </div>
+                                </li>
+                                <li onclick="navigateTo('page-reports')" class="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer">
+                                    <ion-icon name="document-text-outline" class="text-xl text-blue-600 flex-shrink-0 mt-1"></ion-icon>
+                                    <div>
+                                        <p class="font-medium text-gray-900">New weekly report available.</p>
+                                        <p class="text-xs text-gray-600">Summary for Oct 19-25 is ready. Yesterday</p>
+                                    </div>
+                                </li>
+                                <li onclick="navigateTo('page-insights')" class="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer">
+                                    <ion-icon name="bulb-outline" class="text-xl text-yellow-600 flex-shrink-0 mt-1"></ion-icon>
+                                    <div>
+                                        <p class="font-medium text-gray-900">Focus Area: Complex Words</p>
+                                        <p class="text-xs text-gray-600">AI suggests practice. 3d ago</p>
+                                    </div>
+                                </li>
+                            </ul>
+                            <button onclick="document.getElementById('notification-modal').classList.remove('hidden')" class="w-full text-sm font-semibold text-accent hover:underline mt-4 py-2 border-t pt-4 border-gray-200">View All Notifications</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- PAGE 2: PROGRESS DASHBOARD -->
+    <div id="page-progress" class="page">
+        <!-- Header updated -->
+        <header class="bg-white shadow-sm sticky top-0 z-30">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center space-x-4">
+                        <div class="logo-container"> <img src="https://placehold.co/100x40/38BDF8/FFFFFF?text=S&font=inter" alt="SoundSlate Logo" class="logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex'"> <div class="logo-image-fallback" style="display: none;">S</div> <div class="soundslate-logo-text">SOUNDSLATE</div> </div>
+                        <nav class="hidden md:flex space-x-2">
+                            <a href="#" onclick="navigateTo('page-home')" data-page="page-home" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="home-outline" class="text-xl"></ion-icon> Home </a>
+                            <a href="#" onclick="navigateTo('page-progress')" data-page="page-progress" class="nav-link active flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="stats-chart-outline" class="text-xl"></ion-icon> Progress </a>
+                            <a href="#" onclick="navigateTo('page-insights')" data-page="page-insights" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="bulb-outline" class="text-xl"></ion-icon> Insights </a>
+                            <a href="#" onclick="navigateTo('page-reports')" data-page="page-reports" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="document-text-outline" class="text-xl"></ion-icon> Reports </a>
+                            <a href="#" onclick="navigateTo('page-assessment')" data-page="page-assessment" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="play-outline" class="text-xl"></ion-icon> Assessment </a>
+                        </nav>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-2"> <div id="user-avatar-progress" class="w-8 h-8 rounded-full bg-starry-night text-white flex items-center justify-center font-semibold bg-cover bg-center">A</div> <span id="user-name-progress" class="hidden md:block text-sm font-medium text-gray-700">Hi, Abhishek!</span> </div>
+                        <div class="flex items-center space-x-1 relative">
+                            <!-- Notification Button - opens modal via JS -->
+                            <button onclick="toggleNotificationDropdown(event)" class="notification-badge-container text-gray-500 hover:text-white hover:bg-accent p-2 rounded-full transition-all duration-200" title="Notifications"> <ion-icon name="notifications-outline" class="text-2xl"></ion-icon> <span class="notification-badge"></span> </button>
+                            <!-- NOTE: Notification Dropdown HTML is removed from here -->
+                            <button onclick="navigateTo('page-settings')" class="text-gray-500 hover:text-white hover:bg-accent p-2 rounded-full transition-all duration-200" title="Settings"> <ion-icon name="settings-outline" class="text-2xl"></ion-icon> </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Sub-Header Banner (content unchanged) -->
+            <div class="bg-starry-gradient text-white"> <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row justify-between items-center"> <div> <h1 id="progress-welcome" class="text-2xl font-bold">Hi Abhishek!</h1> <p class="text-sm text-sky-100">Let's check your child's reading & comprehension progress.</p> </div> <div class="flex items-center space-x-4 mt-4 md:mt-0"> <div class="flex items-center space-x-2"> <div class="p-2 bg-white/20 rounded-lg"> <ion-icon name="book-outline" class="text-2xl"></ion-icon> </div> <div> <div class="text-xl font-bold">85 WPM</div> <div class="text-xs text-sky-100">Reading Speed</div> </div> </div> <div class="flex items-center space-x-2"> <div class="p-2 bg-white/20 rounded-lg"> <ion-icon name="checkmark-done-outline" class="text-2xl"></ion-icon> </div> <div> <div class="text-xl font-bold">95%</div> <div class="text-xs text-sky-100">Accuracy</div> </div> </div> <div class="flex items-center space-x-2"> <div class="p-2 bg-white/20 rounded-lg"> <ion-icon name="chatbox-ellipses-outline" class="text-2xl"></ion-icon> </div> <div> <div class="text-xl font-bold">80%</div> <div class="text-xs text-sky-100">Comprehension</div> </div> </div> </div> </div> </div>
+        </header>
+        
+        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <!-- Main content grid -->
+            <div class="px-4 py-6 sm:px-0"> 
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6"> 
+                    <div class="lg:col-span-2 space-y-6"> 
+                        <div class="bg-white p-6 rounded-xl shadow-md"> <h3 class="text-xl font-semibold text-gray-900 mb-4">Skill Progress</h3> <div class="space-y-5"> <div> <div class="flex justify-between items-center mb-1"> <span class="text-base font-medium text-blue-700">Reading Speed</span> <span class="text-sm font-medium text-blue-700">Improving</span> </div> <div class="w-full bg-gray-200 rounded-full h-2.5"> <div class="bg-blue-500 h-2.5 rounded-full" style="width: 75%"></div> </div> <div class="flex justify-between items-center mt-1"> <span class="text-xs text-gray-500">Target: 100 WPM</span> <span class="text-xs text-gray-500">Current: 85 WPM (+10 WPM this week)</span> </div> </div> <div> <div class="flex justify-between items-center mb-1"> <span class="text-base font-medium text-green-700">Accuracy</span> <span class="text-sm font-medium text-green-700">Excellent</span> </div> <div class="w-full bg-gray-200 rounded-full h-2.5"> <div class="bg-green-500 h-2.5 rounded-full" style="width: 95%"></div> </div> <div class="flex justify-between items-center mt-1"> <span class="text-xs text-gray-500">Target: 98%</span> <span class="text-xs text-gray-500">Current: 95%</span> </div> </div> <div> <div class="flex justify-between items-center mb-1"> <span class="text-base font-medium text-violet-700">Vocabulary</span> <span class="text-sm font-medium text-violet-700">Excellent</span> </div> <div class="w-full bg-gray-200 rounded-full h-2.5"> <div class="bg-violet-500 h-2.5 rounded-full" style="width: 90%"></div> </div> <div class="flex justify-between items-center mt-1"> <span class="text-xs text-gray-500">Grade Level: 4</span> <span class="text-xs text-gray-500">Learned 15 new words</span> </div> </div> <div> <div class="flex justify-between items-center mb-1"> <span class="text-base font-medium text-amber-700">Comprehension</span> <span class="text-sm font-medium text-amber-700">Good</span> </div> <div class="w-full bg-gray-200 rounded-full h-2.5"> <div class="bg-amber-500 h-2.5 rounded-full" style="width: 80%"></div> </div> <div class="flex justify-between items-center mt-1"> <span class="text-xs text-gray-500">Target: 85%</span> <span class="text-xs text-gray-500">Current: 80% (+5% this week)</span> </div> </div> </div> </div> 
+                        <div class="bg-white p-6 rounded-xl shadow-md"> <div class="flex justify-between items-center mb-4"> <h3 class="text-xl font-semibold text-gray-900">Recent Activities</h3> <a href="#" class="text-sm font-medium text-accent hover:underline">View All</a> </div> <ul class="space-y-4"> <li class="flex items-center justify-between p-4 bg-gray-50 rounded-lg"> <div class="flex items-center space-x-3"> <div class="p-2 rounded-full bg-green-100 text-green-600"><ion-icon name="book-outline" class="text-xl"></ion-icon></div> <div> <p class="font-medium text-gray-900">Completed Reading Fluency Test</p> <p class="text-sm text-gray-500">Speed: 88 WPM, Accuracy: 95% • 1 hour ago</p> </div> </div> <span class="text-sm font-semibold text-green-600">Excellent</span> </li> <li class="flex items-center justify-between p-4 bg-gray-50 rounded-lg"> <div class="flex items-center space-x-3"> <div class="p-2 rounded-full bg-blue-100 text-blue-600"><ion-icon name="chatbox-ellipses-outline" class="text-xl"></ion-icon></div> <div> <p class="font-medium text-gray-900">Finished Comprehension Practice</p> <p class="text-sm text-gray-500">Score: 8/10 • 2 hours ago</p> </div> </div> <span class="text-sm font-semibold text-blue-600">Good</span> </li> <li class="flex items-center justify-between p-4 bg-gray-50 rounded-lg"> <div class="flex items-center space-x-3"> <div class="p-2 rounded-full bg-violet-100 text-violet-600"><ion-icon name="library-outline" class="text-xl"></ion-icon></div> <div> <p class="font-medium text-gray-900">Vocabulary Quiz</p> <p class="text-sm text-gray-500">Score: 9/10 • Yesterday</p> </div> </div> <span class="text-sm font-semibold text-violet-600">Excellent</span> </li> </ul> </div> 
+                        <div class="bg-white p-6 rounded-xl shadow-md"> <h3 class="text-xl font-semibold text-gray-900 mb-4">Recommended Actions</h3> <ul class="space-y-3"> <li class="flex items-center justify-between p-4 bg-gray-50 rounded-lg"> <div class="flex items-center"> <span class="text-xs font-bold text-orange-600 bg-orange-100 px-2 py-1 rounded-full mr-3">MEDIUM</span> <div> <p class="font-medium text-gray-900">Practice Complex Sentences</p> <p class="text-sm text-gray-600">Assign reading passages with longer sentences to improve fluency.</p> </div> </div> <button class="bg-accent text-white font-medium px-4 py-2 rounded-lg text-sm hover:bg-accent-dark">Find Passages</button> </li> <li class="flex items-center justify-between p-4 bg-gray-50 rounded-lg"> <div class="flex items-center"> <span class="text-xs font-bold text-blue-600 bg-blue-100 px-2 py-1 rounded-full mr-3">LOW</span> <div> <p class="font-medium text-gray-900">Review Comprehension Strategy</p> <p class="text-sm text-gray-600">Go over strategies for identifying the main idea in texts.</p> </div> </div> <button class="bg-accent text-white font-medium px-4 py-2 rounded-lg text-sm hover:bg-accent-dark">View Tips</button> </li> </ul> </div> 
+                    </div> 
+                    
+                    <div class="lg:col-span-1 space-y-6"> 
+                        <!-- REPLACED DOUGHNUT CHART WITH BAR CHART -->
+                        <div class="bg-white p-6 rounded-xl shadow-md"> 
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Daily Practice Minutes (Past Week)</h3> 
+                            <div class="chart-container relative w-full h-56"> 
+                                <canvas id="subjectChart"></canvas> 
+                            </div> 
+                            <p class="text-sm text-gray-500 mt-4">Total time this week: ~4h 30m</p>
+                        </div> 
+                        
+                        <div class="bg-white p-6 rounded-xl shadow-md"> 
+                            <h3 class="text-xl font-semibold text-gray-900 mb-4">Time Spent This Week</h3> 
+                            <div class="space-y-4"> 
+                                <div> 
+                                    <div class="flex justify-between mb-1"> <span class="text-sm font-medium text-gray-700">Reading Practice</span> <span class="text-sm font-medium text-gray-500">2h 45m</span> </div> 
+                                    <div class="w-full bg-gray-200 rounded-full h-2"> <div class="bg-blue-500 h-2 rounded-full" style="width: 60%"></div> </div> 
+                                </div> 
+                                <div> 
+                                    <div class="flex justify-between mb-1"> <span class="text-sm font-medium text-gray-700">Vocabulary Games</span> <span class="text-sm font-medium text-gray-500">1h 15m</span> </div> 
+                                    <div class="w-full bg-gray-200 rounded-full h-2"> <div class="bg-violet-500 h-2 rounded-full" style="width: 25%"></div> </div> 
+                                </div> 
+                                <div> 
+                                    <div class="flex justify-between mb-1"> <span class="text-sm font-medium text-gray-700">Comprehension Tasks</span> <span class="text-sm font-medium text-gray-500">1h 00m</span> </div> 
+                                    <div class="w-full bg-gray-200 rounded-full h-2"> <div class="bg-amber-500 h-2 rounded-full" style="width: 15%"></div> </div> 
+                                </div> 
+                            </div> 
+                        </div> 
+                    </div> 
+                </div> 
+            </div>
+        </main>
+    </div>
+
+    <!-- PAGE 3: INSIGHTS -->
+    <div id="page-insights" class="page">
+        <!-- Header updated -->
+        <header class="bg-white shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center space-x-4">
+                        <div class="logo-container"> <img src="https://placehold.co/100x40/38BDF8/FFFFFF?text=S&font=inter" alt="SoundSlate Logo" class="logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex'"> <div class="logo-image-fallback" style="display: none;">S</div> <div class="soundslate-logo-text">SOUNDSLATE</div> </div>
+                        <nav class="hidden md:flex space-x-2">
+                            <a href="#" onclick="navigateTo('page-home')" data-page="page-home" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="home-outline" class="text-xl"></ion-icon> Home </a>
+                            <a href="#" onclick="navigateTo('page-progress')" data-page="page-progress" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="stats-chart-outline" class="text-xl"></ion-icon> Progress </a>
+                            <a href="#" onclick="navigateTo('page-insights')" data-page="page-insights" class="nav-link active flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="bulb-outline" class="text-xl"></ion-icon> Insights </a>
+                            <a href="#" onclick="navigateTo('page-reports')" data-page="page-reports" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="document-text-outline" class="text-xl"></ion-icon> Reports </a>
+                            <a href="#" onclick="navigateTo('page-assessment')" data-page="page-assessment" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="play-outline" class="text-xl"></ion-icon> Assessment </a>
+                        </nav>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div id="user-avatar-insights" class="w-8 h-8 rounded-full bg-starry-night text-white flex items-center justify-center font-semibold bg-cover bg-center">A</div>
+                        <span id="user-name-insights" class="hidden md:block text-sm font-medium text-gray-700">Hi, Abhishek!</span>
+                        <div class="flex items-center space-x-1 relative">
+                            <!-- Notification Button - opens modal via JS -->
+                            <button onclick="toggleNotificationDropdown(event)" class="notification-badge-container text-gray-500 hover:text-white hover:bg-accent p-2 rounded-full transition-all duration-200" title="Notifications"> <ion-icon name="notifications-outline" class="text-2xl"></ion-icon> <span class="notification-badge"></span> </button>
+                            <!-- NOTE: Notification Dropdown HTML is removed from here -->
+                            <button onclick="navigateTo('page-settings')" class="text-gray-500 hover:text-white hover:bg-accent p-2 rounded-full transition-all duration-200" title="Settings"> <ion-icon name="settings-outline" class="text-2xl"></ion-icon> </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Page Content -->
+        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <!-- Content with added chart placeholder and recommendations (unchanged from previous) -->
+            <div class="px-4 py-6 sm:px-0"> <h1 class="text-3xl font-bold text-gray-900 mb-2">AI-Powered Insights</h1> <p class="text-lg text-gray-600 mb-8">Discover patterns and recommendations based on Akash's learning habits.</p> <div class="grid grid-cols-1 lg:grid-cols-3 gap-6"> <div class="lg:col-span-2 space-y-6"> <div class="bg-white p-6 rounded-xl shadow-md"> <h3 class="text-xl font-semibold text-gray-900 mb-4">Key Insights</h3> <ul class="space-y-4"> <li class="flex items-start space-x-3"> <div class="p-2 rounded-full bg-sky-100 text-sky-600 mt-1"><ion-icon name="trending-up-outline" class="text-xl"></ion-icon></div> <div> <p class="font-medium text-gray-900">Progress Trend: Reading</p> <p class="text-sm text-gray-600">Reading comprehension has improved by 15% this week. He is consistently performing well in this area. Great progress!</p> <button class="text-sm font-semibold text-accent hover:underline mt-1">View Reading Details</button> </div> </li> <li class="flex items-start space-x-3"> <div class="p-2 rounded-full bg-sky-100 text-sky-600 mt-1"><ion-icon name="alarm-outline" class="text-xl"></ion-icon></div> <div> <p class="font-medium text-gray-900">Optimal Study Time</p> <p class="text-sm text-gray-600">Best performance and focus observed between 4-6 PM. Schedule reading practice during this time for better results.</p> <button class="text-sm font-semibold text-accent hover:underline mt-1">Set Study Reminder</button> </div> </li> <li class="flex items-start space-x-3"> <div class="p-2 rounded-full bg-sky-100 text-sky-600 mt-1"><ion-icon name="speedometer-outline" class="text-xl"></ion-icon></div> <div> <p class="font-medium text-gray-900">Pacing Suggestion</p> <p class="text-sm text-gray-600">Akash shows good speed in reading fluency tests. Ensure he also takes time to fully comprehend the text afterwards.</p> <button class="text-sm font-semibold text-accent hover:underline mt-1">Discuss with Teacher</button> </div> </li> <li class="flex items-start space-x-3"> <div class="p-2 rounded-full bg-yellow-100 text-yellow-600 mt-1"><ion-icon name="alert-circle-outline" class="text-xl"></ion-icon></div> <div> <p class="font-medium text-gray-900">Vocabulary Focus</p> <p class="text-sm text-gray-600">While vocabulary is strong overall, introducing more complex synonyms could further enhance writing and comprehension skills.</p> <button class="text-sm font-semibold text-accent hover:underline mt-1">Find Vocabulary Games</button> </div> </li> </ul> </div> <div class="bg-white p-6 rounded-xl shadow-md"> <h3 class="text-xl font-semibold text-gray-900 mb-4">Focus Trend Over Time</h3> <div class="h-64 bg-gray-100 rounded-lg flex items-center justify-center"> <p class="text-gray-500 italic">Line chart showing focus levels over the past month will appear here.</p> </div> </div> </div> <div class="lg:col-span-1 space-y-6"> <div class="bg-white p-6 rounded-xl shadow-md"> <h3 class="text-xl font-semibold text-gray-900 mb-4">Learning Habits</h3> <ul class="space-y-3"> <li class="flex items-center space-x-3"> <div class="p-2 rounded-full bg-green-100 text-green-600"><ion-icon name="checkmark-circle-outline" class="text-xl"></ion-icon></div> <p class="text-sm text-gray-600">Consistent study times</p> </li> <li class="flex items-center space-x-3"> <div class="p-2 rounded-full bg-green-100 text-green-600"><ion-icon name="book-outline" class="text-xl"></ion-icon></div> <p class="text-sm text-gray-600">High engagement in Reading</p> </li> <li class="flex items-center space-x-3"> <div class="p-2 rounded-full bg-green-100 text-green-600"><ion-icon name="timer-outline" class="text-xl"></ion-icon></div> <p class="text-sm text-gray-600">Good focus during 4-6 PM</p> </li> <li class="flex items-center space-x-3"> <div class="p-2 rounded-full bg-yellow-100 text-yellow-600"><ion-icon name="alert-circle-outline" class="text-xl"></ion-icon></div> <p class="text-sm text-gray-600">Slight hesitation on complex words</p> </li> </ul> </div> <div class="bg-white p-6 rounded-xl shadow-md"> <h3 class="text-xl font-semibold text-gray-900 mb-4">AI Recommendations</h3> <ul class="space-y-4"> <li class="flex items-start space-x-3"> <div class="p-2 rounded-full bg-sky-100 text-sky-600 mt-1 flex-shrink-0"><ion-icon name="reader-outline" class="text-xl"></ion-icon></div> <div> <p class="font-medium text-gray-900">Challenging Texts</p> <p class="text-sm text-gray-600">Introduce short stories or articles slightly above Akash's current reading level to encourage vocabulary growth and comprehension practice.</p> </div> </li> <li class="flex items-start space-x-3"> <div class="p-2 rounded-full bg-sky-100 text-sky-600 mt-1 flex-shrink-0"><ion-icon name="timer-outline" class="text-xl"></ion-icon></div> <div> <p class="font-medium text-gray-900">Timed Reading</p> <p class="text-sm text-gray-600">Incorporate short, timed reading exercises (1-2 minutes) followed by quick comprehension checks to improve both speed and focus.</p> </div> </li> </ul> </div> </div> </div> </div>
+        </main>
+    </div>
+
+    <!-- PAGE 4: REPORTS -->
+    <div id="page-reports" class="page">
+        <!-- Header updated -->
+        <header class="bg-white shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center space-x-4">
+                        <div class="logo-container"> <img src="https://placehold.co/100x40/38BDF8/FFFFFF?text=S&font=inter" alt="SoundSlate Logo" class="logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex'"> <div class="logo-image-fallback" style="display: none;">S</div> <div class="soundslate-logo-text">SOUNDSLATE</div> </div>
+                        <nav class="hidden md:flex space-x-2">
+                            <a href="#" onclick="navigateTo('page-home')" data-page="page-home" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="home-outline" class="text-xl"></ion-icon> Home </a>
+                            <a href="#" onclick="navigateTo('page-progress')" data-page="page-progress" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="stats-chart-outline" class="text-xl"></ion-icon> Progress </a>
+                            <a href="#" onclick="navigateTo('page-insights')" data-page="page-insights" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="bulb-outline" class="text-xl"></ion-icon> Insights </a>
+                            <a href="#" onclick="navigateTo('page-reports')" data-page="page-reports" class="nav-link active flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="document-text-outline" class="text-xl"></ion-icon> Reports </a>
+                            <a href="#" onclick="navigateTo('page-assessment')" data-page="page-assessment" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="play-outline" class="text-xl"></ion-icon> Assessment </a>
+                        </nav>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div id="user-avatar-reports" class="w-8 h-8 rounded-full bg-starry-night text-white flex items-center justify-center font-semibold bg-cover bg-center">A</div>
+                        <span id="user-name-reports" class="hidden md:block text-sm font-medium text-gray-700">Hi, Abhishek!</span>
+                        <div class="flex items-center space-x-1 relative">
+                            <!-- Notification Button - opens modal via JS -->
+                            <button onclick="toggleNotificationDropdown(event)" class="notification-badge-container text-gray-500 hover:text-white hover:bg-accent p-2 rounded-full transition-all duration-200" title="Notifications"> <ion-icon name="notifications-outline" class="text-2xl"></ion-icon> <span class="notification-badge"></span> </button>
+                            <!-- NOTE: Notification Dropdown HTML is removed from here -->
+                            <button onclick="navigateTo('page-settings')" class="text-gray-500 hover:text-white hover:bg-accent p-2 rounded-full transition-all duration-200" title="Settings"> <ion-icon name="settings-outline" class="text-2xl"></ion-icon> </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Page Content -->
+        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <!-- Content with enhanced recent reports list (unchanged from previous) -->
+            <div class="px-4 py-6 sm:px-0"> <h1 class="text-3xl font-bold text-gray-900 mb-2">Download Reports</h1> <p class="text-lg text-gray-600 mb-8">Generate new reports or download past reports for Akash.</p> <div class="grid grid-cols-1 md:grid-cols-2 gap-6"> <div class="bg-white p-6 rounded-xl shadow-md"> <h3 class="text-xl font-semibold text-gray-900 mb-4">Generate New Report</h3> <div class="space-y-4"> <div> 
+                <!-- FIX: Changed label class to text-gray-900 for high dark mode contrast -->
+                <label for="report-type" class="block text-sm font-medium text-gray-900">Report Type</label> 
+                <select id="report-type" name="report-type" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"> <option>Weekly Progress Summary</option> <option>Monthly Deep Dive</option> <option>Reading & Comprehension Report</option> </select> </div> <div> 
+                <!-- FIX: Changed label class to text-gray-900 for high dark mode contrast -->
+                <label for="report-range" class="block text-sm font-medium text-gray-900">Date Range</label> 
+                <select id="report-range" name="report-range" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-accent focus:border-accent sm:text-sm"> <option>Last 7 Days</option> <option>Last 30 Days</option> <option>This Quarter</option> </select> </div> <button onclick="handleGenerateReport()" class="w-full bg-accent text-white font-semibold px-5 py-3 rounded-lg shadow-md hover:bg-accent-dark transition duration-200 flex items-center justify-center gap-2"> <ion-icon name="document-text-outline" class="text-xl"></ion-icon> Generate & View Report </button> </div> </div> <div class="bg-white p-6 rounded-xl shadow-md"> <h3 class="text-xl font-semibold text-gray-900 mb-4">Recent Reports</h3> <ul class="space-y-3"> <li class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-150"> <div class="flex items-center space-x-3"> <ion-icon name="document-outline" class="text-xl text-gray-500"></ion-icon> <div> <p class="font-medium text-gray-900">Weekly Summary</p> <p class="text-sm text-gray-600">Oct 19, 2025 - Oct 25, 2025</p> </div> </div> <button onclick="showToast('Downloading report... (Demo)', 'info')" class="text-accent hover:text-accent-dark" title="Download"> <ion-icon name="download-outline" class="text-2xl"></ion-icon> </button> </li> <li class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-150"> <div class="flex items-center space-x-3"> <ion-icon name="reader-outline" class="text-xl text-gray-500"></ion-icon> <div> <p class="font-medium text-gray-900">Reading & Comprehension Report</p> <p class="text-sm text-gray-600">Sep 1, 2025 - Sep 30, 2025</p> </div> </div> <button onclick="showToast('Downloading report... (Demo)', 'info')" class="text-accent hover:text-accent-dark" title="Download"> <ion-icon name="download-outline" class="text-2xl"></ion-icon> </button> </li> <li class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition duration-150"> <div class="flex items-center space-x-3"> <ion-icon name="calendar-outline" class="text-xl text-gray-500"></ion-icon> <div> <p class="font-medium text-gray-900">Monthly Deep Dive</p> <p class="text-sm text-gray-600">September 2025</p> </div> </div> <button onclick="showToast('Downloading report... (Demo)', 'info')" class="text-accent hover:text-accent-dark" title="Download"> <ion-icon name="download-outline" class="text-2xl"></ion-icon> </button> </li> </ul> </div> </div> </div>
+        </main>
+    </div>
+
+    <!-- PAGE 5: SETTINGS -->
+    <div id="page-settings" class="page">
+        <!-- Header updated -->
+        <header class="bg-white shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center space-x-4">
+                        <div class="logo-container"> <img src="https://placehold.co/100x40/38BDF8/FFFFFF?text=S&font=inter" alt="SoundSlate Logo" class="logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex'"> <div class="logo-image-fallback" style="display: none;">S</div> <div class="soundslate-logo-text">SOUNDSLATE</div> </div>
+                        <nav class="hidden md:flex space-x-2">
+                            <a href="#" onclick="navigateTo('page-home')" data-page="page-home" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="home-outline" class="text-xl"></ion-icon> Home </a>
+                            <a href="#" onclick="navigateTo('page-progress')" data-page="page-progress" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="stats-chart-outline" class="text-xl"></ion-icon> Progress </a>
+                            <a href="#" onclick="navigateTo('page-insights')" data-page="page-insights" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="bulb-outline" class="text-xl"></ion-icon> Insights </a>
+                            <a href="#" onclick="navigateTo('page-reports')" data-page="page-reports" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="document-text-outline" class="text-xl"></ion-icon> Reports </a>
+                            <a href="#" onclick="navigateTo('page-assessment')" data-page="page-assessment" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="play-outline" class="text-xl"></ion-icon> Assessment </a>
+                        </nav>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div id="user-avatar-settings" class="w-8 h-8 rounded-full bg-starry-night text-white flex items-center justify-center font-semibold bg-cover bg-center">A</div>
+                        <span id="user-name-settings" class="hidden md:block text-sm font-medium text-gray-700">Hi, Abhishek!</span>
+                        <div class="flex items-center space-x-1 relative">
+                            <!-- Notification Button - opens modal via JS -->
+                            <button onclick="toggleNotificationDropdown(event)" class="notification-badge-container text-gray-500 hover:text-white hover:bg-accent p-2 rounded-full transition-all duration-200" title="Notifications"> <ion-icon name="notifications-outline" class="text-2xl"></ion-icon> <span class="notification-badge"></span> </button>
+                            <!-- NOTE: Notification Dropdown HTML is removed from here -->
+                            <button onclick="navigateTo('page-settings')" class="text-gray-500 hover:text-white hover:bg-accent p-2 rounded-full transition-all duration-200" title="Settings"> <ion-icon name="settings-outline" class="text-2xl"></ion-icon> </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Page Content: Added Theme Toggle -->
+        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <div class="px-4 py-6 sm:px-0">
+                <h1 class="text-3xl font-bold text-gray-900 mb-6">Settings</h1>
+                <div class="bg-white p-6 rounded-xl shadow-md max-w-lg space-y-6"> <!-- Added space-y-6 -->
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-900 mb-2">Appearance</h2>
+                        <div class="flex justify-between items-center">
+                            <label for="theme-toggle" class="text-sm font-medium text-gray-700">Dark Mode</label>
+                            <div class="theme-switch-wrapper">
+                                <label class="theme-switch">
+                                    <input type="checkbox" id="theme-toggle">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border-t pt-6">
+                        <h2 class="text-xl font-semibold text-gray-900 mb-4">Account</h2>
+                        <p class="text-gray-600 mb-6">Manage your account settings and preferences.</p>
+                        <button onclick="document.getElementById('logout-modal').classList.remove('hidden')" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-5 py-3 rounded-lg shadow-md transition duration-200 flex items-center gap-2"> <ion-icon name="log-out" class="text-xl"></ion-icon> Logout </button>
+                        <p class="mt-8 text-gray-500 text-sm"> Other settings like notification preferences and child management will appear here. </p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- PAGE 6: ASSESSMENT HUB -->
+    <div id="page-assessment" class="page">
+        <!-- Header updated -->
+        <header class="bg-white shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center space-x-4">
+                        <div class="logo-container"> <img src="https://placehold.co/100x40/38BDF8/FFFFFF?text=S&font=inter" alt="SoundSlate Logo" class="logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex'"> <div class="logo-image-fallback" style="display: none;">S</div> <div class="soundslate-logo-text">SOUNDSLATE</div> </div>
+                        <nav class="hidden md:flex space-x-2">
+                            <a href="#" onclick="navigateTo('page-home')" data-page="page-home" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="home-outline" class="text-xl"></ion-icon> Home </a>
+                            <a href="#" onclick="navigateTo('page-progress')" data-page="page-progress" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="stats-chart-outline" class="text-xl"></ion-icon> Progress </a>
+                            <a href="#" onclick="navigateTo('page-insights')" data-page="page-insights" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="bulb-outline" class="text-xl"></ion-icon> Insights </a>
+                            <a href="#" onclick="navigateTo('page-reports')" data-page="page-reports" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="document-text-outline" class="text-xl"></ion-icon> Reports </a>
+                            <a href="#" onclick="navigateTo('page-assessment')" data-page="page-assessment" class="nav-link active flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="play-outline" class="text-xl"></ion-icon> Assessment </a>
+                        </nav>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div id="user-avatar-assessment" class="w-8 h-8 rounded-full bg-starry-night text-white flex items-center justify-center font-semibold bg-cover bg-center">A</div>
+                        <span id="user-name-assessment" class="hidden md:block text-sm font-medium text-gray-700">Hi, Abhishek!</span>
+                        <div class="flex items-center space-x-1 relative">
+                            <!-- Notification Button - opens modal via JS -->
+                            <button onclick="toggleNotificationDropdown(event)" class="notification-badge-container text-gray-500 hover:text-white hover:bg-accent p-2 rounded-full transition-all duration-200" title="Notifications"> <ion-icon name="notifications-outline" class="text-2xl"></ion-icon> <span class="notification-badge"></span> </button>
+                            <!-- NOTE: Notification Dropdown HTML is removed from here -->
+                            <button onclick="navigateTo('page-settings')" class="text-gray-500 hover:text-white hover:bg-accent p-2 rounded-full transition-all duration-200" title="Settings"> <ion-icon name="settings-outline" class="text-2xl"></ion-icon> </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Page Content (unchanged) -->
+        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8"> <div class="px-4 py-6 sm:px-0"> <h1 class="text-3xl font-bold text-gray-900 mb-2">Start a New Assessment</h1> <p class="text-lg text-gray-600 mb-8">Select a skill area to begin a short assessment for Akash.</p> <div class="grid grid-cols-1 md:grid-cols-2 gap-6"> <div class="bg-white p-6 rounded-xl shadow-md flex flex-col justify-between"> <div> <div class="p-3 rounded-full bg-blue-100 text-blue-600 w-12 h-12 flex items-center justify-center mb-3"><ion-icon name="mic-outline" class="text-3xl"></ion-icon></div> <h3 class="text-lg font-semibold text-gray-900 mb-1">Reading Fluency</h3> <p class="text-gray-600 text-sm mb-4">Assesses reading speed and accuracy by recording Akash reading aloud. (Approx. 5 mins)</p> </div> <button onclick="navigateTo('page-assessment-reading')" class="w-full bg-accent text-white font-semibold px-5 py-3 rounded-lg shadow-md hover:bg-accent-dark transition duration-200 flex items-center justify-center gap-2"> Start Assessment </button> </div> <div class="bg-white p-6 rounded-xl shadow-md flex flex-col justify-between"> <div> <div class="p-3 rounded-full bg-violet-100 text-violet-600 w-12 h-12 flex items-center justify-center mb-3"><ion-icon name="document-text-outline" class="text-3xl"></ion-icon></div> <h3 class="text-lg font-semibold text-gray-900 mb-1">Comprehension Skills</h3> <p class="text-gray-600 text-sm mb-4">Checks understanding of a provided text passage. Requires file upload. (Approx. 10 mins)</p> </div> <button onclick="navigateTo('page-assessment-comprehension')" class="w-full bg-accent text-white font-semibold px-5 py-3 rounded-lg shadow-md hover:bg-accent-dark transition duration-200 flex items-center justify-center gap-2"> Start Assessment </button> </div> <div class="bg-gray-100 p-6 rounded-xl border border-dashed border-gray-300 flex flex-col justify-center items-center text-center md:col-span-2"> <div class="p-3 rounded-full bg-gray-200 text-gray-500 w-12 h-12 flex items-center justify-center mb-3"><ion-icon name="add-outline" class="text-3xl"></ion-icon></div> <h3 class="text-lg font-semibold text-gray-600 mb-1">More Soon</h3> <p class="text-gray-500 text-sm">Additional assessment types will be available here.</p> </div> </div> </div> </main>
+    </div>
+
+    <!-- PAGE 7: READING ASSESSMENT PAGE -->
+    <div id="page-assessment-reading" class="page">
+        <!-- Header updated -->
+        <header class="bg-white shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center space-x-4">
+                        <div class="logo-container"> <img src="https://placehold.co/100x40/38BDF8/FFFFFF?text=S&font=inter" alt="SoundSlate Logo" class="logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex'"> <div class="logo-image-fallback" style="display: none;">S</div> <div class="soundslate-logo-text">SOUNDSLATE</div> </div>
+                        <nav class="hidden md:flex space-x-2">
+                            <a href="#" onclick="navigateTo('page-home')" data-page="page-home" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="home-outline" class="text-xl"></ion-icon> Home </a>
+                            <a href="#" onclick="navigateTo('page-progress')" data-page="page-progress" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="stats-chart-outline" class="text-xl"></ion-icon> Progress </a>
+                            <a href="#" onclick="navigateTo('page-insights')" data-page="page-insights" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="bulb-outline" class="text-xl"></ion-icon> Insights </a>
+                            <a href="#" onclick="navigateTo('page-reports')" data-page="page-reports" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="document-text-outline" class="text-xl"></ion-icon> Reports </a>
+                            <a href="#" onclick="navigateTo('page-assessment')" data-page="page-assessment" class="nav-link active flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="play-outline" class="text-xl"></ion-icon> Assessment </a>
+                        </nav>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div id="user-avatar-assessment-reading" class="w-8 h-8 rounded-full bg-starry-night text-white flex items-center justify-center font-semibold bg-cover bg-center">A</div>
+                        <span id="user-name-assessment-reading" class="hidden md:block text-sm font-medium text-gray-700">Hi, Abhishek!</span>
+                        <div class="flex items-center space-x-1 relative">
+                            <!-- Notification Button - opens modal via JS -->
+                            <button onclick="toggleNotificationDropdown(event)" class="notification-badge-container text-gray-500 hover:text-white hover:bg-accent p-2 rounded-full transition-all duration-200" title="Notifications"> <ion-icon name="notifications-outline" class="text-2xl"></ion-icon> <span class="notification-badge"></span> </button>
+                            <!-- NOTE: Notification Dropdown HTML is removed from here -->
+                            <button onclick="navigateTo('page-settings')" class="text-gray-500 hover:text-white hover:bg-accent p-2 rounded-full transition-all duration-200" title="Settings"> <ion-icon name="settings-outline" class="text-2xl"></ion-icon> </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Page Content with Previous Results section -->
+        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <div class="px-4 py-6 sm:px-0">
+                <button onclick="navigateTo('page-assessment')" class="text-sm text-gray-600 hover:text-accent mb-4 inline-flex items-center gap-1"> <ion-icon name="arrow-back-outline"></ion-icon> Back to Assessments </button>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Reading Fluency Assessment</h1>
+                <p class="text-lg text-gray-600 mb-8">Record Akash reading the passage below.</p>
+                <div class="bg-white p-6 rounded-xl shadow-md max-w-2xl mx-auto space-y-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">Passage to Read:</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg border mb-4"> <p id="reading-passage" class="text-gray-800 text-lg leading-relaxed"></p> </div>
+                        <div class="flex items-center justify-center space-x-4 mb-4"> <span id="recording-status" class="text-sm font-medium text-gray-500 flex items-center gap-2"></span> </div>
+                        <div class="flex justify-center space-x-3 mb-6"> <button id="start-record-btn" onclick="startRecording()" class="bg-green-500 hover:bg-green-600 text-white font-semibold px-5 py-3 rounded-lg shadow-md transition duration-200 flex items-center gap-2"> <ion-icon name="mic-circle-outline" class="text-xl"></ion-icon> Start </button> <button id="pause-record-btn" onclick="pauseRecording()" class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-5 py-3 rounded-lg shadow-md transition duration-200 flex items-center gap-2 hidden"> <ion-icon name="pause-outline" class="text-xl"></ion-icon> Pause </button> <button id="resume-record-btn" onclick="resumeRecording()" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-5 py-3 rounded-lg shadow-md transition duration-200 flex items-center gap-2 hidden"> <ion-icon name="play-outline" class="text-xl"></ion-icon> Resume </button> <button id="stop-record-btn" onclick="stopRecording()" class="bg-red-500 hover:bg-red-600 text-white font-semibold px-5 py-3 rounded-lg shadow-md transition duration-200 flex items-center gap-2 hidden"> <ion-icon name="stop-circle-outline" class="text-xl"></ion-icon> Stop </button> </div>
+                        <div id="reading-assessment-results" class="mt-4 p-4 bg-gray-100 rounded-lg text-sm text-gray-600 hidden"> <p class="font-medium text-gray-800 mb-1">Assessment Results:</p> <p>Placeholder...</p> </div>
+                    </div>
+                    <!-- Previous Results Section -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3 border-t pt-6">Previous Results</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"> <div> <p class="font-medium text-gray-800 text-sm">Oct 24, 2025</p> <p class="text-xs text-gray-600">Speed: 85 WPM, Accuracy: 94%</p> </div> <span class="text-sm font-semibold text-green-600">Good</span> </li>
+                            <li class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"> <div> <p class="font-medium text-gray-800 text-sm">Oct 17, 2025</p> <p class="text-xs text-gray-600">Speed: 82 WPM, Accuracy: 92%</p> </div> <span class="text-sm font-semibold text-yellow-600">Fair</span> </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- PAGE 8: COMPREHENSION ASSESSMENT PAGE -->
+    <div id="page-assessment-comprehension" class="page">
+        <!-- Header updated -->
+        <header class="bg-white shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center space-x-4">
+                        <div class="logo-container"> <img src="https://placehold.co/100x40/38BDF8/FFFFFF?text=S&font=inter" alt="SoundSlate Logo" class="logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex'"> <div class="logo-image-fallback" style="display: none;">S</div> <div class="soundslate-logo-text">SOUNDSLATE</div> </div>
+                        <nav class="hidden md:flex space-x-2">
+                            <a href="#" onclick="navigateTo('page-home')" data-page="page-home" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="home-outline" class="text-xl"></ion-icon> Home </a>
+                            <a href="#" onclick="navigateTo('page-progress')" data-page="page-progress" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="stats-chart-outline" class="text-xl"></ion-icon> Progress </a>
+                            <a href="#" onclick="navigateTo('page-insights')" data-page="page-insights" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="bulb-outline" class="text-xl"></ion-icon> Insights </a>
+                            <a href="#" onclick="navigateTo('page-reports')" data-page="page-reports" class="nav-link inactive flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="document-text-outline" class="text-xl"></ion-icon> Reports </a>
+                            <a href="#" onclick="navigateTo('page-assessment')" data-page="page-assessment" class="nav-link active flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium"> <ion-icon name="play-outline" class="text-xl"></ion-icon> Assessment </a>
+                        </nav>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div id="user-avatar-assessment-comp" class="w-8 h-8 rounded-full bg-starry-night text-white flex items-center justify-center font-semibold bg-cover bg-center">A</div>
+                        <span id="user-name-assessment-comp" class="hidden md:block text-sm font-medium text-gray-700">Hi, Abhishek!</span>
+                        <div class="flex items-center space-x-1 relative">
+                            <!-- Notification Button - opens modal via JS -->
+                            <button onclick="toggleNotificationDropdown(event)" class="notification-badge-container text-gray-500 hover:text-white hover:bg-accent p-2 rounded-full transition-all duration-200" title="Notifications"> <ion-icon name="notifications-outline" class="text-2xl"></ion-icon> <span class="notification-badge"></span> </button>
+                            <!-- NOTE: Notification Dropdown HTML is removed from here -->
+                            <button onclick="navigateTo('page-settings')" class="text-gray-500 hover:text-white hover:bg-accent p-2 rounded-full transition-all duration-200" title="Settings"> <ion-icon name="settings-outline" class="text-2xl"></ion-icon> </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Page Content with Previous Results section -->
+        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <div class="px-4 py-6 sm:px-0">
+                <button onclick="navigateTo('page-assessment')" class="text-sm text-gray-600 hover:text-accent mb-4 inline-flex items-center gap-1"> <ion-icon name="arrow-back-outline"></ion-icon> Back to Assessments </button>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Comprehension Skills Assessment</h1>
+                <p class="text-lg text-gray-600 mb-8">Upload a text file for Akash to read, then start the assessment.</p>
+                <div class="bg-white p-6 rounded-xl shadow-md max-w-2xl mx-auto space-y-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2">Upload Text Passage:</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg border text-center">
+                            <p class="text-sm text-gray-800 mb-3">Select a .txt, .md, or .pdf file containing the text for the assessment.</p>
+                            <input type="file" id="comprehension-file-input" class="hidden" accept=".txt,.md,.pdf" onchange="handleFileSelect(event)">
+                            <label for="comprehension-file-input" class="file-input-button"> <ion-icon name="cloud-upload-outline" class="text-xl"></ion-icon> Choose File </label>
+                            <p id="comprehension-selected-filename" class="text-xs text-gray-500 mt-2">No file chosen</p>
+                        </div>
+                    </div>
+                    <button id="start-comprehension-btn" onclick="startComprehensionFromFile()" disabled class="w-full bg-gray-400 text-white font-semibold px-5 py-3 rounded-lg shadow-md cursor-not-allowed flex items-center justify-center gap-2 transition duration-200"> <ion-icon name="play-circle-outline" class="text-xl"></ion-icon> Start Assessment </button>
+                    <div id="comprehension-assessment-results" class="mt-4 p-4 bg-gray-100 rounded-lg text-sm text-gray-600 hidden"> <p class="font-medium text-gray-800 mb-1">Assessment Results:</p> <p>Placeholder...</p> </div>
+                    <!-- Previous Results Section -->
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3 border-t pt-6">Previous Results</h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"> <div> <p class="font-medium text-gray-800 text-sm">Oct 23, 2025 (Story: The Fox)</p> <p class="text-xs text-gray-600">Score: 8/10, Vocabulary: 9/10</p> </div> <span class="text-sm font-semibold text-blue-600">Good</span> </li>
+                            <li class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"> <div> <p class="font-medium text-gray-800 text-sm">Oct 15, 2025 (Article: Planets)</p> <p class="text-xs text-gray-600">Score: 7/10, Vocabulary: 8/10</p> </div> <span class="text-sm font-semibold text-yellow-600">Fair</span> </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+
+    <!-- Common Modals and FABs -->
+    <div id="fab-container" class="fixed bottom-6 right-6 space-y-3 z-40 hidden"> <button onclick="showToast('Connecting to teacher... (Demo)', 'info')" class="bg-starry-night text-white w-14 h-14 rounded-full shadow-md flex items-center justify-center transition-all duration-200 hover:scale-110 opacity-90 hover:opacity-100 hover:shadow-xl bg-cover bg-center" title="Chat with Teacher"> <ion-icon name="people" class="text-3xl"></ion-icon> </button> <button onclick="handleGenerateReport()" class="bg-starry-night text-white w-14 h-14 rounded-full shadow-md flex items-center justify-center transition-all duration-200 hover:scale-110 opacity-90 hover:opacity-100 hover:shadow-xl bg-cover bg-center" title="Generate Report"> <ion-icon name="document-text" class="text-3xl"></ion-icon> </button> <button onclick="toggleChat()" class="bg-starry-night text-white w-14 h-14 rounded-full shadow-md flex items-center justify-center transition-all duration-200 hover:scale-110 opacity-90 hover:opacity-100 hover:shadow-xl bg-cover bg-center" title="AI Assistant"> <ion-icon name="chatbubbles" class="text-3xl"></ion-icon> </button> </div>
+    <div id="chat-widget" class="fixed bottom-24 right-6 w-80 h-96 bg-white rounded-2xl shadow-xl z-40 hidden flex-col overflow-hidden border"> <div class="p-4 bg-starry-gradient text-white flex justify-between items-center"> <h3 class="font-semibold text-lg">Boo - AI Assistant</h3> <button onclick="toggleChat()" class="text-white/80 hover:text-white"> <ion-icon name="close-outline" class="text-2xl"></ion-icon> </button> </div> <div id="chat-messages" class="flex-1 p-4 space-y-4 overflow-y-auto"> <div class="flex"><div class="chat-bubble chat-bubble-ai"> Hi! I'm Boo. How can I help you understand Akash's reading and comprehension progress today? </div></div> </div> <div class="p-4 border-t bg-white"> <form id="chat-form" class="flex items-center gap-2"> <input id="chat-input" type="text" placeholder="Ask about progress..." class="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-accent"> <button type="submit" class="bg-accent text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-accent-dark"> <ion-icon name="arrow-up-outline" class="text-xl"></ion-icon> </button> </form> </div> </div>
+    
+    <!-- NEW: All Notifications Modal -->
+    <div id="notification-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white p-6 rounded-xl shadow-xl w-full max-w-lg max-h-[80vh] flex flex-col">
+            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                <h3 class="text-xl font-semibold text-gray-900">All Notifications</h3>
+                <button onclick="document.getElementById('notification-modal').classList.add('hidden')" class="text-gray-500 hover:text-gray-800">
+                    <ion-icon name="close-outline" class="text-3xl"></ion-icon>
+                </button>
+            </div>
+            <div class="overflow-y-auto space-y-3">
+                <!-- Full Notification List Content -->
+                <div class="p-3 bg-gray-50 rounded-lg flex items-start space-x-3 hover:bg-gray-100 cursor-pointer">
+                    <ion-icon name="trending-up-outline" class="text-xl text-green-600 flex-shrink-0 mt-1"></ion-icon>
+                    <div>
+                        <p class="font-medium text-gray-900">Reading speed increased!</p>
+                        <p class="text-xs text-gray-600">Akash is now reading at 88 WPM. 2h ago</p>
+                    </div>
+                </div>
+                <div onclick="navigateTo('page-reports'); document.getElementById('notification-modal').classList.add('hidden');" class="p-3 bg-gray-50 rounded-lg flex items-start space-x-3 hover:bg-gray-100 cursor-pointer">
+                    <ion-icon name="document-text-outline" class="text-xl text-blue-600 flex-shrink-0 mt-1"></ion-icon>
+                    <div>
+                        <p class="font-medium text-gray-900">New weekly report available.</p>
+                        <p class="text-xs text-gray-600">Summary for Oct 19-25 is ready. Yesterday</p>
+                    </div>
+                </div>
+                <div onclick="navigateTo('page-insights'); document.getElementById('notification-modal').classList.add('hidden');" class="p-3 bg-gray-50 rounded-lg flex items-start space-x-3 hover:bg-gray-100 cursor-pointer">
+                    <ion-icon name="bulb-outline" class="text-xl text-yellow-600 flex-shrink-0 mt-1"></ion-icon>
+                    <div>
+                        <p class="font-medium text-gray-900">Focus Area: Complex Words</p>
+                        <p class="text-xs text-gray-600">AI suggests practice. 3d ago</p>
+                    </div>
+                </div>
+                <!-- Duplicated content for scrolling effect -->
+                <div class="p-3 bg-gray-50 rounded-lg flex items-start space-x-3 text-gray-500">
+                    <ion-icon name="alarm-outline" class="text-xl text-gray-400 flex-shrink-0 mt-1"></ion-icon>
+                    <div><p class="font-medium text-gray-900">Missed Practice Alert</p><p class="text-xs text-gray-600">Akash missed his optimal reading slot today. 4d ago</p></div>
+                </div>
+                <div class="p-3 bg-gray-50 rounded-lg flex items-start space-x-3 text-gray-500">
+                    <ion-icon name="bookmark-outline" class="text-xl text-gray-400 flex-shrink-0 mt-1"></ion-icon>
+                    <div><p class="font-medium text-gray-900">New Vocabulary Set</p><p class="text-xs text-gray-600">Set 'Ocean Life' is ready for review. 5d ago</p></div>
+                </div>
+                <div class="p-3 bg-gray-50 rounded-lg flex items-start space-x-3 text-gray-500">
+                    <ion-icon name="trending-down-outline" class="text-xl text-gray-400 flex-shrink-0 mt-1"></ion-icon>
+                    <div><p class="font-medium text-gray-900">Fluency Dip</p><p class="text-xs text-gray-600">A slight dip in fluency observed on Tuesday. 6d ago</p></div>
+                </div>
+            </div>
+            <div class="flex justify-end space-x-3 mt-6"> 
+                <button onclick="document.getElementById('notification-modal').classList.add('hidden')" class="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"> Close </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals (Logout, Report) -->
+    <div id="logout-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden"> <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-sm"> <h3 class="text-lg font-medium text-gray-900 mb-2">Are you sure?</h3> <p class="text-sm text-gray-600 mb-4">Are you sure you want to log out?</p> <div class="flex justify-end space-x-3"> <button onclick="document.getElementById('logout-modal').classList.add('hidden')" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"> Cancel </button> <button onclick="handleLogout()" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"> OK </button> </div> </div> </div>
+    <div id="report-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden"> <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col"> <div class="flex justify-between items-center mb-4"> <h3 class="text-xl font-semibold text-gray-900">AI-Generated Progress Report</h3> <button onclick="document.getElementById('report-modal').classList.add('hidden')" class="text-gray-500 hover:text-gray-800"> <ion-icon name="close-outline" class="text-3xl"></ion-icon> </button> </div> <div class="overflow-y-auto"> <div id="report-content" class="text-sm text-gray-700 bg-gray-50 p-4 rounded-lg border"></div> </div> <div class="flex justify-end space-x-3 mt-6"> <button onclick="document.getElementById('report-modal').classList.add('hidden')" class="px-5 py-2 bg-accent text-white rounded-lg hover:bg-accent-dark"> Done </button> </div> </div> </div>
+    <div id="toast-notification" class="toast-notification"> <p id="toast-message">Default Toast Message</p> </div>
+
+    <script>
+        let currentUserName = "Abhishek";
+        let subjectChart = null;
+        let mediaRecorder;
+        let audioChunks = [];
+        let audioBlob = null;
+        let selectedComprehensionFile = null;
+        // currentNotificationDropdown and related functions removed as we are now using a fixed modal
+        const readingPassages = [ "The sun dipped below the horizon, painting the sky in shades of orange and purple.", "A gentle breeze rustled the leaves in the tall oak trees.", "Butterflies with vibrant wings danced among the colorful wildflowers.", "The old lighthouse stood watch over the rocky coastline.", "Children laughed as they built sandcastles on the beach.", "A curious squirrel scampered up a tree, chattering loudly.", "Stars began to appear one by one in the darkening twilight sky.", "The wise owl hooted softly from its perch high above.", "Waves crashed against the shore, creating a soothing rhythm.", "A small boat sailed peacefully across the calm blue water." ];
+
+        // --- GEMINI API Config (unchanged) ---
+        const CHAT_SYSTEM_PROMPT = `You are Boo, a friendly and encouraging AI assistant for the SoundSlate platform, designed to help parents understand their child's reading and comprehension progress.
+- Your goal is to provide clear, actionable insights in a supportive and conversational tone.
+- Keep responses concise (2-4 sentences).
+- Always address the parent by their name (e.g., "Hi Abhishek!"). The parent's name is ${currentUserName}.
+- When asked about data, refer to the "dashboard" or "progress page."
+- If asked for recommendations, provide one simple, actionable tip (e.g., "It looks like Akash is doing great with speed! Maybe try asking him to summarize the story afterwards to boost comprehension?").
+- Do not make up specific data points not provided in the context. Speak generally about progress.
+- Be positive and highlight strengths before suggesting areas for improvement.
+- The child's name is Akash.`;
+        const REPORT_PROMPT = `Please act as a supportive AI learning assistant for a parent named ${currentUserName}.
+The child's name is Akash.
+You are generating a progress report from the "SoundSlate" platform.
+The user will provide a report type (e.g., "Weekly Progress") and a date range.
+Based on the following (simulated) data:
+- **Fluency:** 85 WPM (Words Per Minute), which is a +10 WPM improvement this week.
+- **Accuracy:** 95% (Excellent).
+- **Comprehension:** 80% (Good, +5% improvement).
+- **Vocabulary:** 90% (Excellent, 15 new words learned).
+- **Time Spent:** 2.5h on Reading, 1.15h on Vocabulary, 1h on Comprehension.
+- **Key Insight:** Akash performs best between 4-6 PM.
+- **Struggle Area:** Slight hesitation on complex, multi-syllable words (e.g., "establishment," "curiosity").
+
+Generate a concise, encouraging, and easy-to-read report in Markdown format.
+- Start with a clear title (e.g., "### Akash's Weekly Progress Report").
+- Use bullet points.
+- Highlight strengths first.
+- Provide one or two actionable recommendations based on the struggle area.
+- Keep it positive and supportive.`;
+
+        // --- GLOBAL HELPER FUNCTIONS ---
+        function navigateTo(pageId) {
+            // Close all modals (including notification modal) on navigation
+            document.getElementById('notification-modal').classList.add('hidden');
+            document.getElementById('chat-widget').classList.add('hidden');
+            
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) targetPage.classList.add('active');
+            else { console.error("Target page not found:", pageId); return; }
+
+            const fabContainer = document.getElementById('fab-container');
+            if (pageId === 'page-progress') {
+                fabContainer.classList.remove('hidden');
+                fabContainer.classList.add('flex', 'flex-col');
+                // Only render chart if it's visible (prevents errors if page loaded hidden)
+                if (targetPage.offsetParent !== null) renderSubjectChart();
+            } else {
+                fabContainer.classList.add('hidden');
+                fabContainer.classList.remove('flex', 'flex-col');
+            }
+
+            // Update nav links
+            document.querySelectorAll('header .nav-link').forEach(link => {
+                const linkPage = link.getAttribute('data-page');
+                link.classList.remove('active', 'bg-starry-night', 'text-white', 'shadow-md');
+                link.classList.add('inactive'); // Simplified default state
+                if ((pageId === 'page-assessment-reading' || pageId === 'page-assessment-comprehension') && linkPage === 'page-assessment') {
+                    link.classList.remove('inactive');
+                    link.classList.add('active', 'bg-starry-night', 'text-white', 'shadow-md');
+                } else if (linkPage === pageId) {
+                    link.classList.remove('inactive');
+                    link.classList.add('active', 'bg-starry-night', 'text-white', 'shadow-md');
+                }
+            });
+
+            if (pageId === 'page-settings') { // Special case for settings
+                document.querySelectorAll('header .nav-link').forEach(link => {
+                    link.classList.remove('active', 'bg-starry-night', 'text-white', 'shadow-md');
+                    link.classList.add('inactive');
+                });
+            }
+
+            // Update user name/avatar in the *active* page's header
+            try {
+                const activeHeader = targetPage.querySelector('header');
+                if (activeHeader) {
+                    activeHeader.querySelector('[id^="user-name-"]').textContent = `Hi, ${currentUserName}!`;
+                    activeHeader.querySelector('[id^="user-avatar-"]').textContent = currentUserName.charAt(0).toUpperCase();
+                }
+            } catch (e) { console.warn("Could not set user name for active page", e); }
+
+            // Setup assessment pages if navigating to them
+            if (pageId === 'page-assessment-reading') setupReadingAssessmentPage();
+            else if (pageId === 'page-assessment-comprehension') setupComprehensionAssessmentPage();
+        }
+
+        function renderSubjectChart() {
+            const chartCanvas = document.getElementById('subjectChart');
+            if (!chartCanvas) return;
+            const ctx = chartCanvas.getContext('2d');
+            const primaryTextColor = getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim();
+            const gridColor = getComputedStyle(document.documentElement).getPropertyValue('--chart-grid-color').trim();
+            const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+
+            const chartData = {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Minutes Practiced',
+                    data: [35, 45, 60, 20, 55, 10, 45], // Simulated daily practice minutes
+                    backgroundColor: accentColor, 
+                    borderColor: accentColor,
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    barPercentage: 0.8,
+                    categoryPercentage: 0.8,
+                }]
+            };
+
+            if (subjectChart) subjectChart.destroy();
+
+            subjectChart = new Chart(ctx, {
+                type: 'bar', 
+                data: chartData,
+                options: {
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleFont: { size: 14 }, 
+                            bodyFont: { size: 12 }, 
+                            padding: 10, 
+                            cornerRadius: 6,
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.parsed.y} min`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: gridColor },
+                            ticks: { color: primaryTextColor }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            max: 70, // Max minutes on a day
+                            title: {
+                                display: true,
+                                text: 'Minutes',
+                                color: primaryTextColor
+                            },
+                            grid: { color: gridColor },
+                            ticks: { color: primaryTextColor }
+                        }
+                    }
+                }
+            });
+            // Removed doughnut specific code
+        }
+        
+        const toast = document.getElementById('toast-notification'); const toastMessage = document.getElementById('toast-message'); function showToast(message, type = 'info') { toastMessage.textContent = message; toast.className = 'toast-notification'; void toast.offsetWidth; if (type === 'success') toast.classList.add('bg-green-600'); else if (type === 'error') toast.classList.add('bg-red-600'); else toast.classList.add('bg-blue-600'); toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 3000); }
+        function handleLogout() { document.getElementById('logout-modal').classList.add('hidden'); showToast('Logged out successfully!', 'success'); setTimeout(() => navigateTo('page-home'), 500); }
+
+        // --- Notification Toggle (Now opens Modal) ---
+        function toggleNotificationDropdown(event) {
+            event.stopPropagation(); // Prevent click from bubbling up
+            document.getElementById('notification-modal').classList.remove('hidden');
+        }
+
+        // --- Assessment Page Setup Functions (unchanged) ---
+        function setupReadingAssessmentPage() { const passageElement = document.getElementById('reading-passage'); if(passageElement){ const randomIndex = Math.floor(Math.random() * readingPassages.length); passageElement.textContent = readingPassages[randomIndex]; } resetRecordingState(); const resultsDiv = document.getElementById('reading-assessment-results'); if(resultsDiv) resultsDiv.classList.add('hidden'); }
+        function setupComprehensionAssessmentPage() { selectedComprehensionFile = null; const fileInput = document.getElementById('comprehension-file-input'); if(fileInput) fileInput.value = ''; const filenameDisplay = document.getElementById('comprehension-selected-filename'); if(filenameDisplay) filenameDisplay.textContent = 'No file chosen'; const startButton = document.getElementById('start-comprehension-btn'); if(startButton){ startButton.disabled = true; startButton.classList.add('bg-gray-400', 'cursor-not-allowed'); startButton.classList.remove('bg-accent', 'hover:bg-accent-dark'); } const resultsDiv = document.getElementById('comprehension-assessment-results'); if(resultsDiv) resultsDiv.classList.add('hidden'); }
+
+
+        // --- Reading Fluency Recording (unchanged) ---
+        function resetRecordingState() {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') { mediaRecorder.stop(); }
+            mediaRecorder = null; audioChunks = []; audioBlob = null;
+            updateRecordingStatus('Idle');
+            document.getElementById('start-record-btn')?.classList.remove('hidden');
+            document.getElementById('pause-record-btn')?.classList.add('hidden');
+            document.getElementById('resume-record-btn')?.classList.add('hidden');
+            document.getElementById('stop-record-btn')?.classList.add('hidden');
+            // Don't hide results here, only when starting a new assessment (in setup function)
+        }
+        function updateRecordingStatus(status) { const statusEl = document.getElementById('recording-status'); if (!statusEl) return; let content = ''; switch (status) { case 'Recording': content = `<span class="recording-dot mr-1"></span> Recording...`; break; case 'Paused': content = `<ion-icon name="pause-circle-outline" class="text-yellow-500 text-lg mr-1"></ion-icon> Paused`; break; case 'Processing': content = `<ion-icon name="hourglass-outline" class="text-blue-500 text-lg mr-1 animate-spin"></ion-icon> Processing...`; break; default: content = `<ion-icon name="mic-off-circle-outline" class="text-gray-500 text-lg mr-1"></ion-icon> Idle`; break; } statusEl.innerHTML = content; }
+        async function startRecording() { try { const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); mediaRecorder = new MediaRecorder(stream); mediaRecorder.ondataavailable = e => audioChunks.push(e.data); mediaRecorder.onstop = () => { audioBlob = new Blob(audioChunks, { type: 'audio/wav' }); audioChunks = []; updateRecordingStatus('Processing'); setTimeout(() => { showToast("Recording complete! Results below.", "success"); const resultsDiv = document.getElementById('reading-assessment-results'); if(resultsDiv){ resultsDiv.innerHTML = `<p class="font-medium text-gray-800 mb-1">Assessment Results:</p><p><strong class="text-green-600">Excellent fluency!</strong> Speed: 92 WPM (+4 WPM). Accuracy: 96%. Only minor hesitation on 'horizon'. Great job, Akash!</p>`; resultsDiv.classList.remove('hidden'); } resetRecordingState(); /* Reset UI after showing result */ }, 1500); stream.getTracks().forEach(track => track.stop()); }; mediaRecorder.start(); updateRecordingStatus('Recording'); document.getElementById('start-record-btn')?.classList.add('hidden'); document.getElementById('pause-record-btn')?.classList.remove('hidden'); document.getElementById('stop-record-btn')?.classList.remove('hidden'); document.getElementById('resume-record-btn')?.classList.add('hidden'); } catch (err) { console.error("Mic error:", err); showToast("Error: Could not access microphone.", "error"); resetRecordingState(); } }
+        function pauseRecording() { if (mediaRecorder?.state === 'recording') { mediaRecorder.pause(); updateRecordingStatus('Paused'); document.getElementById('pause-record-btn')?.classList.add('hidden'); document.getElementById('resume-record-btn')?.classList.remove('hidden'); } }
+        function resumeRecording() { if (mediaRecorder?.state === 'paused') { mediaRecorder.resume(); updateRecordingStatus('Recording'); document.getElementById('pause-record-btn')?.classList.remove('hidden'); document.getElementById('resume-record-btn')?.classList.add('hidden'); } }
+        function stopRecording() { if (mediaRecorder && (mediaRecorder.state === 'recording' || mediaRecorder.state === 'paused')) { mediaRecorder.stop(); /* onstop handles UI */ } }
+
+
+        // --- Comprehension Assessment (unchanged) ---
+        function handleFileSelect(event) { const file = event.target.files[0]; const filenameDisplay = document.getElementById('comprehension-selected-filename'); const startButton = document.getElementById('start-comprehension-btn'); if (file) { selectedComprehensionFile = file; if(filenameDisplay) filenameDisplay.textContent = file.name; if(startButton){ startButton.disabled = false; startButton.classList.remove('bg-gray-400', 'cursor-not-allowed'); startButton.classList.add('bg-accent', 'hover:bg-accent-dark'); } } else { selectedComprehensionFile = null; if(filenameDisplay) filenameDisplay.textContent = 'No file chosen'; if(startButton){ startButton.disabled = true; startButton.classList.add('bg-gray-400', 'cursor-not-allowed'); startButton.classList.remove('bg-accent', 'hover:bg-accent-dark'); } } }
+        function startComprehensionFromFile() { if (!selectedComprehensionFile) { showToast("Please select a file first.", "error"); return; } showToast(`Starting assessment for ${selectedComprehensionFile.name}...`, "info"); setTimeout(() => { showToast("Assessment complete! Results below.", "success"); const resultsDiv = document.getElementById('comprehension-assessment-results'); if(resultsDiv){ resultsDiv.innerHTML = `<p class="font-medium text-gray-800 mb-1">Assessment Results:</p><p><strong class="text-blue-600">Strong comprehension!</strong> Score: 9/10. Akash correctly identified the main theme and character motivations. Missed one detail question about the setting.</p>`; resultsDiv.classList.remove('hidden'); } /* Don't reset UI automatically */ }, 2500); }
+
+
+        // --- AI Chatbot (unchanged) ---
+        const chatWidget = document.getElementById('chat-widget'); const chatMessages = document.getElementById('chat-messages'); const chatForm = document.getElementById('chat-form'); const chatInput = document.getElementById('chat-input'); let chatHistory = []; function toggleChat() { chatWidget.classList.toggle('hidden'); chatWidget.classList.toggle('flex'); } chatForm.addEventListener('submit', (e) => { e.preventDefault(); const userIn = chatInput.value.trim(); if (!userIn) return; addChatMessage(userIn, 'user'); chatInput.value = ''; addChatMessage('Boo is thinking...', 'ai', true); callGeminiAPI(userIn, 'chat'); }); function addChatMessage(message, sender, isThinking = false) { const bubble = document.createElement('div'); bubble.className = 'flex'; if (sender === 'user') bubble.classList.add('justify-end'); const inner = document.createElement('div'); inner.className = 'chat-bubble'; if (sender === 'user') inner.classList.add('chat-bubble-user'); else { inner.classList.add('chat-bubble-ai'); if(isThinking) { inner.classList.add('thinking'); inner.id = 'thinking-bubble'; } } inner.textContent = message; bubble.appendChild(inner); chatMessages.appendChild(bubble); chatMessages.scrollTop = chatMessages.scrollHeight; }
+
+        // --- Report Generation (unchanged) ---
+        const reportModal = document.getElementById('report-modal'); const reportContent = document.getElementById('report-content'); function handleGenerateReport() { showToast("Generating comprehensive progress report..."); callGeminiAPI(null, 'report'); } 
+        function simpleMarkdownToHtml(text) { 
+            let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                         .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                         .replace(/^# (.*$)/gm, '<h1 class="text-xl font-bold mb-2">$1</h1>')
+                         .replace(/^## (.*$)/gm, '<h2 class="text-lg font-semibold mb-2">$1</h2>')
+                         .replace(/^### (.*$)/gm, '<h3 class="text-md font-semibold mb-1">$1</h3>')
+                         .replace(/^[-*] (.*$)/gm, '<li class="ml-4 list-disc">$1</li>');
+        
+            // Handle list grouping
+            html = html.replace(/<li>(.*?)<\/li>(?!\s*<li>)/gs, '<li>$1</li></ul>'); 
+            if (html.endsWith('</li>')) html += '</ul>';
+            html = html.replace(/(?:<br>\s*)*<li/g, '<ul><li'); 
+        
+            // Handle paragraphs
+            html = html.split('\n\n').map(p => {
+                p = p.trim();
+                if (!p) return '';
+                if (p.startsWith('<h') || p.startsWith('<ul') || p.startsWith('<li')) return p.replace(/\n/g, '<br>');
+                if (p.startsWith('<ul>')) return p; 
+                return `<p>${p.replace(/\n/g, '<br>')}</p>`;
+            }).join('');
+        
+            html = html.replace(/<\/ul>\s*<ul>/g, ''); // Fix extra list tags
+            html = html.replace(/<p>\s*<\/p>/g, ''); // Remove empty paragraphs
+            return html; 
+        }
+
+
+        // --- GEMINI API (unchanged) ---
+        async function exponentialBackoff(fetchFn, maxRetries = 5, baseDelay = 1000) { 
+            let attempt = 0; 
+            while (attempt < maxRetries) { 
+                try { 
+                    const response = await fetchFn(); 
+                    if (response.ok) { return await response.json(); } 
+                    if (response.status >= 400 && response.status < 500) { 
+                        console.error("Client error:", response.status); 
+                        try { 
+                            const errorData = await response.json(); 
+                            return { error: true, message: errorData.error?.message || "API error" }; 
+                        } catch (e) { 
+                            return { error: true, message: `API error: ${response.statusText}` }; 
+                        } 
+                    } 
+                } catch (error) { 
+                    console.error(`Attempt ${attempt + 1} network error:`, error); 
+                } 
+                attempt++; 
+                if (attempt >= maxRetries) { 
+                    console.error("Max retries."); 
+                    return { error: true, message: "Max retries reached." }; 
+                } 
+                const delay = baseDelay * Math.pow(2, attempt - 1) + (Math.random() * 1000); 
+                await new Promise(resolve => setTimeout(resolve, delay)); 
+            } 
+            return { error: true, message: "Max retries after network errors." }; 
+        }
+        
+        async function callGeminiAPI(userInput, mode) { 
+            const apiKey = ""; // Left empty as per instructions
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`; 
+            let payload; 
+            if (mode === 'chat') { 
+                if(userInput) chatHistory.push({ role: "user", parts: [{ text: userInput }] }); 
+                const historyToSend = chatHistory.filter(msg => msg.role !== 'system'); 
+                payload = { contents: historyToSend, systemInstruction: { parts: [{ text: CHAT_SYSTEM_PROMPT }] } }; 
+            } else if (mode === 'report') { 
+                const reportType = document.getElementById('report-type')?.value || 'Weekly Summary'; 
+                const reportRange = document.getElementById('report-range')?.value || 'Last 7 Days'; 
+                const dynamicPrompt = `${REPORT_PROMPT}\nPlease generate a "${reportType}" for the "${reportRange}". Tailor insights. Use Markdown.`; 
+                payload = { contents: [{ parts: [{ text: dynamicPrompt }] }] }; 
+            } 
+            const fetchFn = () => fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); 
+            try { 
+                const result = await exponentialBackoff(fetchFn); 
+                if (!result || result.error) throw new Error(result?.message || "API call failed."); 
+                const candidate = result.candidates?.[0]; 
+                const text = candidate?.content?.parts?.[0]?.text; 
+                if (!text) { 
+                    const safety = candidate?.safetyRatings; 
+                    const reason = candidate?.finishReason; 
+                    if (reason === "SAFETY" || reason === "RECITATION" || (safety && safety.some(r => r.block))) throw new Error("Blocked: safety/policy."); 
+                    else if (reason) throw new Error(`API finished: ${reason}`); 
+                    else if (!candidate?.content) throw new Error("Blocked or invalid (no content)."); 
+                    else throw new Error("Invalid response (no text)."); 
+                } 
+                if (mode === 'chat') { 
+                    chatHistory.push({ role: "model", parts: [{ text: text }] }); 
+                    const thinkBubble = document.getElementById('thinking-bubble'); 
+                    if (thinkBubble) { 
+                        thinkBubble.textContent = text; 
+                        thinkBubble.classList.remove('thinking'); 
+                        thinkBubble.id = ''; 
+                    } else addChatMessage(text, 'ai'); 
+                } else if (mode === 'report') { 
+                    showToast("Report Generated!", "success"); 
+                    reportContent.innerHTML = simpleMarkdownToHtml(text); 
+                    reportModal.classList.remove('hidden'); 
+                } 
+            } catch (error) { 
+                console.error("Gemini API Error:", error); 
+                const errorMsg = `Error: ${error.message || "Failed."}`; 
+                if (mode === 'chat') { 
+                    const thinkBubble = document.getElementById('thinking-bubble'); 
+                    if (thinkBubble) { 
+                        thinkBubble.textContent = `Sorry, error. ${errorMsg}`; 
+                        thinkBubble.classList.remove('thinking'); 
+                        thinkBubble.id = ''; 
+                    } else addChatMessage(`Sorry, error. ${errorMsg}`, 'ai'); 
+                    if (userInput) chatHistory.pop(); 
+                } else if (mode === 'report') showToast(errorMsg, 'error'); 
+            } 
+        }
+
+
+        // --- Theme Toggle ---
+        const themeToggle = document.getElementById('theme-toggle');
+        const applyTheme = (isDark) => {
+            if (isDark) { document.documentElement.classList.add('dark'); }
+            else { document.documentElement.classList.remove('dark'); }
+            // Re-render chart if visible to potentially update colors (e.g., border, axis text)
+            if (document.getElementById('page-progress')?.classList.contains('active')) {
+                renderSubjectChart();
+            }
+        };
+
+        themeToggle?.addEventListener('change', (e) => {
+            const isDark = e.target.checked;
+            applyTheme(isDark);
+            localStorage.setItem('soundslate-theme', isDark ? 'dark' : 'light');
+        });
+
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Apply saved theme or default to LIGHT (per user request)
+            const savedTheme = localStorage.getItem('soundslate-theme');
+            const isDark = savedTheme === 'dark'; 
+            
+            if (themeToggle) themeToggle.checked = isDark;
+            applyTheme(isDark); // Apply the theme immediately
+
+            // Set user names, avatars, etc. (unchanged)
+            document.querySelectorAll('[id^="user-name-"]').forEach(el => el.textContent = `Hi, ${currentUserName}!`);
+            document.querySelectorAll('[id^="user-avatar-"]').forEach(el => el.textContent = currentUserName.charAt(0).toUpperCase());
+            const welcomeBanner = document.getElementById('welcome-banner');
+            if(welcomeBanner) welcomeBanner.textContent = `Welcome back, ${currentUserName}!`;
+            if(document.getElementById('progress-welcome')) document.getElementById('progress-welcome').textContent = `Hi ${currentUserName}!`;
+
+            // Initial render and navigation
+            renderSubjectChart(); // Render initially even if hidden
+            navigateTo('page-home'); // Set initial page
+
+            // Initialize chat history (unchanged)
+            const initialGreeting = "Hi! I'm Boo. How can I help you understand Akash's reading and comprehension progress today?";
+            chatHistory = [{ role: "user", parts: [{ text: "Hello" }] }, { role: "model", parts: [{ text: initialGreeting }] }];
+            const aiBubble = document.querySelector('#chat-messages .chat-bubble-ai'); if(aiBubble) aiBubble.textContent = initialGreeting;
+        });
+    </script>
+</body>
+</html>
