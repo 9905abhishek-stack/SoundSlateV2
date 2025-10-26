@@ -237,6 +237,7 @@
         // --- FIREBASE INSTANCES ---
         let app, db, auth;
         let currentUserName = "Parent"; // Default user name
+        let isFirebaseReady = false; // <-- NEW: Readiness flag
 
         // --- CONFIGURATION ---
         const DASHBOARD_URL = "https://9905abhishek-stack.github.io/SoundSlateV2/dashboard.html"; 
@@ -347,7 +348,8 @@
         window.handleAuth = async function(event, mode) {
             event.preventDefault();
             
-            if (!auth || !db) {
+            // Check the new readiness flag
+            if (!isFirebaseReady || !auth || !db) {
                 showToast("Firebase not ready. Please wait a moment.", 'error');
                 return;
             }
@@ -448,6 +450,10 @@
                     showToast("Firebase initialization failed.", 'error');
                 }
                 
+                // Set ready state after initialization is complete
+                isFirebaseReady = true; 
+                console.log("Firebase: Initialization complete and ready.");
+
                 // Optional: Listen for auth state changes globally
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
@@ -531,4 +537,3 @@
     </script>
 </body>
 </html>
-
